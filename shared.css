@@ -1,0 +1,528 @@
+/* === 社工管理系統 — 共用自定義樣式 === */
+
+/* 全域字體設定 */
+body {
+  font-family: "Noto Sans TC", sans-serif;
+  background-color: #f8fafc;
+  color: #1f2937;
+}
+
+/* 手機模擬器外框（Demo 1 使用）*/
+.phone-frame {
+  width: 390px;
+  max-width: 100vw;
+  min-height: 100vh;
+  margin: 0 auto;
+  background: #ffffff;
+  box-shadow:
+    0 0 0 8px #1f2937,
+    0 0 0 10px #374151,
+    0 20px 60px rgba(0, 0, 0, 0.3);
+  border-radius: 40px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* 手機頂部「瀏海」模擬 */
+.phone-frame::before {
+  content: "";
+  display: block;
+  width: 120px;
+  height: 28px;
+  background: #1f2937;
+  border-radius: 0 0 16px 16px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+/* 當螢幕小於 420px 時，移除手機外框模擬（因為本身就是手機在看）*/
+@media (max-width: 420px) {
+  .phone-frame {
+    box-shadow: none;
+    border-radius: 0;
+    width: 100%;
+  }
+  .phone-frame::before {
+    display: none;
+  }
+}
+
+/* 畫面切換動畫 */
+.view {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.view.active {
+  display: block;
+  opacity: 1;
+}
+
+/* 淡入動畫 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+/* 卡片基礎樣式 */
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.06);
+  padding: 16px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.1),
+    0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.card-clickable {
+  cursor: pointer;
+}
+
+/* 標籤樣式（Demo 2 觀察面向標籤）*/
+.tag-chip {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  border: 2px solid #e5e7eb;
+  background: #ffffff;
+  color: #6b7280;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.tag-chip:hover {
+  border-color: #6366f1;
+  color: #6366f1;
+}
+
+.tag-chip.selected {
+  background: #6366f1;
+  border-color: #6366f1;
+  color: #ffffff;
+}
+
+/* 小標籤（學生個人標籤）*/
+.tag-small {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  background: #eef2ff;
+  color: #6366f1;
+}
+
+.tag-small.warning {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.tag-small.danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* 主按鈕 */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  background: #6366f1;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: "Noto Sans TC", sans-serif;
+}
+
+.btn-primary:hover {
+  background: #4f46e5;
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 次要按鈕 */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  background: #ffffff;
+  color: #6366f1;
+  border: 2px solid #6366f1;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: "Noto Sans TC", sans-serif;
+}
+
+.btn-secondary:hover {
+  background: #eef2ff;
+}
+
+/* 危險/警告按鈕 */
+.btn-warning {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  background: #fef3c7;
+  color: #d97706;
+  border: 1px solid #fcd34d;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: "Noto Sans TC", sans-serif;
+}
+
+.btn-warning:hover {
+  background: #fde68a;
+}
+
+.btn-warning.done {
+  background: #d1fae5;
+  color: #059669;
+  border-color: #6ee7b7;
+  cursor: default;
+}
+
+/* 學生列表項目（Demo 1 點名用）*/
+.student-row {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f3f4f6;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.student-row:hover {
+  background: #f9fafb;
+}
+
+.student-row .status-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.student-row .student-name {
+  flex: 1;
+  font-size: 15px;
+}
+
+.student-row.absent {
+  background: #fef2f2;
+}
+
+.student-row.absent .student-name {
+  color: #9ca3af;
+}
+
+/* 缺席詳情展開區 */
+.absence-detail {
+  display: none;
+  padding: 8px 16px 12px 56px;
+  background: #fef2f2;
+  border-bottom: 1px solid #fecaca;
+  animation: fadeIn 0.2s ease;
+}
+
+.absence-detail.show {
+  display: block;
+}
+
+/* 打勾動畫（點名完成用）*/
+@keyframes checkmark {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.checkmark-animation {
+  animation: checkmark 0.5s ease forwards;
+}
+
+/* KPI 卡片（Demo 3 用）*/
+.kpi-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.kpi-card .kpi-value {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 8px 0;
+}
+
+.kpi-card .kpi-label {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.kpi-card .kpi-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.kpi-badge.normal {
+  background: #d1fae5;
+  color: #059669;
+}
+.kpi-badge.warning {
+  background: #fef3c7;
+  color: #d97706;
+}
+.kpi-badge.danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* 異常預警項目（Demo 3 用）*/
+.alert-item {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.alert-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.alert-dot.danger {
+  background: #ef4444;
+}
+.alert-dot.warning {
+  background: #f59e0b;
+}
+
+.alert-detail-expand {
+  display: none;
+  padding: 8px 16px 16px 38px;
+  font-size: 13px;
+  color: #6b7280;
+  background: #f9fafb;
+  border-bottom: 1px solid #f3f4f6;
+  animation: fadeIn 0.2s ease;
+}
+
+.alert-detail-expand.show {
+  display: block;
+}
+
+/* 表格樣式（Demo 3 用）*/
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.data-table th {
+  text-align: left;
+  padding: 12px 16px;
+  background: #f9fafb;
+  color: #6b7280;
+  font-weight: 600;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.data-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.data-table th.sortable:hover {
+  color: #6366f1;
+}
+
+.data-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.data-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* Phase 2 預留按鈕（灰色不可點擊）*/
+.btn-phase2 {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #f3f4f6;
+  color: #9ca3af;
+  border: 1px dashed #d1d5db;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: not-allowed;
+  position: relative;
+  font-family: "Noto Sans TC", sans-serif;
+}
+
+.btn-phase2:hover::after {
+  content: "Phase 2 即將推出";
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1f2937;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* 搜尋框 */
+.search-input {
+  width: 100%;
+  padding: 10px 16px 10px 40px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s ease;
+  font-family: "Noto Sans TC", sans-serif;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239CA3AF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 12px center;
+  background-size: 20px;
+}
+
+.search-input:focus {
+  border-color: #6366f1;
+}
+
+/* 紀錄時間軸（Demo 2 用）*/
+.record-timeline {
+  position: relative;
+  padding-left: 20px;
+}
+
+.record-timeline::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #e5e7eb;
+}
+
+.record-item {
+  position: relative;
+  padding: 12px 0 12px 16px;
+}
+
+.record-item::before {
+  content: "";
+  position: absolute;
+  left: -17px;
+  top: 18px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #6366f1;
+  border: 2px solid #ffffff;
+}
+
+/* 返回導覽連結 */
+.nav-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #6366f1;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+.nav-back:hover {
+  color: #4f46e5;
+}
+
+/* 自定義捲軸 */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
