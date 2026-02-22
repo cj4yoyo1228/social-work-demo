@@ -656,6 +656,295 @@
       }
 
       /* ------------------------------------------
+       * Stage2 元件：第二站 — 行為轉譯 & AI 追問
+       * - 左側：志工課後日誌 + AI 轉譯結果
+       * - 右側：AI 成長教練對話 + 回答選項
+       * - 回答後解鎖成長指標與成就勳章
+       * ------------------------------------------ */
+      function Stage2({ onNext }) {
+        // === 狀態管理 ===
+        const [translating, setTranslating] = useState(false); // AI 正在轉譯中
+        const [translated, setTranslated] = useState(false); // 轉譯完成
+        const [answered, setAnswered] = useState(false); // 使用者已回答
+        const [selectedAnswer, setSelectedAnswer] = useState(""); // 選了哪個回答
+        const [showGrowth, setShowGrowth] = useState(false); // 顯示成長指標
+        const [showBadge, setShowBadge] = useState(false); // 顯示勳章解鎖
+        const [aiQuestionVisible, setAiQuestionVisible] = useState(false); // AI 問題是否可見
+
+        // 用 ref 收集所有 timeout，方便清理避免記憶體洩漏
+        const timersRef = useRef([]);
+
+        // === 自動觸發序列：日誌顯示 → AI 轉譯 → 標籤出現 → AI 提問 ===
+        useEffect(() => {
+          // 500ms 後開始轉譯動畫
+          const t1 = setTimeout(() => setTranslating(true), 500);
+          // 再過 2000ms 轉譯完成
+          const t2 = setTimeout(() => {
+            setTranslated(true);
+            setTranslating(false);
+          }, 2500);
+          // 再過 500ms 顯示 AI 問題
+          const t3 = setTimeout(() => setAiQuestionVisible(true), 3000);
+
+          timersRef.current = [t1, t2, t3];
+
+          // 清理：元件卸載時清除所有 timeout
+          return () => {
+            timersRef.current.forEach(clearTimeout);
+          };
+        }, []);
+
+        /**
+         * handleAnswer：使用者點選回答選項
+         * 觸發後續動畫：回答泡泡 → 成長指標飛入 → 勳章解鎖
+         */
+        const handleAnswer = useCallback((answer) => {
+          setSelectedAnswer(answer);
+          setAnswered(true);
+
+          // 600ms 後顯示成長指標
+          const t4 = setTimeout(() => setShowGrowth(true), 600);
+          // 1200ms 後顯示勳章
+          const t5 = setTimeout(() => setShowBadge(true), 1200);
+
+          timersRef.current.push(t4, t5);
+        }, []);
+
+        // AI 追問的兩個回答選項
+        const answerOptions = [
+          "我先讓自己冷靜，再想別的方法引導他們",
+          "我請其他志工幫忙分開他們",
+        ];
+
+        // 轉譯結果的三個標籤
+        const translationTags = [
+          { label: "✅ 衝突解決", delay: "0s" },
+          { label: "✅ 情緒管理", delay: "0.15s" },
+          { label: "✅ 引導能力", delay: "0.3s" },
+        ];
+
+        return (
+          <div className="max-w-5xl mx-auto px-4 py-8 stage-enter">
+            {/* 雙欄布局：左側日誌、右側 AI 對話 */}
+            <div className="flex flex-col lg:flex-row gap-8">
+              {/* ====== 左側：課後日誌區 ====== */}
+              <div className="lg:w-1/2">
+                {/* 標題 */}
+                <h2
+                  className="text-xl font-bold mb-1"
+                  style={{ color: COLORS.titleDark }}
+                >
+                  📝 阿明的課後日誌
+                </h2>
+                <p className="text-sm mb-4" style={{ color: "#94A3B8" }}>
+                  第 8 週 — 2026/02/18
+                </p>
+
+                {/* 日誌卡片：暖黃色背景，模擬手寫感 */}
+                <div
+                  className="rounded-xl p-6 mb-4"
+                  style={{ backgroundColor: "#FFFBEB" }}
+                >
+                  <p
+                    className="text-base leading-relaxed"
+                    style={{
+                      color: "#78350F",
+                      fontWeight: 300,
+                      fontStyle: "italic",
+                      lineHeight: "1.9",
+                    }}
+                  >
+                    今天小明跟小強吵架不寫功課，我很心累但還是先讓他們冷靜，分開坐之後跟他們個別聊了一下。小明後來有跟小強道歉，雖然花了很多時間但看到他們和好覺得很值得。
+                  </p>
+                </div>
+
+                {/* 轉譯區域 */}
+                {translating && (
+                  <div
+                    className="flex items-center text-sm animate-fade-in"
+                    style={{ color: COLORS.brandBright }}
+                  >
+                    <span>🔄 AI 轉譯中</span>
+                    <div className="bouncing-dots">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 轉譯結果：三個能力標籤 */}
+                {translated && (
+                  <div className="flex flex-wrap gap-2 animate-fade-in">
+                    {translationTags.map((tag) => (
+                      <span
+                        key={tag.label}
+                        className="inline-block px-3 py-1.5 rounded-full text-sm font-medium animate-scale-in"
+                        style={{
+                          backgroundColor: "#EFF6FF",
+                          color: "#1E40AF",
+                          animationDelay: tag.delay,
+                        }}
+                      >
+                        {tag.label}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* ====== 右側：AI 成長教練對話區 ====== */}
+              <div className="lg:w-1/2">
+                {/* 標題 */}
+                <h2
+                  className="text-xl font-bold mb-4"
+                  style={{ color: COLORS.titleDark }}
+                >
+                  🤖 AI 成長教練
+                </h2>
+
+                {/* 對話區域 */}
+                <div
+                  className="rounded-xl p-6"
+                  style={{
+                    backgroundColor: "#F8FAFC",
+                    minHeight: "320px",
+                  }}
+                >
+                  {/* AI 問題泡泡（左對齊，品牌藍底白字） */}
+                  {aiQuestionVisible && (
+                    <div className="flex justify-start mb-4 animate-fade-in">
+                      <div
+                        className="relative rounded-2xl px-4 py-3 max-w-xs chat-bubble-left"
+                        style={{
+                          backgroundColor: COLORS.brandBright,
+                          color: "#FFFFFF",
+                        }}
+                      >
+                        <p className="text-sm leading-relaxed">
+                          阿明，面對這種挫折，你是如何調整策略的？
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 回答選項按鈕（AI 問題出現後才顯示） */}
+                  {aiQuestionVisible && !answered && (
+                    <div
+                      className="flex flex-col gap-2 mt-4 animate-fade-in"
+                      style={{ animationDelay: "0.3s" }}
+                    >
+                      {answerOptions.map((option) => (
+                        <button
+                          key={option}
+                          onClick={() => handleAnswer(option)}
+                          className="text-left px-4 py-3 rounded-xl text-sm font-medium
+                                     transition-all duration-200 cursor-pointer"
+                          style={{
+                            border: `1.5px solid ${COLORS.brandBright}`,
+                            color: COLORS.brandBright,
+                            backgroundColor: "#FFFFFF",
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = "#EFF6FF";
+                            e.currentTarget.style.transform = "translateX(4px)";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = "#FFFFFF";
+                            e.currentTarget.style.transform = "translateX(0)";
+                          }}
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* 使用者的回答泡泡（右對齊，暖橘底白字） */}
+                  {answered && (
+                    <div className="flex justify-end mb-4 animate-fade-in">
+                      <div
+                        className="relative rounded-2xl px-4 py-3 max-w-xs chat-bubble-right"
+                        style={{
+                          backgroundColor: COLORS.warmBright,
+                          color: "#FFFFFF",
+                        }}
+                      >
+                        <p className="text-sm leading-relaxed">
+                          {selectedAnswer}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 成長指標卡片（從右側滑入） */}
+                  {showGrowth && (
+                    <div
+                      className="rounded-xl px-4 py-3 mb-3 animate-slide-in-right"
+                      style={{
+                        backgroundColor: "#FFF7ED",
+                        border: "1px solid #FED7AA",
+                      }}
+                    >
+                      <p
+                        className="text-sm font-semibold"
+                        style={{ color: "#C2410C" }}
+                      >
+                        📈 韌性指標 ↑ 15%
+                      </p>
+                    </div>
+                  )}
+
+                  {/* 成就勳章卡片（縮放彈入 + 金色邊框） */}
+                  {showBadge && (
+                    <div
+                      className="rounded-xl px-4 py-3 animate-scale-in"
+                      style={{
+                        backgroundColor: "#FFFBEB",
+                        border: "2px solid #FCD34D",
+                      }}
+                    >
+                      <p
+                        className="text-sm font-semibold"
+                        style={{ color: "#92400E" }}
+                      >
+                        🏅 解鎖成就：逆境調適者
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* 底部導覽：回答後才顯示前進按鈕 */}
+            {answered && (
+              <div
+                className="flex justify-center mt-10 animate-fade-in-up"
+                style={{ animationDelay: "0.2s" }}
+              >
+                <button
+                  onClick={onNext}
+                  className="px-8 py-3 rounded-full text-white font-semibold text-base
+                             hover:shadow-lg transition-all duration-300 cursor-pointer"
+                  style={{
+                    background: `linear-gradient(135deg, ${COLORS.brandDeep}, ${COLORS.brandBright})`,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                  }}
+                >
+                  前往第三站 →
+                </button>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      /* ------------------------------------------
        * App 元件：主應用程式
        * - 管理當前站點 (currentStage)
        * - 管理轉場動畫 (stageTransition)
@@ -712,10 +1001,8 @@
             >
               {/* 第一站：職場指標對標（正式元件） */}
               {currentStage === 1 && <Stage1 onNext={() => goToStage(2)} />}
-              {/* 第二站、第三站：暫時佔位（後續任務替換） */}
-              {currentStage === 2 && (
-                <StagePlaceholder stageId={2} label="第二站" />
-              )}
+              {/* 第二站：行為轉譯 & AI 追問（正式元件） */}
+              {currentStage === 2 && <Stage2 onNext={() => goToStage(3)} />}
               {currentStage === 3 && (
                 <StagePlaceholder stageId={3} label="第三站" />
               )}
