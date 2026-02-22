@@ -389,6 +389,292 @@
         line-height: 1.7;
       }
 
+      /* ══════════════════════════
+         AI 引導日誌系統
+      ══════════════════════════ */
+
+      /* ── 進度圓點 ── */
+      .journal-progress {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .progress-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #e0e0e0;
+        transition:
+          background 0.3s ease,
+          transform 0.3s ease;
+      }
+      .progress-dot.active {
+        background: #6366f1;
+        transform: scale(1.3);
+      }
+      .progress-dot.done {
+        background: #10b981;
+      }
+
+      /* ── AI 提問泡泡 ── */
+      .ai-bubble {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+      .ai-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6366f1, #818cf8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+      }
+      .ai-question {
+        background: #f0f0ff;
+        border-radius: 0 12px 12px 12px;
+        padding: 12px 14px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #374151;
+        line-height: 1.6;
+        flex: 1;
+      }
+
+      /* ── Emoji 快選按鈕 ── */
+      .emoji-choices {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .emoji-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 14px 8px;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        background: white;
+        cursor: pointer;
+        font-size: 28px;
+        transition:
+          border-color 0.2s ease,
+          background 0.2s ease,
+          transform 0.12s ease;
+      }
+      .emoji-btn:hover {
+        border-color: #a5b4fc;
+        background: #f5f3ff;
+      }
+      .emoji-btn.selected {
+        border-color: #6366f1;
+        background: #eef2ff;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+      }
+      .emoji-btn:active {
+        transform: scale(0.95);
+      }
+
+      /* ── Pill 標籤快選 ── */
+      .tag-pill {
+        display: inline-block;
+        padding: 7px 14px;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #6b7280;
+        background: white;
+        cursor: pointer;
+        margin: 0 6px 8px 0;
+        transition:
+          border-color 0.2s ease,
+          background 0.2s ease,
+          color 0.2s ease;
+      }
+      .tag-pill:hover {
+        border-color: #a5b4fc;
+        color: #6366f1;
+      }
+      .tag-pill.selected {
+        border-color: #6366f1;
+        background: #eef2ff;
+        color: #6366f1;
+        font-weight: 600;
+      }
+
+      /* ── 步驟切換動畫 ── */
+      .journal-step {
+        display: none;
+      }
+      .journal-step.active {
+        display: block;
+        animation: journalFadeSlideUp 0.35s ease forwards;
+      }
+
+      @keyframes journalFadeSlideUp {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ── 補充文字框 ── */
+      .step-textarea {
+        width: 100%;
+        min-height: 72px;
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-size: 13px;
+        font-family: "Noto Sans TC", sans-serif;
+        line-height: 1.6;
+        resize: none;
+        outline: none;
+        color: #374151;
+        background: white;
+        transition:
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
+        margin-top: 10px;
+      }
+      .step-textarea:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+      }
+      .step-textarea::placeholder {
+        color: #c4c9d4;
+      }
+
+      /* ── 缺席學生關注卡片 ── */
+      .concern-student {
+        background: #fff7ed;
+        border: 1.5px solid #fed7aa;
+        border-radius: 10px;
+        padding: 12px;
+        margin-bottom: 10px;
+      }
+      .concern-student .name {
+        font-size: 14px;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 6px;
+      }
+      .concern-student .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 8px;
+      }
+
+      /* ── 導航按鈕 ── */
+      .step-nav {
+        display: flex;
+        gap: 10px;
+        margin-top: 18px;
+      }
+      .btn-step-next {
+        flex: 1;
+        background: linear-gradient(135deg, #6366f1, #818cf8);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          transform 0.12s ease,
+          opacity 0.2s ease;
+        font-family: "Noto Sans TC", sans-serif;
+      }
+      .btn-step-next:hover {
+        opacity: 0.9;
+      }
+      .btn-step-next:active {
+        transform: scale(0.96);
+      }
+      .btn-step-next:disabled {
+        background: #e5e7eb;
+        color: #9ca3af;
+        cursor: default;
+      }
+      .btn-step-skip {
+        background: white;
+        color: #9ca3af;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.15s ease;
+        font-family: "Noto Sans TC", sans-serif;
+      }
+      .btn-step-skip:active {
+        background: #f9fafb;
+      }
+
+      /* ── AI 組合預覽 ── */
+      .journal-preview {
+        background: #f9fafb;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 16px;
+        font-size: 13px;
+        line-height: 1.8;
+        color: #374151;
+        white-space: pre-wrap;
+        word-break: break-word;
+        max-height: 260px;
+        overflow-y: auto;
+      }
+      .journal-preview[contenteditable] {
+        cursor: text;
+        outline: none;
+      }
+      .journal-preview[contenteditable]:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+      }
+
+      /* ── 新增學生按鈕 ── */
+      .btn-add-student {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+        padding: 10px;
+        border: 2px dashed #c7d2fe;
+        border-radius: 10px;
+        background: white;
+        color: #6366f1;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          background 0.15s ease,
+          border-color 0.15s ease;
+        font-family: "Noto Sans TC", sans-serif;
+        margin-top: 8px;
+      }
+      .btn-add-student:hover {
+        background: #eef2ff;
+        border-color: #6366f1;
+      }
+
       /* ── 已完成班級的淡化效果 ── */
       .class-card.completed {
         opacity: 0.55;
@@ -1198,8 +1484,9 @@
               ></div>
             </div>
 
-            <!-- 日誌卡片 -->
+            <!-- AI 引導日誌系統 -->
             <div
+              id="journal-section"
               style="
                 background: white;
                 border-radius: 18px;
@@ -1221,33 +1508,182 @@
                 今日日誌
               </p>
 
-              <!-- 日誌入口按鈕（預設顯示） -->
+              <!-- 入口按鈕 -->
               <div id="journal-trigger">
                 <button
-                  class="btn-primary"
-                  onclick="openJournal()"
-                  style="font-size: 15px; padding: 14px"
+                  class="btn-step-next"
+                  onclick="startJournalGuide()"
+                  style="
+                    width: 100%;
+                    padding: 14px;
+                    font-size: 15px;
+                    border-radius: 12px;
+                  "
                 >
-                  撰寫今日日誌 📝
+                  🤖 AI 幫我寫日誌
                 </button>
               </div>
 
-              <!-- 日誌輸入框（點擊後出現） -->
-              <div
-                id="journal-input"
-                style="display: none; animation: fadeIn 0.3s ease"
-              >
-                <textarea
-                  class="journal-textarea"
-                  placeholder="今天的課程狀況如何？有什麼特別需要記錄的事情嗎？&#10;&#10;例如：王小明今天上課特別認真，有主動舉手回答問題..."
-                ></textarea>
-                <button
-                  class="btn-primary"
-                  style="margin-top: 10px; padding: 13px; font-size: 14px"
-                  onclick="saveJournal()"
-                >
-                  儲存日誌 💾
-                </button>
+              <!-- 引導流程容器 -->
+              <div id="journal-guide" style="display: none">
+                <!-- 進度圓點 -->
+                <div class="journal-progress">
+                  <div class="progress-dot active" id="dot-0"></div>
+                  <div class="progress-dot" id="dot-1"></div>
+                  <div class="progress-dot" id="dot-2"></div>
+                  <div class="progress-dot" id="dot-3"></div>
+                </div>
+
+                <!-- Step 0：課堂氣氛 -->
+                <div id="step-0" class="journal-step active">
+                  <div class="ai-bubble">
+                    <div class="ai-avatar">🤖</div>
+                    <div class="ai-question">
+                      今天上課的氣氛怎麼樣？選一個最貼近的感覺吧！
+                    </div>
+                  </div>
+                  <div class="emoji-choices">
+                    <button
+                      class="emoji-btn"
+                      onclick="selectMood(this, '活潑')"
+                    >
+                      😊<span style="font-size: 12px; color: #6b7280"
+                        >活潑</span
+                      >
+                    </button>
+                    <button
+                      class="emoji-btn"
+                      onclick="selectMood(this, '普通')"
+                    >
+                      😐<span style="font-size: 12px; color: #6b7280"
+                        >普通</span
+                      >
+                    </button>
+                    <button
+                      class="emoji-btn"
+                      onclick="selectMood(this, '低迷')"
+                    >
+                      😔<span style="font-size: 12px; color: #6b7280"
+                        >低迷</span
+                      >
+                    </button>
+                    <button
+                      class="emoji-btn"
+                      onclick="selectMood(this, '躁動')"
+                    >
+                      😤<span style="font-size: 12px; color: #6b7280"
+                        >躁動</span
+                      >
+                    </button>
+                  </div>
+                  <textarea
+                    id="mood-detail"
+                    class="step-textarea"
+                    placeholder="想補充什麼細節嗎？（選填）"
+                  ></textarea>
+                  <div class="step-nav">
+                    <button
+                      id="step0-next"
+                      class="btn-step-next"
+                      disabled
+                      onclick="nextStep(1)"
+                    >
+                      下一步 →
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Step 1：特別關注 -->
+                <div id="step-1" class="journal-step">
+                  <div class="ai-bubble">
+                    <div class="ai-avatar">🤖</div>
+                    <div class="ai-question">
+                      有缺席的同學，需要特別關注嗎？可以幫他們加上標籤和備註。
+                    </div>
+                  </div>
+                  <div id="concern-students-list"></div>
+                  <button class="btn-add-student" onclick="addConcernStudent()">
+                    ＋ 新增其他學生
+                  </button>
+                  <div class="step-nav">
+                    <button class="btn-step-skip" onclick="skipConcern()">
+                      略過
+                    </button>
+                    <button class="btn-step-next" onclick="nextStep(2)">
+                      下一步 →
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Step 2：教學反思 -->
+                <div id="step-2" class="journal-step">
+                  <div class="ai-bubble">
+                    <div class="ai-avatar">🤖</div>
+                    <div class="ai-question">
+                      今天的教學有什麼感想？挑幾個標籤或寫幾句都行！
+                    </div>
+                  </div>
+                  <div id="reflect-tags"></div>
+                  <textarea
+                    id="reflect-detail"
+                    class="step-textarea"
+                    placeholder="想補充的反思內容…（選填）"
+                  ></textarea>
+                  <div class="step-nav">
+                    <button class="btn-step-skip" onclick="nextStep(3)">
+                      略過
+                    </button>
+                    <button class="btn-step-next" onclick="nextStep(3)">
+                      下一步 →
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Step 3：明日計畫 -->
+                <div id="step-3" class="journal-step">
+                  <div class="ai-bubble">
+                    <div class="ai-avatar">🤖</div>
+                    <div class="ai-question">明天有什麼要提前準備的嗎？</div>
+                  </div>
+                  <div id="plan-tags"></div>
+                  <textarea
+                    id="plan-detail"
+                    class="step-textarea"
+                    placeholder="其他計畫補充…（選填）"
+                  ></textarea>
+                  <div class="step-nav">
+                    <button class="btn-step-skip" onclick="composeJournal()">
+                      略過
+                    </button>
+                    <button class="btn-step-next" onclick="composeJournal()">
+                      完成 ✨
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 完成預覽 -->
+                <div id="step-preview" class="journal-step">
+                  <div class="ai-bubble">
+                    <div class="ai-avatar">🤖</div>
+                    <div class="ai-question">
+                      日誌幫你組好了！可以直接修改內容，確認後按儲存。
+                    </div>
+                  </div>
+                  <div
+                    class="journal-preview"
+                    id="journal-composed"
+                    contenteditable="true"
+                  ></div>
+                  <div class="step-nav" style="margin-top: 14px">
+                    <button
+                      class="btn-step-next"
+                      onclick="saveComposedJournal()"
+                      style="width: 100%"
+                    >
+                      確認儲存 📝
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -1540,7 +1976,7 @@
 
         // 重設日誌區塊（每次進入都是乾淨的）
         document.getElementById("journal-trigger").style.display = "block";
-        document.getElementById("journal-input").style.display = "none";
+        document.getElementById("journal-guide").style.display = "none";
 
         showScreen("screen-done");
       }
@@ -1577,30 +2013,384 @@
         });
       }
 
-      // ── 開啟日誌輸入框 ──
-      function openJournal() {
+      // ══════════════════════════
+      // AI 引導日誌系統
+      // ══════════════════════════
+
+      // 狀態變數
+      let journalStep = 0;
+      let journalData = {
+        mood: "",
+        moodEmoji: "",
+        moodDetail: "",
+        concerns: [],
+        reflectTags: [],
+        reflectDetail: "",
+        planTags: [],
+        planDetail: "",
+      };
+
+      // 標籤選項
+      const REFLECT_TAGS = [
+        "教學進度順利",
+        "活動效果好",
+        "需要調整教材",
+        "時間不夠用",
+        "學生反應冷淡",
+      ];
+      const PLAN_TAGS = [
+        "準備教材",
+        "跟進個案",
+        "聯繫家長",
+        "調整座位",
+        "無特別事項",
+      ];
+      const CONCERN_TAGS = ["情緒波動", "人際衝突", "學習困難", "家庭狀況"];
+
+      // emoji 對照表（用於日誌組合時顯示 emoji）
+      const MOOD_EMOJI_MAP = {
+        活潑: "😊",
+        普通: "😐",
+        低迷: "😔",
+        躁動: "😤",
+      };
+
+      // ── 啟動引導流程 ──
+      function startJournalGuide() {
+        // 重設所有狀態
+        journalStep = 0;
+        journalData = {
+          mood: "",
+          moodEmoji: "",
+          moodDetail: "",
+          concerns: [],
+          reflectTags: [],
+          reflectDetail: "",
+          planTags: [],
+          planDetail: "",
+        };
+
+        // 切換顯示
         document.getElementById("journal-trigger").style.display = "none";
-        document.getElementById("journal-input").style.display = "block";
-        // 延遲一幀再聚焦，等動畫結束
-        setTimeout(() => {
-          const ta = document.querySelector(".journal-textarea");
-          if (ta) ta.focus();
-        }, 150);
+        document.getElementById("journal-guide").style.display = "block";
+
+        // 重設 emoji 按鈕狀態
+        document
+          .querySelectorAll(".emoji-btn")
+          .forEach((b) => b.classList.remove("selected"));
+        document.getElementById("step0-next").disabled = true;
+        document.getElementById("mood-detail").value = "";
+
+        // 渲染缺席名單成關注卡片
+        renderConcernStudents();
+
+        // 渲染標籤選項
+        renderTagPills("reflect-tags", REFLECT_TAGS, "reflectTags");
+        renderTagPills("plan-tags", PLAN_TAGS, "planTags");
+
+        // 清空文字框
+        document.getElementById("reflect-detail").value = "";
+        document.getElementById("plan-detail").value = "";
+
+        // 顯示第一步
+        showJournalStep(0);
       }
 
-      // ── 儲存日誌（Demo 版：顯示提示） ──
-      function saveJournal() {
-        const ta = document.querySelector(".journal-textarea");
-        const text = ta ? ta.value.trim() : "";
-        if (!text) {
-          alert("請先輸入日誌內容！");
-          return;
+      // ── 切換步驟顯示 + 更新進度圓點 ──
+      function showJournalStep(idx) {
+        journalStep = idx;
+
+        // 隱藏所有步驟
+        document
+          .querySelectorAll(".journal-step")
+          .forEach((s) => s.classList.remove("active"));
+
+        // 顯示目標步驟（idx=4 時顯示預覽）
+        const targetId = idx === 4 ? "step-preview" : `step-${idx}`;
+        const target = document.getElementById(targetId);
+        if (target) target.classList.add("active");
+
+        // 更新進度圓點
+        for (let i = 0; i < 4; i++) {
+          const dot = document.getElementById(`dot-${i}`);
+          dot.classList.remove("active", "done");
+          if (i < idx) {
+            dot.classList.add("done");
+          } else if (i === idx && idx < 4) {
+            dot.classList.add("active");
+          } else if (idx === 4) {
+            // 全部完成
+            dot.classList.add("done");
+          }
         }
-        // 顯示儲存成功提示（Demo 版不真正儲存）
-        const btn = document.querySelector("#journal-input .btn-primary");
+      }
+
+      // ── 選擇課堂氣氛 emoji ──
+      function selectMood(btn, mood) {
+        // 取消其他按鈕選取
+        document
+          .querySelectorAll(".emoji-btn")
+          .forEach((b) => b.classList.remove("selected"));
+        // 選取當前按鈕
+        btn.classList.add("selected");
+
+        journalData = {
+          ...journalData,
+          mood,
+          moodEmoji: MOOD_EMOJI_MAP[mood] || "",
+        };
+
+        // 啟用下一步按鈕
+        document.getElementById("step0-next").disabled = false;
+      }
+
+      // ── 前進到下一步（收集當前步驟資料） ──
+      function nextStep(toIdx) {
+        // 收集當前步驟的資料
+        if (journalStep === 0) {
+          journalData = {
+            ...journalData,
+            moodDetail: document.getElementById("mood-detail").value.trim(),
+          };
+        } else if (journalStep === 1) {
+          // concerns 已經在 toggleConcernTag / updateConcernNote 中即時更新
+        } else if (journalStep === 2) {
+          journalData = {
+            ...journalData,
+            reflectDetail: document
+              .getElementById("reflect-detail")
+              .value.trim(),
+          };
+        } else if (journalStep === 3) {
+          journalData = {
+            ...journalData,
+            planDetail: document.getElementById("plan-detail").value.trim(),
+          };
+        }
+
+        showJournalStep(toIdx);
+      }
+
+      // ── 渲染缺席學生關注卡片 ──
+      function renderConcernStudents() {
+        const container = document.getElementById("concern-students-list");
+        container.innerHTML = "";
+
+        const students = STUDENTS[currentClassIndex];
+        // 從缺席名單初始化 concerns
+        const absentStudents = students
+          .map((name, i) => ({ name, index: i, ...attendanceData[i] }))
+          .filter((s) => !s.present);
+
+        journalData = {
+          ...journalData,
+          concerns: absentStudents.map((s) => ({
+            name: s.name,
+            reason: s.reason || "缺席",
+            tags: [],
+            note: "",
+            isManual: false,
+          })),
+        };
+
+        // 渲染每個關注學生卡片
+        journalData.concerns.forEach((concern, idx) => {
+          container.appendChild(buildConcernCard(idx, concern));
+        });
+      }
+
+      // ── 建立關注學生卡片 DOM ──
+      function buildConcernCard(idx, concern) {
+        const div = document.createElement("div");
+        div.className = "concern-student";
+        div.id = `concern-${idx}`;
+        // 手動新增的用藍色邊框
+        if (concern.isManual) {
+          div.style.borderColor = "#93c5fd";
+          div.style.background = "#eff6ff";
+        }
+
+        const nameLabel = concern.isManual
+          ? `<input type="text" value="${concern.name}" placeholder="輸入學生姓名"
+              style="border:1.5px solid #c7d2fe;border-radius:8px;padding:4px 8px;font-size:14px;font-weight:700;width:120px;font-family:'Noto Sans TC',sans-serif;"
+              onchange="journalData.concerns[${idx}].name=this.value">`
+          : `<span>${concern.name}</span>`;
+
+        // 標籤 pills
+        const tagHTML = CONCERN_TAGS.map((tag) => {
+          const isSelected = concern.tags.includes(tag);
+          return `<span class="tag-pill${isSelected ? " selected" : ""}"
+                   onclick="toggleConcernTag(this, ${idx}, '${tag}')">${tag}</span>`;
+        }).join("");
+
+        div.innerHTML = `
+          <div class="name">${nameLabel}（${concern.reason}）</div>
+          <div class="tags">${tagHTML}</div>
+          <input type="text" value="${concern.note}" placeholder="備註（選填）"
+            style="width:100%;border:1.5px solid #e5e7eb;border-radius:8px;padding:6px 10px;font-size:12px;font-family:'Noto Sans TC',sans-serif;"
+            oninput="updateConcernNote(${idx}, this.value)">
+        `;
+        return div;
+      }
+
+      // ── 切換關注標籤 ──
+      function toggleConcernTag(el, studentIdx, tag) {
+        const concern = journalData.concerns[studentIdx];
+        const currentTags = concern.tags || [];
+        const hasTag = currentTags.includes(tag);
+
+        // 不可變更新
+        const newTags = hasTag
+          ? currentTags.filter((t) => t !== tag)
+          : [...currentTags, tag];
+
+        journalData = {
+          ...journalData,
+          concerns: journalData.concerns.map((c, i) =>
+            i === studentIdx ? { ...c, tags: newTags } : c,
+          ),
+        };
+
+        // 切換 UI
+        el.classList.toggle("selected");
+      }
+
+      // ── 更新關注備註 ──
+      function updateConcernNote(studentIdx, val) {
+        journalData = {
+          ...journalData,
+          concerns: journalData.concerns.map((c, i) =>
+            i === studentIdx ? { ...c, note: val } : c,
+          ),
+        };
+      }
+
+      // ── 略過關注學生，直接到下一步 ──
+      function skipConcern() {
+        journalData = { ...journalData, concerns: [] };
+        showJournalStep(2);
+      }
+
+      // ── 新增空白關注學生卡片 ──
+      function addConcernStudent() {
+        const newConcern = {
+          name: "",
+          reason: "其他",
+          tags: [],
+          note: "",
+          isManual: true,
+        };
+
+        journalData = {
+          ...journalData,
+          concerns: [...journalData.concerns, newConcern],
+        };
+
+        const container = document.getElementById("concern-students-list");
+        const idx = journalData.concerns.length - 1;
+        container.appendChild(buildConcernCard(idx, newConcern));
+      }
+
+      // ── 通用 pill 標籤渲染 ──
+      function renderTagPills(containerId, tags, dataKey) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = "";
+        tags.forEach((tag) => {
+          const pill = document.createElement("span");
+          pill.className = "tag-pill";
+          pill.textContent = tag;
+          pill.onclick = () => {
+            const current = journalData[dataKey] || [];
+            const has = current.includes(tag);
+            const updated = has
+              ? current.filter((t) => t !== tag)
+              : [...current, tag];
+
+            journalData = { ...journalData, [dataKey]: updated };
+            pill.classList.toggle("selected");
+          };
+          container.appendChild(pill);
+        });
+      }
+
+      // ── 組合結構化日誌 ──
+      function composeJournal() {
+        // 先收集最後一步的資料
+        if (journalStep === 3) {
+          journalData = {
+            ...journalData,
+            planDetail: document.getElementById("plan-detail").value.trim(),
+          };
+        }
+
+        const cls = CLASSES[currentClassIndex];
+        const students = STUDENTS[currentClassIndex];
+        const total = students.length;
+        const presentCount = Object.values(attendanceData).filter(
+          (d) => d.present,
+        ).length;
+
+        // 取得今天日期
+        const now = new Date();
+        const dateStr = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`;
+
+        // 組合日誌
+        let text = `【${cls.name}】班級日誌\n`;
+        text += `日期：${dateStr}\n`;
+        text += `出席：${presentCount}/${total} 人\n\n`;
+
+        // 課堂氣氛
+        text += `📍 課堂氣氛：${journalData.moodEmoji} ${journalData.mood}\n`;
+        if (journalData.moodDetail) {
+          text += `   ${journalData.moodDetail}\n`;
+        }
+
+        // 特別關注
+        const validConcerns = journalData.concerns.filter((c) => c.name);
+        if (validConcerns.length > 0) {
+          text += `\n⚠️ 需特別關注：\n`;
+          validConcerns.forEach((c) => {
+            const tagStr = c.tags.length > 0 ? `（${c.tags.join("、")}）` : "";
+            const noteStr = c.note ? `— ${c.note}` : "";
+            text += `  · ${c.name}：${c.reason}${tagStr}${noteStr}\n`;
+          });
+        }
+
+        // 教學反思
+        if (journalData.reflectTags.length > 0 || journalData.reflectDetail) {
+          text += `\n📝 教學反思：\n`;
+          if (journalData.reflectTags.length > 0) {
+            text += `  ${journalData.reflectTags.join("、")}\n`;
+          }
+          if (journalData.reflectDetail) {
+            text += `  ${journalData.reflectDetail}\n`;
+          }
+        }
+
+        // 明日計畫
+        if (journalData.planTags.length > 0 || journalData.planDetail) {
+          text += `\n📋 明日計畫：\n`;
+          if (journalData.planTags.length > 0) {
+            text += `  ${journalData.planTags.join("、")}\n`;
+          }
+          if (journalData.planDetail) {
+            text += `  ${journalData.planDetail}\n`;
+          }
+        }
+
+        // 顯示在預覽區
+        document.getElementById("journal-composed").textContent = text;
+
+        // 切到預覽步驟
+        showJournalStep(4);
+      }
+
+      // ── 確認儲存日誌（Demo 版） ──
+      function saveComposedJournal() {
+        const btn = document.querySelector("#step-preview .btn-step-next");
         btn.textContent = "已儲存 ✅";
         btn.disabled = true;
-        btn.style.background = "#10B981";
+        btn.style.background = "#10b981";
         btn.style.boxShadow = "0 4px 16px rgba(16,185,129,0.35)";
       }
 

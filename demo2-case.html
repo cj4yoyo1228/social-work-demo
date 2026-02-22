@@ -707,6 +707,184 @@
         }
       }
 
+      /* ===== AI 幫我寫觀察紀錄樣式 ===== */
+
+      /* 進場動畫 */
+      @keyframes fadeSlideUp {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* 脈動動畫（用於 AI 組合中提示） */
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.6;
+        }
+      }
+
+      /* AI 幫我寫按鈕 */
+      .ai-write-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+        padding: 10px 18px;
+        background: linear-gradient(135deg, #6366f1, #818cf8);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        transition: all 0.2s ease;
+      }
+
+      .ai-write-btn:hover {
+        background: linear-gradient(135deg, #4f46e5, #6366f1);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+      }
+
+      /* AI 引導問答容器 */
+      .ai-write-flow {
+        background: #f8f5ff;
+        border: 1px solid #e0d7ff;
+        border-radius: 14px;
+        padding: 16px;
+        animation: fadeSlideUp 0.35s ease forwards;
+      }
+
+      /* 問題列（AI 頭像 + 氣泡） */
+      .ai-write-flow .ai-q {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      /* AI 頭像 */
+      .ai-write-flow .ai-q-avatar {
+        width: 28px;
+        height: 28px;
+        min-width: 28px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6366f1, #818cf8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+      }
+
+      /* 問題文字氣泡 */
+      .ai-write-flow .ai-q-text {
+        background: #fff;
+        border-radius: 12px;
+        padding: 10px 14px;
+        font-size: 14px;
+        line-height: 1.6;
+        color: #374151;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      }
+
+      /* 文字輸入框 */
+      .ai-write-flow textarea {
+        width: 100%;
+        min-height: 80px;
+        padding: 10px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        font-size: 14px;
+        font-family: "Noto Sans TC", sans-serif;
+        line-height: 1.6;
+        resize: vertical;
+        outline: none;
+        transition: border-color 0.2s;
+        box-sizing: border-box;
+      }
+
+      .ai-write-flow textarea:focus {
+        border-color: #818cf8;
+        box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.15);
+      }
+
+      /* 下一題 / 完成按鈕 */
+      .ai-write-flow .btn-ai-next {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 8px 16px;
+        background: #6366f1;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .ai-write-flow .btn-ai-next:hover {
+        background: #4f46e5;
+      }
+
+      /* 略過按鈕 */
+      .ai-write-flow .btn-ai-skip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 8px 16px;
+        background: transparent;
+        color: #9ca3af;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .ai-write-flow .btn-ai-skip:hover {
+        color: #6b7280;
+        border-color: #d1d5db;
+      }
+
+      /* AI 組合中提示 */
+      .ai-write-compose {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 20px;
+        color: #6366f1;
+        font-size: 15px;
+        font-weight: 500;
+        animation: pulse 1.2s ease-in-out infinite;
+      }
+
+      /* 按鈕列 */
+      .ai-write-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      /* 題號提示 */
+      .ai-write-step {
+        font-size: 12px;
+        color: #9ca3af;
+        margin-bottom: 6px;
+      }
+
       /* ===== AI 即時反思引導系統樣式 ===== */
 
       /* 文字框上方的小提示文字 */
@@ -1128,6 +1306,18 @@
         <div class="form-section card">
           <label class="form-label">觀察面向（可多選）</label>
           <div id="tag-chips-area" class="tag-chips-area"></div>
+        </div>
+
+        <!-- AI 幫我寫入口 -->
+        <div class="form-section card">
+          <button
+            class="ai-write-btn"
+            id="ai-write-btn"
+            onclick="startAiWriteMode()"
+          >
+            🤖 AI 幫我寫觀察紀錄
+          </button>
+          <div id="ai-write-container" style="display: none"></div>
         </div>
 
         <!-- 簡短描述文字框（含 AI 即時引導） -->
@@ -1695,6 +1885,10 @@
         // 清空文字框
         document.getElementById("record-note").value = "";
 
+        // 重設 AI 幫我寫
+        document.getElementById("ai-write-btn").style.display = "flex";
+        document.getElementById("ai-write-container").style.display = "none";
+
         // 重置 AI 引導相關狀態（清除計時器、卡片、分析提示）
         if (typeof clearAllAiGuidance === "function") {
           clearAllAiGuidance();
@@ -1855,6 +2049,241 @@
 
       /* 目前顯示的卡片情境 ID */
       var currentCardScenarioId = null;
+
+      /* ============================================================
+         AI 幫我寫觀察紀錄 — 引導式問答系統
+         ============================================================ */
+
+      /* 根據觀察面向標籤，提供對應的引導問題 */
+      var AI_WRITE_QUESTIONS = {
+        default: [
+          "今天這位學生的整體表現如何？有什麼特別的觀察嗎？",
+          "跟上次比較，有沒有什麼變化或進步？",
+        ],
+        "💭 情緒狀態": [
+          "今天這位學生的情緒狀態如何？有沒有特別開心或不開心的時候？",
+          "情緒上跟之前比有什麼變化嗎？你覺得可能的原因是什麼？",
+        ],
+        "🏠 家庭狀況": [
+          "最近有沒有聽到或觀察到任何跟家庭相關的狀況？",
+          "這位學生在學校的行為有沒有反映出家庭的影響？",
+        ],
+        "👫 人際互動": [
+          "今天這位學生跟同學的互動如何？有沒有什麼特別的社交行為？",
+          "跟上次比，人際互動上有什麼變化嗎？",
+        ],
+        "📚 學習表現": [
+          "今天在課堂上的學習參與度如何？有沒有主動回答或提問？",
+          "學習上遇到什麼困難嗎？你覺得可以怎麼協助？",
+        ],
+        "📋 課堂參與": [
+          "今天在課堂活動中的參與程度如何？",
+          "跟之前比，課堂參與度有什麼變化？",
+        ],
+      };
+
+      /* 暫存使用者在引導問答中的回答 */
+      var aiWriteAnswers = [];
+      /* 暫存當前引導使用的問題清單 */
+      var aiWriteCurrentQuestions = [];
+
+      /* -------------------------------------------------------
+         啟動 AI 幫我寫模式
+         根據學生最近紀錄的標籤，選擇對應的引導問題
+         ------------------------------------------------------- */
+      function startAiWriteMode() {
+        /* 取得當前學生 */
+        var student = currentStudent;
+        if (!student) return;
+
+        /* 從 CASE_RECORDS 取得該學生最近一筆紀錄的標籤 */
+        var records = CASE_RECORDS[student.id] || [];
+        var recentTags =
+          records.length > 0 && records[0].tags ? records[0].tags : [];
+
+        /* 根據標籤收集對應的引導問題（去重） */
+        var questions = [];
+        var usedSet = {}; // 用來避免重複問題
+
+        for (var t = 0; t < recentTags.length; t++) {
+          var tag = recentTags[t];
+          /* 嘗試精確匹配 */
+          var matched = AI_WRITE_QUESTIONS[tag];
+          if (!matched) {
+            /* 嘗試模糊匹配（例如「👥 人際互動」匹配「👫 人際互動」） */
+            var tagText = tag.replace(/^.+?\s/, ""); // 去掉 emoji 前綴
+            for (var key in AI_WRITE_QUESTIONS) {
+              if (key !== "default" && key.indexOf(tagText) !== -1) {
+                matched = AI_WRITE_QUESTIONS[key];
+                break;
+              }
+            }
+          }
+          if (matched) {
+            for (var q = 0; q < matched.length; q++) {
+              if (!usedSet[matched[q]]) {
+                questions.push(matched[q]);
+                usedSet[matched[q]] = true;
+              }
+            }
+          }
+        }
+
+        /* 如果問題不足 3 題，用 default 問題補足 */
+        var defaults = AI_WRITE_QUESTIONS["default"];
+        for (var d = 0; d < defaults.length && questions.length < 3; d++) {
+          if (!usedSet[defaults[d]]) {
+            questions.push(defaults[d]);
+            usedSet[defaults[d]] = true;
+          }
+        }
+
+        /* 最多 3 題 */
+        if (questions.length > 3) {
+          questions = questions.slice(0, 3);
+        }
+
+        /* 初始化狀態 */
+        aiWriteCurrentQuestions = questions;
+        aiWriteAnswers = [];
+
+        /* 隱藏按鈕、顯示問答容器 */
+        document.getElementById("ai-write-btn").style.display = "none";
+        var container = document.getElementById("ai-write-container");
+        container.style.display = "block";
+        container.innerHTML = "";
+
+        /* 顯示第一題 */
+        showAiWriteQuestion(0);
+      }
+
+      /* -------------------------------------------------------
+         顯示第 idx 題問答卡片
+         包含 AI 頭像、問題、textarea、下一題/完成按鈕、略過按鈕
+         ------------------------------------------------------- */
+      function showAiWriteQuestion(idx) {
+        var container = document.getElementById("ai-write-container");
+        var total = aiWriteCurrentQuestions.length;
+
+        /* 如果已回答完所有問題，進入組合階段 */
+        if (idx >= total) {
+          composeAiWriteRecord();
+          return;
+        }
+
+        var question = aiWriteCurrentQuestions[idx];
+        var isLast = idx === total - 1;
+        var btnText = isLast ? "✅ 完成" : "下一題 →";
+
+        var html = '<div class="ai-write-flow">';
+        /* 題號提示 */
+        html +=
+          '<div class="ai-write-step">第 ' +
+          (idx + 1) +
+          " / " +
+          total +
+          " 題</div>";
+        /* AI 問題（頭像 + 氣泡） */
+        html += '<div class="ai-q">';
+        html += '<div class="ai-q-avatar">🤖</div>';
+        html += '<div class="ai-q-text">' + question + "</div>";
+        html += "</div>";
+        /* 文字輸入框 */
+        html +=
+          '<textarea id="ai-write-input-' +
+          idx +
+          '" placeholder="請輸入你的觀察..."></textarea>';
+        /* 按鈕列 */
+        html += '<div class="ai-write-actions">';
+        html +=
+          '<button class="btn-ai-next" onclick="submitAiWriteAnswer(' +
+          idx +
+          ')">' +
+          btnText +
+          "</button>";
+        html +=
+          '<button class="btn-ai-skip" onclick="submitAiWriteAnswer(' +
+          idx +
+          ', true)">略過</button>';
+        html += "</div>";
+        html += "</div>";
+
+        container.innerHTML = html;
+
+        /* 自動聚焦輸入框 */
+        var textarea = document.getElementById("ai-write-input-" + idx);
+        if (textarea) {
+          setTimeout(function () {
+            textarea.focus();
+          }, 100);
+        }
+      }
+
+      /* -------------------------------------------------------
+         提交第 idx 題的答案並前進到下一題
+         skip = true 表示略過此題
+         ------------------------------------------------------- */
+      function submitAiWriteAnswer(idx, skip) {
+        var textarea = document.getElementById("ai-write-input-" + idx);
+        var answer = "";
+
+        if (!skip && textarea) {
+          answer = textarea.value.trim();
+        }
+
+        /* 儲存答案（略過的題目存空字串） */
+        aiWriteAnswers[idx] = answer;
+
+        /* 前進到下一題 */
+        showAiWriteQuestion(idx + 1);
+      }
+
+      /* -------------------------------------------------------
+         組合所有回答，填入觀察描述文字框
+         模擬 AI 整理過程（1200ms 延遲）
+         ------------------------------------------------------- */
+      function composeAiWriteRecord() {
+        var container = document.getElementById("ai-write-container");
+
+        /* 顯示「AI 正在整理...」提示 */
+        container.innerHTML =
+          '<div class="ai-write-compose">🤖 AI 正在整理你的觀察紀錄...</div>';
+
+        setTimeout(function () {
+          /* 過濾掉空答案，用句號加換行連接 */
+          var parts = [];
+          for (var i = 0; i < aiWriteAnswers.length; i++) {
+            if (aiWriteAnswers[i]) {
+              parts.push(aiWriteAnswers[i]);
+            }
+          }
+          var combined = parts.join("。\n");
+
+          /* 填入 record-note textarea */
+          var noteEl = document.getElementById("record-note");
+          if (noteEl) {
+            noteEl.value = combined;
+            /* 觸發 input 事件，讓現有的關鍵字偵測能接手 */
+            var event;
+            if (typeof Event === "function") {
+              event = new Event("input", { bubbles: true });
+            } else {
+              /* IE 相容 */
+              event = document.createEvent("Event");
+              event.initEvent("input", true, true);
+            }
+            noteEl.dispatchEvent(event);
+          }
+
+          /* 顯示完成提示 */
+          container.innerHTML =
+            '<div class="ai-write-flow" style="text-align:center; padding:20px;">' +
+            '<div style="font-size:24px; margin-bottom:8px;">✅</div>' +
+            '<div style="font-size:15px; font-weight:600; color:#059669; margin-bottom:4px;">觀察紀錄已填入！</div>' +
+            '<div style="font-size:13px; color:#6b7280;">你可以在下方文字框中繼續編輯或補充</div>' +
+            "</div>";
+        }, 1200);
+      }
 
       /* debounce 計時器（用來延遲 800ms 才顯示卡片） */
       var aiDebounceTimer = null;
