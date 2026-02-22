@@ -756,80 +756,257 @@
       }
 
       /* ------------------------------------------
-       * Stage2 元件：第二站 — 行為轉譯 & AI 追問
-       * - 左側：志工課後日誌 + AI 轉譯結果
-       * - 右側：AI 成長教練對話 + 回答選項
-       * - 回答後解鎖成長指標與成就勳章
+       * Stage2 元件：第二站 — AI 深度引導 & 行為定義
+       *
+       * 多輪對話流程：
+       *   1. AI 讀取日誌 → 識別關鍵行為標籤
+       *   2. AI 針對「決策點」追問 → 用戶選擇 → AI 命名策略
+       *   3. AI 針對「回饋方式」追問 → 用戶選擇 → AI 命名技巧
+       *   4. AI 綜合產出「能力快照」→ 成長指標 + 成就勳章
+       *
+       * step 對照表：
+       *   0: 頁面初始          4: 用戶答 Q1 + AI 思考中
+       *   1: AI 轉譯中         5: AI 回應 1 + 定義框 + Q2
+       *   2: 轉譯完成/標籤     6: 用戶答 Q2 + AI 思考中
+       *   3: Q1 出現           7: AI 回應 2 + 定義框
+       *                        8: 能力快照合成
+       *                        9: 指標 + 勳章 + 前進按鈕
        * ------------------------------------------ */
       function Stage2({ onNext }) {
-        // === 狀態管理 ===
-        const [translating, setTranslating] = useState(false); // AI 正在轉譯中
-        const [translated, setTranslated] = useState(false); // 轉譯完成
-        const [answered, setAnswered] = useState(false); // 使用者已回答
-        const [selectedAnswer, setSelectedAnswer] = useState(""); // 選了哪個回答
-        const [showGrowth, setShowGrowth] = useState(false); // 顯示成長指標
-        const [showBadge, setShowBadge] = useState(false); // 顯示勳章解鎖
-        const [aiQuestionVisible, setAiQuestionVisible] = useState(false); // AI 問題是否可見
+        // step 控制整個對話進度（見上方對照表）
+        const [step, setStep] = useState(0);
+        // 記錄兩輪問答用戶選了哪個選項（0 或 1）
+        const [q1Pick, setQ1Pick] = useState(null);
+        const [q2Pick, setQ2Pick] = useState(null);
 
-        // 用 ref 收集所有 timeout，方便清理避免記憶體洩漏
+        // 收集所有 setTimeout id，元件卸載時統一清除
         const timersRef = useRef([]);
+        // 對話區底部錨點，用來自動捲動
+        const chatEndRef = useRef(null);
 
-        // === 自動觸發序列：日誌顯示 → AI 轉譯 → 標籤出現 → AI 提問 ===
+        // 每次 step 變化 → 自動捲到對話最下方
         useEffect(() => {
-          // 500ms 後開始轉譯動畫
-          const t1 = setTimeout(() => setTranslating(true), 500);
-          // 再過 2000ms 轉譯完成
-          const t2 = setTimeout(() => {
-            setTranslated(true);
-            setTranslating(false);
-          }, 2500);
-          // 再過 500ms 顯示 AI 問題
-          const t3 = setTimeout(() => setAiQuestionVisible(true), 3000);
+          if (chatEndRef.current) {
+            chatEndRef.current.scrollIntoView({
+              behavior: "smooth",
+              block: "end",
+            });
+          }
+        }, [step]);
 
+        // === 自動觸發序列：初始化 → 轉譯 → 標籤 → Q1 ===
+        useEffect(() => {
+          const t1 = setTimeout(() => setStep(1), 500);
+          const t2 = setTimeout(() => setStep(2), 2500);
+          const t3 = setTimeout(() => setStep(3), 3500);
           timersRef.current = [t1, t2, t3];
-
-          // 清理：元件卸載時清除所有 timeout
-          return () => {
-            timersRef.current.forEach(clearTimeout);
-          };
+          return () => timersRef.current.forEach(clearTimeout);
         }, []);
 
-        /**
-         * handleAnswer：使用者點選回答選項
-         * 觸發後續動畫：回答泡泡 → 成長指標飛入 → 勳章解鎖
-         */
-        const handleAnswer = useCallback((answer) => {
-          setSelectedAnswer(answer);
-          setAnswered(true);
-
-          // 600ms 後顯示成長指標
-          const t4 = setTimeout(() => setShowGrowth(true), 600);
-          // 1200ms 後顯示勳章
-          const t5 = setTimeout(() => setShowBadge(true), 1200);
-
-          timersRef.current.push(t4, t5);
+        // Q1 回答：用戶泡泡 → AI 思考 → AI 回應 + 定義 + Q2
+        const handleQ1 = useCallback((idx) => {
+          setQ1Pick(idx);
+          setStep(4);
+          const t = setTimeout(() => setStep(5), 1500);
+          timersRef.current.push(t);
         }, []);
 
-        // AI 追問的兩個回答選項
-        const answerOptions = [
-          "我先讓自己冷靜，再想別的方法引導他們",
-          "我請其他志工幫忙分開他們",
-        ];
+        // Q2 回答：用戶泡泡 → AI 思考 → AI 回應 + 定義 → 合成 → 指標
+        const handleQ2 = useCallback((idx) => {
+          setQ2Pick(idx);
+          setStep(6);
+          const t1 = setTimeout(() => setStep(7), 1500);
+          const t2 = setTimeout(() => setStep(8), 3500);
+          const t3 = setTimeout(() => setStep(9), 5500);
+          timersRef.current.push(t1, t2, t3);
+        }, []);
 
-        // 轉譯結果的三個標籤
-        const translationTags = [
+        /* === 對話資料 === */
+
+        const TAGS = [
           { label: "✅ 衝突解決", delay: "0s" },
           { label: "✅ 情緒管理", delay: "0.15s" },
           { label: "✅ 引導能力", delay: "0.3s" },
         ];
 
+        // Q1：針對「決策判斷」追問
+        const Q1 = {
+          text: "我注意到一個關鍵決策——你在衝突當下選擇「先讓他們冷靜、分開坐」，而不是馬上介入調解。這個判斷很重要。是什麼讓你在當下做出這個選擇？",
+          options: [
+            "他們情緒太激動了，我覺得直接講道理一定聽不進去",
+            "之前試過直接勸架但效果不好，這次想先讓他們降溫",
+          ],
+          responses: [
+            "你在沒有受過專業訓練的情況下，直覺做到了輔導工作者的核心原則——先處理情緒，再處理問題。",
+            "你沒有盲目重複過去的做法，而是從經驗中修正策略。這種「做了、反思、調整」的循環非常有價值。",
+          ],
+          definitions: [
+            {
+              term: "情緒優先策略",
+              en: "Emotion-First Approach",
+              desc: "當事人處於高情緒狀態時，理性溝通效果極低。專業做法是：先降溫（冷靜）→ 再分離（減少刺激）→ 最後對話（理性處理）。阿明今天完整走了這三步。",
+            },
+            {
+              term: "反思性實踐",
+              en: "Reflective Practice",
+              desc: "不只是「做」，而是「做 → 觀察結果 → 調整做法」的循環。這是資深社工與新手最大的差異——能從每次服務中持續學習與改進。",
+            },
+          ],
+        };
+
+        // Q2：針對「回饋方式」追問
+        const Q2 = {
+          text: "接下來看另一個關鍵時刻：小明後來主動向小強道歉了。在他做出這個舉動的前後，你有給他任何回饋嗎？",
+          options: [
+            "我跟他說「你願意道歉需要很大的勇氣，老師覺得你很棒」",
+            "我沒有特別說什麼，但有對他微笑點頭",
+          ],
+          responses: [
+            "你的回饋方式有一個亮點——你肯定的是「道歉的勇氣」（過程），而不只是「有道歉」（結果）。這讓小明知道被看見的是他的努力。",
+            "有時候不說話反而是最好的回應。你用肢體語言傳達了接納，沒有讓回饋變成壓力，反而給了小明自主成長的空間。",
+          ],
+          definitions: [
+            {
+              term: "具體正向回饋",
+              en: "Specific Positive Feedback",
+              desc: "「很棒」是模糊回饋；「你願意道歉需要勇氣」是具體回饋。具體回饋讓對方明確知道「什麼行為被看見了」，更有效地強化正向行為與內在動機。",
+            },
+            {
+              term: "非語言肯定",
+              en: "Non-verbal Affirmation",
+              desc: "微笑、點頭、眼神接觸等非語言訊號，能在不製造壓力的情況下傳達「我看見你了」。對青少年特別有效——他們敏感於被評價，但渴望被看見。",
+            },
+          ],
+        };
+
+        /* === 輔助渲染元件 === */
+
+        function AiBubble({ children }) {
+          return (
+            <div className="flex justify-start mb-3 animate-fade-in">
+              <div
+                className="relative rounded-2xl px-4 py-3 chat-bubble-left"
+                style={{
+                  backgroundColor: COLORS.brandBright,
+                  color: "#FFFFFF",
+                  maxWidth: "92%",
+                }}
+              >
+                <div className="text-sm leading-relaxed">{children}</div>
+              </div>
+            </div>
+          );
+        }
+
+        function UserBubble({ text }) {
+          return (
+            <div className="flex justify-end mb-3 animate-fade-in">
+              <div
+                className="relative rounded-2xl px-4 py-3 chat-bubble-right"
+                style={{
+                  backgroundColor: COLORS.warmBright,
+                  color: "#FFFFFF",
+                  maxWidth: "85%",
+                }}
+              >
+                <p className="text-sm leading-relaxed">{text}</p>
+              </div>
+            </div>
+          );
+        }
+
+        function TypingDots() {
+          return (
+            <div className="flex justify-start mb-3 animate-fade-in">
+              <div
+                className="rounded-2xl px-4 py-3"
+                style={{ backgroundColor: "#E0F2F1" }}
+              >
+                <div className="bouncing-dots">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        function DefinitionCard({ term, en, desc }) {
+          return (
+            <div
+              className="rounded-xl p-4 mb-3 animate-scale-in"
+              style={{
+                background: "linear-gradient(135deg, #EFF6FF 0%, #F0F9FF 100%)",
+                border: "1px solid #BFDBFE",
+              }}
+            >
+              <div className="flex items-start gap-2 mb-2">
+                <span style={{ fontSize: "18px" }}>💡</span>
+                <div>
+                  <span
+                    className="font-bold text-sm"
+                    style={{ color: COLORS.brandDeep }}
+                  >
+                    {term}
+                  </span>
+                  <span className="text-xs ml-1.5" style={{ color: "#64748B" }}>
+                    {en}
+                  </span>
+                </div>
+              </div>
+              <p
+                className="text-xs leading-relaxed ml-7"
+                style={{ color: "#475569" }}
+              >
+                {desc}
+              </p>
+            </div>
+          );
+        }
+
+        function OptionGroup({ options, onSelect }) {
+          return (
+            <div
+              className="flex flex-col gap-2 mb-3 animate-fade-in"
+              style={{ animationDelay: "0.3s" }}
+            >
+              <p className="text-xs mb-1" style={{ color: "#94A3B8" }}>
+                選擇最接近你的做法：
+              </p>
+              {options.map((text, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => onSelect(idx)}
+                  className="text-left px-4 py-3 rounded-xl text-sm font-medium
+                             transition-all duration-200 cursor-pointer"
+                  style={{
+                    border: `1.5px solid ${COLORS.brandBright}`,
+                    color: COLORS.brandBright,
+                    backgroundColor: "#FFFFFF",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#E0F2F1";
+                    e.currentTarget.style.transform = "translateX(4px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "#FFFFFF";
+                    e.currentTarget.style.transform = "translateX(0)";
+                  }}
+                >
+                  {text}
+                </button>
+              ))}
+            </div>
+          );
+        }
+
+        /* === 畫面渲染 === */
         return (
           <div className="max-w-5xl mx-auto px-4 py-8 stage-enter">
-            {/* 雙欄布局：左側日誌、右側 AI 對話 */}
             <div className="flex flex-col lg:flex-row gap-8">
-              {/* ====== 左側：課後日誌區 ====== */}
+              {/* ====== 左側：日誌 + 轉譯 + 能力快照 ====== */}
               <div className="lg:w-1/2">
-                {/* 標題 */}
                 <h2
                   className="text-xl font-bold mb-1"
                   style={{ color: COLORS.titleDark }}
@@ -840,7 +1017,7 @@
                   第 8 週 — 2026/02/18
                 </p>
 
-                {/* 日誌卡片：暖黃色背景，模擬手寫感 */}
+                {/* 日誌卡片 */}
                 <div
                   className="rounded-xl p-6 mb-4"
                   style={{ backgroundColor: "#FFFBEB" }}
@@ -858,13 +1035,13 @@
                   </p>
                 </div>
 
-                {/* 轉譯區域 */}
-                {translating && (
+                {/* AI 轉譯中 */}
+                {step === 1 && (
                   <div
                     className="flex items-center text-sm animate-fade-in"
                     style={{ color: COLORS.brandBright }}
                   >
-                    <span>🔄 AI 轉譯中</span>
+                    <span>🔄 AI 正在讀取日誌</span>
                     <div className="bouncing-dots">
                       <span></span>
                       <span></span>
@@ -873,114 +1050,118 @@
                   </div>
                 )}
 
-                {/* 轉譯結果：三個能力標籤 */}
-                {translated && (
-                  <div className="flex flex-wrap gap-2 animate-fade-in">
-                    {translationTags.map((tag) => (
-                      <span
-                        key={tag.label}
-                        className="inline-block px-3 py-1.5 rounded-full text-sm font-medium animate-scale-in"
-                        style={{
-                          backgroundColor: "#E0F2F1",
-                          color: "#00695C",
-                          animationDelay: tag.delay,
-                        }}
-                      >
-                        {tag.label}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* ====== 右側：AI 成長教練對話區 ====== */}
-              <div className="lg:w-1/2">
-                {/* 標題 */}
-                <h2
-                  className="text-xl font-bold mb-4"
-                  style={{ color: COLORS.titleDark }}
-                >
-                  🤖 AI 成長教練
-                </h2>
-
-                {/* 對話區域 */}
-                <div
-                  className="rounded-xl p-6"
-                  style={{
-                    backgroundColor: "#f0faf9",
-                    minHeight: "320px",
-                  }}
-                >
-                  {/* AI 問題泡泡（左對齊，品牌藍底白字） */}
-                  {aiQuestionVisible && (
-                    <div className="flex justify-start mb-4 animate-fade-in">
-                      <div
-                        className="relative rounded-2xl px-4 py-3 max-w-xs chat-bubble-left"
-                        style={{
-                          backgroundColor: COLORS.brandBright,
-                          color: "#FFFFFF",
-                        }}
-                      >
-                        <p className="text-sm leading-relaxed">
-                          阿明，面對這種挫折，你是如何調整策略的？
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* 回答選項按鈕（AI 問題出現後才顯示） */}
-                  {aiQuestionVisible && !answered && (
-                    <div
-                      className="flex flex-col gap-2 mt-4 animate-fade-in"
-                      style={{ animationDelay: "0.3s" }}
+                {/* 轉譯結果標籤 */}
+                {step >= 2 && (
+                  <div>
+                    <p
+                      className="text-xs mb-2 animate-fade-in"
+                      style={{ color: "#94A3B8" }}
                     >
-                      {answerOptions.map((option) => (
-                        <button
-                          key={option}
-                          onClick={() => handleAnswer(option)}
-                          className="text-left px-4 py-3 rounded-xl text-sm font-medium
-                                     transition-all duration-200 cursor-pointer"
+                      AI 識別到以下行為能力：
+                    </p>
+                    <div className="flex flex-wrap gap-2 animate-fade-in">
+                      {TAGS.map((tag) => (
+                        <span
+                          key={tag.label}
+                          className="inline-block px-3 py-1.5 rounded-full text-sm font-medium animate-scale-in"
                           style={{
-                            border: `1.5px solid ${COLORS.brandBright}`,
-                            color: COLORS.brandBright,
-                            backgroundColor: "#FFFFFF",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = "#E0F2F1";
-                            e.currentTarget.style.transform = "translateX(4px)";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = "#FFFFFF";
-                            e.currentTarget.style.transform = "translateX(0)";
+                            backgroundColor: "#E0F2F1",
+                            color: "#00695C",
+                            animationDelay: tag.delay,
                           }}
                         >
-                          {option}
-                        </button>
+                          {tag.label}
+                        </span>
                       ))}
                     </div>
-                  )}
+                  </div>
+                )}
 
-                  {/* 使用者的回答泡泡（右對齊，暖橘底白字） */}
-                  {answered && (
-                    <div className="flex justify-end mb-4 animate-fade-in">
-                      <div
-                        className="relative rounded-2xl px-4 py-3 max-w-xs chat-bubble-right"
-                        style={{
-                          backgroundColor: COLORS.warmBright,
-                          color: "#FFFFFF",
-                        }}
+                {/* 能力快照合成卡片（step >= 8） */}
+                {step >= 8 && (
+                  <div
+                    className="mt-6 rounded-xl p-5 animate-fade-in-up"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #ECFDF5 0%, #F0FDFA 100%)",
+                      border: "1.5px solid #A7F3D0",
+                    }}
+                  >
+                    <h3
+                      className="text-base font-bold mb-3"
+                      style={{ color: COLORS.brandDeep }}
+                    >
+                      🎯 阿明的今日能力快照
+                    </h3>
+                    <div className="mb-3">
+                      <p
+                        className="text-xs font-semibold mb-1"
+                        style={{ color: "#64748B" }}
                       >
-                        <p className="text-sm leading-relaxed">
-                          {selectedAnswer}
-                        </p>
+                        識別能力
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {["衝突解決", "情緒管理", "引導能力"].map((s) => (
+                          <span
+                            key={s}
+                            className="px-2.5 py-1 rounded-full text-xs font-medium"
+                            style={{
+                              backgroundColor: "#E0F2F1",
+                              color: "#00695C",
+                            }}
+                          >
+                            {s}
+                          </span>
+                        ))}
                       </div>
                     </div>
-                  )}
+                    <div className="mb-3">
+                      <p
+                        className="text-xs font-semibold mb-1"
+                        style={{ color: "#64748B" }}
+                      >
+                        展現策略
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
+                        <span
+                          className="px-2.5 py-1 rounded-full text-xs font-medium"
+                          style={{
+                            backgroundColor: "#DBEAFE",
+                            color: "#1E40AF",
+                          }}
+                        >
+                          {q1Pick !== null ? Q1.definitions[q1Pick].term : "—"}
+                        </span>
+                        <span
+                          className="px-2.5 py-1 rounded-full text-xs font-medium"
+                          style={{
+                            backgroundColor: "#DBEAFE",
+                            color: "#1E40AF",
+                          }}
+                        >
+                          {q2Pick !== null ? Q2.definitions[q2Pick].term : "—"}
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <p
+                        className="text-xs font-semibold mb-1"
+                        style={{ color: "#64748B" }}
+                      >
+                        底層特質
+                      </p>
+                      <p className="text-xs" style={{ color: "#475569" }}>
+                        同理心 · 適應力 · 反思能力
+                      </p>
+                    </div>
+                  </div>
+                )}
 
-                  {/* 成長指標卡片（從右側滑入） */}
-                  {showGrowth && (
+                {/* 成長指標 + 勳章（step >= 9） */}
+                {step >= 9 && (
+                  <div className="mt-4 flex flex-col gap-2">
                     <div
-                      className="rounded-xl px-4 py-3 mb-3 animate-slide-in-right"
+                      className="rounded-xl px-4 py-3 animate-slide-in-right"
                       style={{
                         backgroundColor: "#FFF7ED",
                         border: "1px solid #FED7AA",
@@ -988,23 +1169,17 @@
                     >
                       <p
                         className="text-sm font-semibold"
-                        style={{
-                          color: "#C2410C",
-                          fontFamily: '"Inter", "Noto Sans TC", sans-serif',
-                        }}
+                        style={{ color: "#C2410C" }}
                       >
                         📈 韌性指標 ↑ 15%
                       </p>
                     </div>
-                  )}
-
-                  {/* 成就勳章卡片（縮放彈入 + 金色邊框） */}
-                  {showBadge && (
                     <div
                       className="rounded-xl px-4 py-3 animate-scale-in"
                       style={{
                         backgroundColor: "#FFFBEB",
                         border: "2px solid #FCD34D",
+                        animationDelay: "0.3s",
                       }}
                     >
                       <p
@@ -1014,13 +1189,96 @@
                         🏅 解鎖成就：逆境調適者
                       </p>
                     </div>
+                  </div>
+                )}
+              </div>
+
+              {/* ====== 右側：AI 多輪對話區 ====== */}
+              <div className="lg:w-1/2">
+                <h2
+                  className="text-xl font-bold mb-4"
+                  style={{ color: COLORS.titleDark }}
+                >
+                  🤖 AI 成長教練
+                </h2>
+
+                {/* 對話容器（可捲動） */}
+                <div
+                  className="rounded-xl p-4"
+                  style={{
+                    backgroundColor: "#F8FAFC",
+                    maxHeight: "600px",
+                    overflowY: "auto",
+                  }}
+                >
+                  {/* ── 第一輪：Q1 ── */}
+                  {step >= 3 && (
+                    <AiBubble>
+                      <p>阿明，我讀完你的日誌了 📖</p>
+                      <p className="mt-2">{Q1.text}</p>
+                    </AiBubble>
                   )}
+                  {step === 3 && (
+                    <OptionGroup options={Q1.options} onSelect={handleQ1} />
+                  )}
+                  {step >= 4 && q1Pick !== null && (
+                    <UserBubble text={Q1.options[q1Pick]} />
+                  )}
+                  {step === 4 && <TypingDots />}
+
+                  {/* AI 回應 1 + 專業定義框 */}
+                  {step >= 5 && q1Pick !== null && (
+                    <>
+                      <AiBubble>{Q1.responses[q1Pick]}</AiBubble>
+                      <DefinitionCard {...Q1.definitions[q1Pick]} />
+                    </>
+                  )}
+
+                  {/* ── 第二輪：Q2 ── */}
+                  {step >= 5 && <AiBubble>{Q2.text}</AiBubble>}
+                  {step === 5 && (
+                    <OptionGroup options={Q2.options} onSelect={handleQ2} />
+                  )}
+                  {step >= 6 && q2Pick !== null && (
+                    <UserBubble text={Q2.options[q2Pick]} />
+                  )}
+                  {step === 6 && <TypingDots />}
+
+                  {/* AI 回應 2 + 專業定義框 */}
+                  {step >= 7 && q2Pick !== null && (
+                    <>
+                      <AiBubble>{Q2.responses[q2Pick]}</AiBubble>
+                      <DefinitionCard {...Q2.definitions[q2Pick]} />
+                    </>
+                  )}
+
+                  {/* ── AI 綜合結語 ── */}
+                  {step >= 8 && (
+                    <AiBubble>
+                      <p>
+                        ✨ 阿明，我幫你整理好了「今日能力快照」——你用了
+                        <strong>
+                          「{q1Pick !== null ? Q1.definitions[q1Pick].term : ""}
+                          」
+                        </strong>
+                        處理衝突，再用
+                        <strong>
+                          「{q2Pick !== null ? Q2.definitions[q2Pick].term : ""}
+                          」
+                        </strong>
+                        鞏固關係。看左邊的快照，你今天的表現已經被轉化為可追蹤的職場能力了！
+                      </p>
+                    </AiBubble>
+                  )}
+
+                  {/* 自動捲動錨點 */}
+                  <div ref={chatEndRef} />
                 </div>
               </div>
             </div>
 
-            {/* 底部導覽：回答後才顯示前進按鈕 */}
-            {answered && (
+            {/* 底部前進按鈕 */}
+            {step >= 9 && (
               <div
                 className="flex justify-center mt-10 animate-fade-in-up"
                 style={{ animationDelay: "0.2s" }}
