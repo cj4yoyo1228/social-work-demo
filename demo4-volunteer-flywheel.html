@@ -220,6 +220,84 @@
         border-left: 6px solid #f97316;
       }
 
+      /* === Toast 淡入淡出動畫 === */
+      @keyframes toastFadeIn {
+        from {
+          opacity: 0;
+          transform: translate(-50%, 20px);
+        }
+        to {
+          opacity: 1;
+          transform: translate(-50%, 0);
+        }
+      }
+
+      @keyframes toastFadeOut {
+        from {
+          opacity: 1;
+          transform: translate(-50%, 0);
+        }
+        to {
+          opacity: 0;
+          transform: translate(-50%, 20px);
+        }
+      }
+
+      .toast-enter {
+        animation: toastFadeIn 0.3s ease-out forwards;
+      }
+
+      .toast-exit {
+        animation: toastFadeOut 0.3s ease-out forwards;
+      }
+
+      /* === 生成進度條動畫 === */
+      .animate-generating-progress {
+        animation: progressBar 3s linear forwards;
+      }
+
+      /* === 證書角落裝飾 === */
+      .certificate-frame {
+        position: relative;
+      }
+
+      .certificate-frame::before,
+      .certificate-frame::after {
+        content: "✦";
+        position: absolute;
+        font-size: 18px;
+        color: #d97706;
+        opacity: 0.6;
+      }
+
+      .certificate-frame::before {
+        top: 12px;
+        left: 16px;
+      }
+
+      .certificate-frame::after {
+        top: 12px;
+        right: 16px;
+      }
+
+      .certificate-corner-bl,
+      .certificate-corner-br {
+        position: absolute;
+        font-size: 18px;
+        color: #d97706;
+        opacity: 0.6;
+      }
+
+      .certificate-corner-bl {
+        bottom: 12px;
+        left: 16px;
+      }
+
+      .certificate-corner-br {
+        bottom: 12px;
+        right: 16px;
+      }
+
       /* === 階段轉場效果 === */
       .stage-enter {
         animation: fadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
@@ -374,6 +452,9 @@
        * - 包含返回首頁連結、進度指示器、標題
        * ------------------------------------------ */
       function TopNav({ currentStage, onStageClick }) {
+        // 當 currentStage === 4（證書頁），進度列視為第 3 站完成，全部顯示完成
+        const displayStage = currentStage === 4 ? 4 : currentStage;
+
         return (
           <nav
             className="sticky top-0 z-50 bg-white shadow-sm"
@@ -393,10 +474,13 @@
               {/* 中間：進度指示器 */}
               <div className="flex items-center gap-1">
                 {STAGES.map((stage, index) => {
-                  // 判斷圓點狀態：已完成 / 當前 / 未到
-                  const isCompleted = stage.id < currentStage;
-                  const isCurrent = stage.id === currentStage;
-                  const isPending = stage.id > currentStage;
+                  // 當在第 4 站（證書頁），所有 3 站都顯示為已完成（不顯示 current）
+                  const isCompleted =
+                    displayStage === 4 ? true : stage.id < currentStage;
+                  const isCurrent =
+                    displayStage === 4 ? false : stage.id === currentStage;
+                  const isPending =
+                    displayStage === 4 ? false : stage.id > currentStage;
 
                   return (
                     <React.Fragment key={stage.id}>
@@ -1193,15 +1277,102 @@
        * - 右側：行為證跡卡片 + 成就摘要 + 數據亮點
        * - 底部：下載數位履歷按鈕
        * ------------------------------------------ */
-      function Stage3({ onDownload }) {
+      function Stage3({ onDownload, showToast }) {
         // 當前選中的雷達圖頂點（null 表示沒選）
         const [selectedVertex, setSelectedVertex] = useState(null);
+        // 是否正在生成數位履歷（顯示 overlay）
+        const [generating, setGenerating] = useState(false);
+        // 進度文字索引（0, 1, 2）
+        const [progressTextIndex, setProgressTextIndex] = useState(0);
+
+        // 生成過程中的進度文字
+        const progressTexts = [
+          "整理能力數據...",
+          "匹配職場標準...",
+          "產出認證報告...",
+        ];
+
+        // 生成動畫的計時器：每秒切換進度文字，3 秒後觸發 onDownload
+        useEffect(() => {
+          if (!generating) return;
+
+          // 每秒切換進度文字
+          const textInterval = setInterval(() => {
+            setProgressTextIndex((prev) => Math.min(prev + 1, 2));
+          }, 1000);
+
+          // 3 秒後觸發跳轉到證書頁
+          const finishTimer = setTimeout(() => {
+            setGenerating(false);
+            onDownload();
+          }, 3000);
+
+          return () => {
+            clearInterval(textInterval);
+            clearTimeout(finishTimer);
+          };
+        }, [generating, onDownload]);
+
+        /**
+         * handleDownloadClick：點擊下載按鈕
+         * 不直接跳轉，而是先顯示生成 overlay
+         */
+        const handleDownloadClick = useCallback(() => {
+          setGenerating(true);
+          setProgressTextIndex(0);
+        }, []);
 
         // 取得選中頂點對應的行為證跡
         const evidence = selectedVertex ? RADAR_EVIDENCE[selectedVertex] : null;
 
         return (
           <div className="max-w-6xl mx-auto px-4 py-8 stage-enter">
+            {/* === 生成中 Overlay === */}
+            {generating && (
+              <div
+                className="fixed inset-0 z-50 flex items-center justify-center animate-fade-in"
+                style={{
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  backdropFilter: "blur(4px)",
+                }}
+              >
+                <div
+                  className="bg-white rounded-2xl p-8 shadow-2xl max-w-md w-full mx-4 text-center animate-scale-in"
+                  style={{ animationDelay: "0s" }}
+                >
+                  {/* 標題 */}
+                  <h3
+                    className="text-xl font-bold mb-6"
+                    style={{ color: COLORS.titleDark }}
+                  >
+                    🔄 正在生成您的數位履歷...
+                  </h3>
+
+                  {/* 進度條軌道 */}
+                  <div
+                    className="h-3 rounded-full mb-4"
+                    style={{ backgroundColor: "#E5E7EB" }}
+                  >
+                    {/* 進度條填充（3 秒線性動畫） */}
+                    <div
+                      className="h-3 rounded-full animate-generating-progress"
+                      style={{
+                        background: `linear-gradient(90deg, ${COLORS.brandDeep}, ${COLORS.brandBright})`,
+                      }}
+                    />
+                  </div>
+
+                  {/* 動態進度文字 */}
+                  <p
+                    className="text-sm font-medium"
+                    style={{ color: "#64748B" }}
+                  >
+                    {progressTexts[progressTextIndex]}
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* 雙欄布局：左側雷達圖、右側數位履歷 */}
             <div className="flex flex-col lg:flex-row gap-8">
               {/* ====== 左側：雷達能力圖 ====== */}
@@ -1347,10 +1518,10 @@
               </div>
             </div>
 
-            {/* 底部 CTA：下載數位履歷按鈕 */}
+            {/* 底部 CTA：下載數位履歷按鈕（點擊後先顯示生成 overlay） */}
             <div className="flex justify-center mt-10">
               <button
-                onClick={onDownload}
+                onClick={handleDownloadClick}
                 className="w-full max-w-xl px-8 py-4 rounded-xl text-white font-semibold text-lg
                            hover:shadow-lg transition-all duration-300 cursor-pointer"
                 style={{
@@ -1373,15 +1544,321 @@
       }
 
       /* ------------------------------------------
+       * Toast 元件：全域提示通知
+       * - 固定在頁面底部中央
+       * - 深灰底白字，自動淡入淡出
+       * Props:
+       *   message: 顯示的訊息文字
+       *   visible: 是否可見
+       * ------------------------------------------ */
+      function Toast({ message, visible }) {
+        // 控制是否真正渲染（用於淡出動畫結束後才移除 DOM）
+        const [shouldRender, setShouldRender] = useState(false);
+        // 控制動畫 class（enter / exit）
+        const [animClass, setAnimClass] = useState("");
+
+        useEffect(() => {
+          if (visible && message) {
+            // 顯示 toast：立即渲染並播放淡入動畫
+            setShouldRender(true);
+            setAnimClass("toast-enter");
+          } else if (shouldRender) {
+            // 隱藏 toast：播放淡出動畫，300ms 後移除 DOM
+            setAnimClass("toast-exit");
+            const timer = setTimeout(() => setShouldRender(false), 300);
+            return () => clearTimeout(timer);
+          }
+        }, [visible, message]);
+
+        if (!shouldRender) return null;
+
+        return (
+          <div
+            className={`fixed bottom-8 z-50 ${animClass}`}
+            style={{
+              left: "50%",
+            }}
+          >
+            <div
+              className="px-6 py-3 rounded-lg shadow-lg"
+              style={{
+                backgroundColor: "#1F2937",
+                color: "#FFFFFF",
+                whiteSpace: "nowrap",
+              }}
+            >
+              <p className="text-sm font-medium">{message}</p>
+            </div>
+          </div>
+        );
+      }
+
+      /* ------------------------------------------
+       * CertificateView 元件：狀態 4 — 數位能力認證書
+       * - 正式證書版面，模擬 A4 證書風格
+       * - 包含雷達圖、技能進度條、行動按鈕
+       * Props:
+       *   onRestart: 重新體驗的回調
+       *   showToast: 顯示 toast 通知的函式
+       * ------------------------------------------ */
+      function CertificateView({ onRestart, showToast }) {
+        /**
+         * getSkillBarColor：根據分數回傳進度條顏色
+         * 高分 (>=85) = 品牌藍，中等 (70-84) = 暖橘，低分 (<70) = 灰色
+         */
+        const getSkillBarColor = useCallback((score) => {
+          if (score >= 85) return COLORS.brandBright;
+          if (score >= 70) return COLORS.warmBright;
+          return "#9CA3AF";
+        }, []);
+
+        // 計算綜合平均分
+        const avgScore = Math.round(
+          RADAR_VALUES.reduce((sum, v) => sum + v, 0) / RADAR_VALUES.length,
+        );
+
+        return (
+          <div className="max-w-3xl mx-auto px-4 py-10 stage-enter">
+            {/* === 證書外框 === */}
+            <div
+              className="certificate-frame bg-white rounded-2xl shadow-2xl overflow-hidden"
+              style={{ border: "2px solid #2563EB" }}
+            >
+              {/* 角落裝飾：左下、右下 */}
+              <span className="certificate-corner-bl">✦</span>
+              <span className="certificate-corner-br">✦</span>
+
+              {/* === A) 頂部：證書標頭 === */}
+              <div
+                className="text-center py-6 rounded-t-2xl"
+                style={{
+                  background: `linear-gradient(135deg, ${COLORS.brandDeep}, ${COLORS.brandBright})`,
+                }}
+              >
+                <p className="text-lg font-bold text-white mb-1">
+                  永齡希望小學
+                </p>
+                <h1
+                  className="text-2xl font-black tracking-wider text-white"
+                  style={{ letterSpacing: "0.15em" }}
+                >
+                  數位能力認證標章
+                </h1>
+              </div>
+
+              {/* 金色裝飾線 */}
+              <div
+                className="h-1"
+                style={{
+                  background:
+                    "linear-gradient(90deg, #FCD34D, #F59E0B, #D97706, #F59E0B, #FCD34D)",
+                }}
+              />
+
+              {/* === B) 個人資訊區 === */}
+              <div className="text-center py-8">
+                {/* 圓形頭像佔位 */}
+                <div
+                  className="mx-auto mb-4 flex items-center justify-center rounded-full"
+                  style={{
+                    width: "80px",
+                    height: "80px",
+                    background: `linear-gradient(135deg, #60A5FA, ${COLORS.brandDeep})`,
+                  }}
+                >
+                  <span className="text-white font-bold text-lg">阿明</span>
+                </div>
+
+                {/* 姓名 */}
+                <h2
+                  className="text-xl font-bold mb-1"
+                  style={{ color: COLORS.titleDark }}
+                >
+                  志工 陳阿明
+                </h2>
+
+                {/* 服務摘要 */}
+                <p className="text-sm" style={{ color: "#94A3B8" }}>
+                  2025 年秋季學期 ∣ 18 週服務 ∣ 累計 216 小時
+                </p>
+              </div>
+
+              {/* === C) 核心區：職場競爭力報告 === */}
+              <div className="px-6 md:px-10 pb-8">
+                {/* 報告標題 */}
+                <div className="text-center mb-6">
+                  <h3
+                    className="text-lg font-bold inline-block pb-1"
+                    style={{
+                      color: COLORS.titleDark,
+                      borderBottom: `3px solid ${COLORS.brandBright}`,
+                    }}
+                  >
+                    職場競爭力報告
+                  </h3>
+                </div>
+
+                {/* 雙欄：左雷達圖 + 右技能進度條 */}
+                <div className="flex flex-col md:flex-row items-center gap-6">
+                  {/* 左側：小型雷達圖（無互動） */}
+                  <div className="flex-shrink-0">
+                    <RadarChart
+                      values={RADAR_VALUES}
+                      labels={RADAR_SKILLS}
+                      onVertexClick={() => {}}
+                      selectedVertex={null}
+                      size={200}
+                    />
+                  </div>
+
+                  {/* 右側：五項技能進度條 */}
+                  <div className="flex-1 w-full space-y-3">
+                    {RADAR_SKILLS.map((skill, index) => {
+                      const score = RADAR_VALUES[index];
+                      const barColor = getSkillBarColor(score);
+
+                      return (
+                        <div key={skill}>
+                          {/* 技能名稱和分數 */}
+                          <div className="flex justify-between items-center mb-1">
+                            <span
+                              className="text-sm font-medium"
+                              style={{ color: COLORS.titleDark }}
+                            >
+                              {skill}
+                            </span>
+                            <span
+                              className="text-sm font-bold"
+                              style={{ color: barColor }}
+                            >
+                              {score}
+                            </span>
+                          </div>
+
+                          {/* 進度條軌道 */}
+                          <div
+                            className="h-2.5 rounded-full"
+                            style={{ backgroundColor: "#E5E7EB" }}
+                          >
+                            {/* 進度條填充 */}
+                            <div
+                              className="h-2.5 rounded-full animate-progress-bar"
+                              style={{
+                                backgroundColor: barColor,
+                                maxWidth: `${score}%`,
+                              }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 綜合評比 */}
+                <div
+                  className="text-center mt-6 py-3 rounded-lg"
+                  style={{ backgroundColor: "#F0F9FF" }}
+                >
+                  <p
+                    className="text-sm font-semibold"
+                    style={{ color: COLORS.brandDeep }}
+                  >
+                    綜合評比：PR {avgScore} ∣ 表現優於 {avgScore}% 的同期志工
+                  </p>
+                </div>
+              </div>
+
+              {/* === D) 行動按鈕區 === */}
+              <div className="flex gap-4 justify-center px-6 pb-8">
+                {/* 列印按鈕（外框樣式） */}
+                <button
+                  onClick={() => showToast("Demo 模式：列印功能即將開放")}
+                  className="px-6 py-3 rounded-lg font-semibold text-sm transition-all duration-200 cursor-pointer"
+                  style={{
+                    border: `2px solid ${COLORS.brandBright}`,
+                    color: COLORS.brandBright,
+                    backgroundColor: "transparent",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#EFF6FF";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                  }}
+                >
+                  🖨️ 列印此證書
+                </button>
+
+                {/* 分享按鈕（填色樣式） */}
+                <button
+                  onClick={() => showToast("Demo 模式：分享功能即將開放")}
+                  className="px-6 py-3 rounded-lg font-semibold text-sm text-white transition-all duration-200 cursor-pointer"
+                  style={{ backgroundColor: COLORS.brandBright }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#2563EB";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = COLORS.brandBright;
+                  }}
+                >
+                  🔗 分享至 LinkedIn
+                </button>
+              </div>
+            </div>
+
+            {/* === E) 重新體驗連結 === */}
+            <div className="text-center mt-6">
+              <button
+                onClick={onRestart}
+                className="text-sm font-medium transition-opacity duration-200 hover:opacity-70 cursor-pointer"
+                style={{
+                  color: COLORS.brandBright,
+                  background: "none",
+                  border: "none",
+                }}
+              >
+                ← 重新體驗
+              </button>
+            </div>
+          </div>
+        );
+      }
+
+      /* ------------------------------------------
        * App 元件：主應用程式
        * - 管理當前站點 (currentStage)
        * - 管理轉場動畫 (stageTransition)
+       * - 管理全域 toast 通知
        * ------------------------------------------ */
       function App() {
-        // currentStage: 1~3 代表三個站點
+        // currentStage: 1~4（1~3 為三站，4 為證書頁）
         const [currentStage, setCurrentStage] = useState(1);
         // stageTransition: true 時觸發淡出效果
         const [stageTransition, setStageTransition] = useState(false);
+        // toast 相關狀態
+        const [toastMessage, setToastMessage] = useState("");
+        const [toastVisible, setToastVisible] = useState(false);
+        // toast 計時器 ref（避免重複計時）
+        const toastTimerRef = useRef(null);
+
+        /**
+         * showToast：顯示全域 toast 通知
+         * 設定訊息並在 2 秒後自動清除
+         */
+        const showToast = useCallback((message) => {
+          // 清除之前的計時器（避免連續點擊時提前消失）
+          if (toastTimerRef.current) {
+            clearTimeout(toastTimerRef.current);
+          }
+          setToastMessage(message);
+          setToastVisible(true);
+
+          // 2 秒後自動隱藏
+          toastTimerRef.current = setTimeout(() => {
+            setToastVisible(false);
+          }, 2000);
+        }, []);
 
         /**
          * goToStage：切換站點的函式
@@ -1391,7 +1868,7 @@
           (targetStage) => {
             // 如果目標就是當前站，不做任何事
             if (targetStage === currentStage) return;
-            // 限制範圍在 1~4（第 4 站為證書頁，下個任務實作）
+            // 限制範圍在 1~4（第 4 站為證書頁）
             if (targetStage < 1 || targetStage > 4) return;
 
             // 步驟 1：觸發淡出
@@ -1427,13 +1904,25 @@
                 stageTransition ? "opacity-0" : "opacity-100"
               }`}
             >
-              {/* 第一站：職場指標對標（正式元件） */}
+              {/* 第一站：職場指標對標 */}
               {currentStage === 1 && <Stage1 onNext={() => goToStage(2)} />}
-              {/* 第二站：行為轉譯 & AI 追問（正式元件） */}
+              {/* 第二站：行為轉譯 & AI 追問 */}
               {currentStage === 2 && <Stage2 onNext={() => goToStage(3)} />}
-              {/* 第三站：SVG 雷達圖 + 數位履歷（正式元件） */}
-              {currentStage === 3 && <Stage3 onDownload={() => goToStage(4)} />}
+              {/* 第三站：SVG 雷達圖 + 數位履歷（含生成 overlay） */}
+              {currentStage === 3 && (
+                <Stage3 onDownload={() => goToStage(4)} showToast={showToast} />
+              )}
+              {/* 第四站：數位能力認證書 */}
+              {currentStage === 4 && (
+                <CertificateView
+                  onRestart={() => goToStage(1)}
+                  showToast={showToast}
+                />
+              )}
             </main>
+
+            {/* 全域 Toast 通知 */}
+            <Toast message={toastMessage} visible={toastVisible} />
           </div>
         );
       }
