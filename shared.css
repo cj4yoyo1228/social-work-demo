@@ -1,10 +1,12 @@
 /* === 社工管理系統 — 共用自定義樣式 === */
 
-/* 全域字體設定 */
+/* 全域字體設定 — 加入 Inter 讓英數字更有科技感 */
 body {
-  font-family: "Noto Sans TC", sans-serif;
-  background-color: #f8fafc;
+  font-family: "Noto Sans TC", "Inter", sans-serif;
+  background-color: #f0faf9;
   color: #1f2937;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* 手機模擬器外框（Demo 1 使用）*/
@@ -76,24 +78,24 @@ body {
   animation: fadeIn 0.3s ease forwards;
 }
 
-/* 卡片基礎樣式 */
+/* 卡片基礎樣式 — 更精緻的陰影與圓角 */
 .card {
   background: #ffffff;
-  border-radius: 12px;
+  border-radius: 14px;
   box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.1),
-    0 1px 2px rgba(0, 0, 0, 0.06);
+    0 1px 3px rgba(0, 0, 0, 0.06),
+    0 4px 12px rgba(0, 137, 123, 0.04);
   padding: 16px;
   transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.25s ease;
 }
 
 .card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.1),
-    0 2px 4px rgba(0, 0, 0, 0.06);
+    0 8px 24px rgba(0, 137, 123, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 .card-clickable {
@@ -117,12 +119,14 @@ body {
 .tag-chip:hover {
   border-color: #00897b;
   color: #00897b;
+  background: #f0faf9;
 }
 
 .tag-chip.selected {
-  background: #00897b;
+  background: linear-gradient(135deg, #00897b, #26a69a);
   border-color: #00897b;
   color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 137, 123, 0.25);
 }
 
 /* 小標籤（學生個人標籤）*/
@@ -131,8 +135,9 @@ body {
   padding: 2px 8px;
   border-radius: 10px;
   font-size: 12px;
-  background: #eef2ff;
+  background: #e0f2f1;
   color: #00897b;
+  font-weight: 500;
 }
 
 .tag-small.warning {
@@ -145,36 +150,40 @@ body {
   color: #dc2626;
 }
 
-/* 主按鈕 */
+/* 主按鈕 — 漸層效果增加科技質感 */
 .btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 12px 24px;
-  background: #00897b;
+  background: linear-gradient(135deg, #00897b 0%, #26a69a 100%);
   color: #ffffff;
   border: none;
   border-radius: 12px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
   font-family: "Noto Sans TC", sans-serif;
+  box-shadow: 0 2px 8px rgba(0, 137, 123, 0.2);
 }
 
 .btn-primary:hover {
-  background: #4f46e5;
+  background: linear-gradient(135deg, #00695c 0%, #00897b 100%);
   transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 137, 123, 0.3);
 }
 
 .btn-primary:active {
   transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 137, 123, 0.2);
 }
 
 .btn-primary:disabled {
   background: #d1d5db;
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
 }
 
 /* 次要按鈕 */
@@ -195,7 +204,8 @@ body {
 }
 
 .btn-secondary:hover {
-  background: #eef2ff;
+  background: #e0f2f1;
+  box-shadow: 0 2px 8px rgba(0, 137, 123, 0.1);
 }
 
 /* 危險/警告按鈕 */
@@ -237,7 +247,7 @@ body {
 }
 
 .student-row:hover {
-  background: #f9fafb;
+  background: #f0faf9;
 }
 
 .student-row .status-icon {
@@ -296,19 +306,29 @@ body {
   animation: checkmark 0.5s ease forwards;
 }
 
-/* KPI 卡片（Demo 3 用）*/
+/* KPI 卡片（Demo 3 用）— 更有層次感 */
 .kpi-card {
   background: #ffffff;
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.06),
+    0 4px 12px rgba(0, 137, 123, 0.04);
   text-align: center;
+  transition: all 0.25s ease;
+}
+
+.kpi-card:hover {
+  box-shadow:
+    0 4px 16px rgba(0, 137, 123, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 .kpi-card .kpi-value {
   font-size: 32px;
   font-weight: 700;
   margin: 8px 0;
+  font-family: "Inter", "Noto Sans TC", sans-serif;
 }
 
 .kpi-card .kpi-label {
@@ -344,6 +364,11 @@ body {
   align-items: center;
   padding: 16px;
   border-bottom: 1px solid #f3f4f6;
+  transition: background 0.15s ease;
+}
+
+.alert-item:hover {
+  background: #f0faf9;
 }
 
 .alert-dot {
@@ -356,9 +381,11 @@ body {
 
 .alert-dot.danger {
   background: #ef4444;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.3);
 }
 .alert-dot.warning {
   background: #f59e0b;
+  box-shadow: 0 0 6px rgba(245, 158, 11, 0.3);
 }
 
 .alert-detail-expand {
@@ -385,10 +412,12 @@ body {
 .data-table th {
   text-align: left;
   padding: 12px 16px;
-  background: #f9fafb;
+  background: #f0faf9;
   color: #6b7280;
   font-weight: 600;
   border-bottom: 2px solid #e5e7eb;
+  font-size: 13px;
+  letter-spacing: 0.03em;
 }
 
 .data-table th.sortable {
@@ -406,7 +435,7 @@ body {
 }
 
 .data-table tbody tr:hover {
-  background: #f9fafb;
+  background: #f0faf9;
 }
 
 /* Phase 2 預留按鈕（灰色不可點擊）*/
@@ -439,7 +468,7 @@ body {
   white-space: nowrap;
 }
 
-/* 搜尋框 */
+/* 搜尋框 — 更溫暖的互動效果 */
 .search-input {
   width: 100%;
   padding: 10px 16px 10px 40px;
@@ -447,7 +476,9 @@ body {
   border-radius: 12px;
   font-size: 15px;
   outline: none;
-  transition: border-color 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   font-family: "Noto Sans TC", sans-serif;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239CA3AF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -457,9 +488,10 @@ body {
 
 .search-input:focus {
   border-color: #00897b;
+  box-shadow: 0 0 0 3px rgba(0, 137, 123, 0.1);
 }
 
-/* 紀錄時間軸（Demo 2 用）*/
+/* 紀錄時間軸（Demo 2 用）— 更精緻的連結線 */
 .record-timeline {
   position: relative;
   padding-left: 20px;
@@ -472,7 +504,7 @@ body {
   top: 0;
   bottom: 0;
   width: 2px;
-  background: #e5e7eb;
+  background: linear-gradient(180deg, #b2dfdb, #e5e7eb);
 }
 
 .record-item {
@@ -490,6 +522,7 @@ body {
   border-radius: 50%;
   background: #00897b;
   border: 2px solid #ffffff;
+  box-shadow: 0 0 0 2px rgba(0, 137, 123, 0.15);
 }
 
 /* 返回導覽連結 */
@@ -503,10 +536,11 @@ body {
   font-weight: 500;
   padding: 8px 0;
   cursor: pointer;
+  transition: color 0.2s ease;
 }
 
 .nav-back:hover {
-  color: #4f46e5;
+  color: #00695c;
 }
 
 /* 自定義捲軸 */
@@ -519,10 +553,10 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: #b2dfdb;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  background: #80cbc4;
 }

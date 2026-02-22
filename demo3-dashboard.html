@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap"
       rel="stylesheet"
     />
     <script>
@@ -152,10 +152,30 @@
       .sidebar-bg {
         background: linear-gradient(
           180deg,
-          #1a1647 0%,
-          #2d2872 50%,
-          #3730a3 100%
+          #004d40 0%,
+          #00695c 50%,
+          #00897b 100%
         );
+        position: relative;
+        overflow: hidden;
+      }
+      /* 圓點紋理疊層，增加教育科技感 */
+      .sidebar-bg::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(
+          rgba(255, 255, 255, 0.05) 1px,
+          transparent 1px
+        );
+        background-size: 16px 16px;
+        pointer-events: none;
+        z-index: 0;
+      }
+      /* 確保 sidebar 內容在圓點紋理上方 */
+      .sidebar-bg > * {
+        position: relative;
+        z-index: 1;
       }
       .nav-link {
         transition: all 0.2s ease;
@@ -220,7 +240,7 @@
       .header-accent {
         background: linear-gradient(
           135deg,
-          rgba(99, 102, 241, 0.04) 0%,
+          rgba(0, 137, 123, 0.04) 0%,
           rgba(236, 72, 153, 0.03) 50%,
           rgba(16, 185, 129, 0.02) 100%
         );
@@ -240,12 +260,12 @@
         outline: none;
       }
       .filter-pill:hover {
-        border-color: #6366f1;
-        color: #6366f1;
+        border-color: #00897b;
+        color: #00897b;
       }
       .filter-pill.active {
-        background: #6366f1;
-        border-color: #6366f1;
+        background: #00897b;
+        border-color: #00897b;
         color: white;
       }
 
@@ -257,7 +277,7 @@
       }
       .class-card:hover {
         transform: translateY(-4px);
-        box-shadow: 0 12px 28px -8px rgba(99, 102, 241, 0.15);
+        box-shadow: 0 12px 28px -8px rgba(0, 137, 123, 0.15);
       }
 
       /* === 風險標籤 === */
@@ -343,7 +363,7 @@
         transition: background 0.15s ease;
       }
       .case-row:hover {
-        background: #f8fafc;
+        background: #f0faf9;
       }
 
       /* === 視角切換器 === */
@@ -360,14 +380,14 @@
         outline: none;
       }
       .persp-pill:hover {
-        border-color: #6366f1;
-        color: #6366f1;
+        border-color: #00897b;
+        color: #00897b;
       }
       .persp-pill.active {
-        background: linear-gradient(135deg, #6366f1, #818cf8);
-        border-color: #6366f1;
+        background: linear-gradient(135deg, #00897b, #4db6ac);
+        border-color: #00897b;
         color: white;
-        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+        box-shadow: 0 4px 12px rgba(0, 137, 123, 0.35);
       }
 
       /* === 區域卡片頂部色條 === */
@@ -381,11 +401,36 @@
         background: #f97316;
       }
       .region-bar-east {
-        background: #8b5cf6;
+        background: #26a69a;
+      }
+
+      /* === Alert dot 發光效果 === */
+      .alert-dot.danger {
+        box-shadow: 0 0 6px rgba(239, 68, 68, 0.3);
+      }
+      .alert-dot.warning {
+        box-shadow: 0 0 6px rgba(245, 158, 11, 0.3);
+      }
+
+      /* === KPI 大數字使用 Inter 字體 === */
+      [data-count] {
+        font-family: "Inter", "Noto Sans TC", sans-serif;
+      }
+
+      /* === 卡片陰影精緻化（帶品牌色調） === */
+      .kpi-card {
+        box-shadow:
+          0 1px 3px rgba(0, 0, 0, 0.06),
+          0 4px 12px rgba(0, 137, 123, 0.04);
+      }
+      .kpi-card:hover {
+        box-shadow:
+          0 12px 28px -8px rgba(0, 137, 123, 0.12),
+          0 4px 12px rgba(0, 137, 123, 0.06);
       }
     </style>
   </head>
-  <body class="bg-[#F8FAFC] font-sans antialiased">
+  <body class="bg-[#f0faf9] font-sans antialiased">
     <div class="flex min-h-screen">
       <!-- ========== 左側導覽列 ========== -->
       <aside
@@ -395,7 +440,7 @@
         <div class="px-6 pt-4 pb-1">
           <a
             href="index.html"
-            class="text-indigo-300/70 hover:text-white text-[12px] flex items-center gap-1 transition-colors"
+            class="text-teal-300/70 hover:text-white text-[12px] flex items-center gap-1 transition-colors"
             >← 回到首頁</a
           >
         </div>
@@ -412,7 +457,7 @@
               <h1 class="text-[15px] font-bold tracking-wider">
                 永齡督導戰情室
               </h1>
-              <p class="text-[11px] text-indigo-300/80 mt-0.5 tracking-wide">
+              <p class="text-[11px] text-teal-300/80 mt-0.5 tracking-wide">
                 Yonglin Supervisor Hub
               </p>
             </div>
@@ -435,7 +480,7 @@
           <a
             href="#"
             data-view="view-classes"
-            class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-indigo-200/70 hover:bg-white/[0.08] hover:text-white text-[13px]"
+            class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-teal-200/70 hover:bg-white/[0.08] hover:text-white text-[13px]"
           >
             <span class="w-5 text-center text-base">📚</span>
             <span>轄區班級管理</span>
@@ -443,7 +488,7 @@
           <a
             href="#"
             data-view="view-cases"
-            class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-indigo-200/70 hover:bg-white/[0.08] hover:text-white text-[13px]"
+            class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-teal-200/70 hover:bg-white/[0.08] hover:text-white text-[13px]"
           >
             <span class="w-5 text-center text-base">🔍</span>
             <span>個案風險追蹤</span>
@@ -451,7 +496,7 @@
           <a
             href="#"
             data-view="view-volunteers"
-            class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-indigo-200/70 hover:bg-white/[0.08] hover:text-white text-[13px]"
+            class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-teal-200/70 hover:bg-white/[0.08] hover:text-white text-[13px]"
           >
             <span class="w-5 text-center text-base">💛</span>
             <span>志工關懷名單</span>
@@ -459,7 +504,7 @@
           <a
             href="#"
             data-view="view-ai"
-            class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-indigo-200/70 hover:bg-white/[0.08] hover:text-white text-[13px]"
+            class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-teal-200/70 hover:bg-white/[0.08] hover:text-white text-[13px]"
           >
             <span class="w-5 text-center text-base">🤖</span>
             <span>AI 智慧分析</span>
@@ -467,7 +512,7 @@
           <a
             href="#"
             data-view="view-settings"
-            class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-indigo-200/70 hover:bg-white/[0.08] hover:text-white text-[13px]"
+            class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-teal-200/70 hover:bg-white/[0.08] hover:text-white text-[13px]"
           >
             <span class="w-5 text-center text-base">⚙️</span>
             <span>系統設定</span>
@@ -478,13 +523,13 @@
         <div class="px-5 py-5 border-t border-white/[0.08]">
           <div class="flex items-center gap-3">
             <div
-              class="w-9 h-9 bg-gradient-to-br from-indigo-400 to-purple-300 rounded-full flex items-center justify-center text-sm font-black text-white shadow-lg"
+              class="w-9 h-9 bg-gradient-to-br from-teal-400 to-teal-300 rounded-full flex items-center justify-center text-sm font-black text-white shadow-lg"
             >
               林
             </div>
             <div>
               <p class="text-[13px] font-medium">北區督導</p>
-              <p class="text-[11px] text-indigo-300/70">林ＯＯ</p>
+              <p class="text-[11px] text-teal-300/70">林ＯＯ</p>
             </div>
             <div class="ml-auto">
               <div
@@ -884,7 +929,7 @@
               class="mt-8 bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex items-center gap-8"
             >
               <div class="text-center">
-                <p class="text-[28px] font-black text-[#6366F1]">12</p>
+                <p class="text-[28px] font-black text-[#00897B]">12</p>
                 <p class="text-[12px] text-slate-400 mt-1">班級總數</p>
               </div>
               <div class="w-px h-10 bg-slate-100"></div>
@@ -1108,9 +1153,9 @@
                 此功能尚在規劃階段，預計於下一個版本上線。<br />如有緊急需求，請聯繫技術團隊。
               </p>
               <div
-                class="mt-8 bg-indigo-50 border border-indigo-100 rounded-2xl px-8 py-5 inline-block"
+                class="mt-8 bg-teal-50 border border-teal-100 rounded-2xl px-8 py-5 inline-block"
               >
-                <p class="text-[13px] text-indigo-600 font-medium">
+                <p class="text-[13px] text-teal-600 font-medium">
                   🚧 預計上線：2026 年 Q2
                 </p>
               </div>
@@ -1141,7 +1186,7 @@
               >
                 <p class="text-[12px] text-slate-400 mb-2">今日掃描日誌</p>
                 <p
-                  class="text-[28px] font-black text-indigo-600"
+                  class="text-[28px] font-black text-teal-600"
                   data-count-ai="12"
                 >
                   0
@@ -1324,12 +1369,10 @@
                 <p class="text-[12px] text-slate-400 mb-2">全台服務班級</p>
                 <div class="flex items-end gap-1">
                   <span
-                    class="text-[32px] font-black text-indigo-600"
+                    class="text-[32px] font-black text-teal-600"
                     data-count-hq="48"
                     >0</span
-                  ><span class="text-sm font-bold text-indigo-400 mb-1"
-                    >班</span
-                  >
+                  ><span class="text-sm font-bold text-teal-400 mb-1">班</span>
                 </div>
               </div>
               <div
@@ -1532,33 +1575,29 @@
 
             <!-- AI 覆蓋率統計 -->
             <div
-              class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100 mb-8"
+              class="bg-gradient-to-r from-teal-50 to-teal-50 rounded-2xl p-6 border border-teal-100 mb-8"
             >
-              <h4 class="text-[14px] font-bold text-indigo-800 mb-4">
+              <h4 class="text-[14px] font-bold text-teal-800 mb-4">
                 🤖 AI 系統覆蓋率
               </h4>
               <div class="grid grid-cols-3 gap-6">
                 <div>
-                  <p class="text-[12px] text-indigo-500 mb-1">日誌掃描覆蓋率</p>
-                  <p class="text-[24px] font-black text-indigo-700">98.5%</p>
-                  <div class="w-full bg-indigo-200/50 rounded-full h-2 mt-2">
+                  <p class="text-[12px] text-teal-500 mb-1">日誌掃描覆蓋率</p>
+                  <p class="text-[24px] font-black text-teal-700">98.5%</p>
+                  <div class="w-full bg-teal-200/50 rounded-full h-2 mt-2">
                     <div
-                      class="bg-indigo-500 h-2 rounded-full"
+                      class="bg-teal-500 h-2 rounded-full"
                       style="width: 98.5%"
                     ></div>
                   </div>
                 </div>
                 <div>
-                  <p class="text-[12px] text-indigo-500 mb-1">
-                    本週自動標記風險
-                  </p>
-                  <p class="text-[24px] font-black text-indigo-700">8 筆</p>
+                  <p class="text-[12px] text-teal-500 mb-1">本週自動標記風險</p>
+                  <p class="text-[24px] font-black text-teal-700">8 筆</p>
                 </div>
                 <div>
-                  <p class="text-[12px] text-indigo-500 mb-1">
-                    自動產出趨勢報告
-                  </p>
-                  <p class="text-[24px] font-black text-indigo-700">48 份</p>
+                  <p class="text-[12px] text-teal-500 mb-1">自動產出趨勢報告</p>
+                  <p class="text-[24px] font-black text-teal-700">48 份</p>
                 </div>
               </div>
             </div>
@@ -1665,12 +1704,10 @@
                 <p class="text-[12px] text-slate-400 mb-2">轄區班級數</p>
                 <div class="flex items-end gap-1">
                   <span
-                    class="text-[32px] font-black text-indigo-600"
+                    class="text-[32px] font-black text-teal-600"
                     data-count-branch="12"
                     >0</span
-                  ><span class="text-sm font-bold text-indigo-400 mb-1"
-                    >班</span
-                  >
+                  ><span class="text-sm font-bold text-teal-400 mb-1">班</span>
                 </div>
               </div>
               <div
@@ -1972,13 +2009,13 @@
 
             <!-- AI 分析摘要 -->
             <div
-              class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100"
+              class="bg-gradient-to-r from-teal-50 to-teal-50 rounded-2xl p-6 border border-teal-100"
             >
-              <h4 class="text-[14px] font-bold text-indigo-800 mb-3">
+              <h4 class="text-[14px] font-bold text-teal-800 mb-3">
                 🤖 AI 本週分析摘要
               </h4>
               <div
-                class="space-y-2.5 text-[13px] text-indigo-700 leading-relaxed"
+                class="space-y-2.5 text-[13px] text-teal-700 leading-relaxed"
               >
                 <p>
                   📌 本週 AI 共掃描 <strong>84 篇日誌</strong>，自動標記
@@ -2017,7 +2054,7 @@
           <div
             id="modal-avatar"
             class="w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl font-black shadow-lg"
-            style="background: linear-gradient(135deg, #6366f1, #8b5cf6)"
+            style="background: linear-gradient(135deg, #00897b, #26a69a)"
           >
             <span id="modal-avatar-char">明</span>
           </div>
@@ -2029,7 +2066,7 @@
               光明國小 A班 + D班
             </p>
             <p
-              class="text-[12px] text-indigo-500 font-medium mt-1"
+              class="text-[12px] text-teal-500 font-medium mt-1"
               id="modal-duration"
             >
               已服務 8 個月
@@ -2082,15 +2119,13 @@
         </div>
 
         <!-- AI 分析摘要 -->
-        <div class="bg-indigo-50 rounded-xl p-4 border border-indigo-100 mb-5">
+        <div class="bg-teal-50 rounded-xl p-4 border border-teal-100 mb-5">
           <div class="flex items-center gap-1.5 mb-2">
             <span class="text-sm">🤖</span>
-            <span class="text-[12px] font-bold text-indigo-700"
-              >AI 分析摘要</span
-            >
+            <span class="text-[12px] font-bold text-teal-700">AI 分析摘要</span>
           </div>
           <p
-            class="text-[13px] text-indigo-600/90 leading-relaxed"
+            class="text-[13px] text-teal-600/90 leading-relaxed"
             id="modal-ai-summary"
           >
             小明在課堂管理和團隊協作表現優異，建議加強個案觀察能力。
@@ -2099,7 +2134,7 @@
 
         <!-- 關閉按鈕 -->
         <button
-          class="w-full bg-[#6366F1] hover:bg-indigo-600 text-white font-bold py-3 rounded-xl transition-colors"
+          class="w-full bg-[#00897B] hover:bg-teal-600 text-white font-bold py-3 rounded-xl transition-colors"
           onclick="closeModal()"
         >
           關閉
@@ -2303,7 +2338,7 @@
             "text-white",
             "font-medium",
           );
-          l.classList.add("text-indigo-200/70");
+          l.classList.add("text-teal-200/70");
         });
         const target = document.querySelector('[data-view="' + viewId + '"]');
         if (target) {
@@ -2313,7 +2348,7 @@
             "text-white",
             "font-medium",
           );
-          target.classList.remove("text-indigo-200/70");
+          target.classList.remove("text-teal-200/70");
         }
       }
 
@@ -2500,7 +2535,7 @@
               <div class="h-1.5 rounded-full ${color.dot} transition-all duration-500" style="width: ${c.rate}%"></div>
             </div>
             <button
-              class="w-full bg-[#6366F1]/10 hover:bg-[#6366F1] text-[#6366F1] hover:text-white text-[12px] font-bold py-2 rounded-xl transition-all duration-200"
+              class="w-full bg-[#00897B]/10 hover:bg-[#00897B] text-[#00897B] hover:text-white text-[12px] font-bold py-2 rounded-xl transition-all duration-200"
               onclick="showToast('📚 正在開啟 ${c.name} 班級詳情...')"
             >查看班級</button>
           `;
@@ -2769,7 +2804,7 @@
             <span class="text-[12px] text-slate-500 pr-4 leading-relaxed">${c.summary}</span>
             <span class="text-[12px] text-slate-400">${c.date}</span>
             <button
-              class="text-[11px] font-bold text-[#6366F1] border border-[#6366F1]/30 bg-[#6366F1]/5 hover:bg-[#6366F1] hover:text-white px-3 py-1.5 rounded-lg transition-all duration-200 w-fit"
+              class="text-[11px] font-bold text-[#00897B] border border-[#00897B]/30 bg-[#00897B]/5 hover:bg-[#00897B] hover:text-white px-3 py-1.5 rounded-lg transition-all duration-200 w-fit"
               onclick="showToast('🔍 正在開啟 ${c.name} 的個案詳情...')"
             >查看詳情</button>
           `;
@@ -2903,7 +2938,7 @@
             <div class="flex items-start justify-between mb-4">
               <div class="flex items-center gap-3">
                 <!-- 大頭照 placeholder -->
-                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-400 to-purple-400 flex items-center justify-center text-white font-black text-base shadow-sm">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-teal-400 to-teal-400 flex items-center justify-center text-white font-black text-base shadow-sm">
                   ${v.name.slice(1)}
                 </div>
                 <div>
@@ -2931,7 +2966,7 @@
             <!-- 操作按鈕 -->
             <div class="flex gap-2">
               <button
-                class="flex-1 bg-[#6366F1]/10 hover:bg-[#6366F1] text-[#6366F1] hover:text-white text-[11px] font-bold py-2 rounded-xl transition-all duration-200"
+                class="flex-1 bg-[#00897B]/10 hover:bg-[#00897B] text-[#00897B] hover:text-white text-[11px] font-bold py-2 rounded-xl transition-all duration-200"
                 onclick="openSkillModal(${i})"
               >🗺️ 查看技能地圖</button>
               <button
@@ -3059,7 +3094,7 @@
               else ctx.lineTo(x, y);
             });
             ctx.closePath();
-            ctx.strokeStyle = "rgba(99, 102, 241, 0.12)";
+            ctx.strokeStyle = "rgba(0, 137, 123, 0.12)";
             ctx.lineWidth = 1;
             ctx.stroke();
 
@@ -3076,7 +3111,7 @@
             ctx.beginPath();
             ctx.moveTo(cx, cy);
             ctx.lineTo(cx + R * Math.cos(angle), cy + R * Math.sin(angle));
-            ctx.strokeStyle = "rgba(99, 102, 241, 0.15)";
+            ctx.strokeStyle = "rgba(0, 137, 123, 0.15)";
             ctx.lineWidth = 1;
             ctx.stroke();
           });
@@ -3093,11 +3128,11 @@
           ctx.closePath();
 
           // 填充（半透明主色）
-          ctx.fillStyle = "rgba(99, 102, 241, 0.18)";
+          ctx.fillStyle = "rgba(0, 137, 123, 0.18)";
           ctx.fill();
 
           // 邊框
-          ctx.strokeStyle = "#6366f1";
+          ctx.strokeStyle = "#00897B";
           ctx.lineWidth = 2;
           ctx.stroke();
 
@@ -3108,7 +3143,7 @@
             const y = cy + r * Math.sin(angles[i]);
             ctx.beginPath();
             ctx.arc(x, y, 4, 0, Math.PI * 2);
-            ctx.fillStyle = "#6366f1";
+            ctx.fillStyle = "#00897B";
             ctx.fill();
             ctx.strokeStyle = "white";
             ctx.lineWidth = 2;
@@ -3128,7 +3163,7 @@
             ctx.fillText(labels[i], x, y - 6);
 
             // 數值（動畫時顯示當前進度值）
-            ctx.fillStyle = "#6366f1";
+            ctx.fillStyle = "#00897B";
             ctx.font = 'bold 12px "Noto Sans TC", sans-serif';
             ctx.fillText(Math.round(skills[i] * eased), x, y + 8);
             ctx.font = 'bold 11px "Noto Sans TC", sans-serif';

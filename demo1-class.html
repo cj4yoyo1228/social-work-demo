@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
 
@@ -22,7 +22,7 @@
         theme: {
           extend: {
             colors: {
-              primary: "#6366F1",
+              primary: "#00897B",
             },
             fontFamily: {
               sans: ["Noto Sans TC", "sans-serif"],
@@ -94,7 +94,7 @@
       .phone-screen {
         width: 100%;
         min-height: 800px;
-        background: #f8fafc;
+        background: #f0faf9;
         border-radius: 38px;
         overflow: hidden;
         position: relative;
@@ -102,7 +102,7 @@
 
       /* ── 頂部狀態列（仿 iPhone 動態島） ── */
       .status-bar {
-        background: #f8fafc;
+        background: #f0faf9;
         padding: 14px 28px 10px;
         display: flex;
         align-items: center;
@@ -144,7 +144,7 @@
         height: calc(800px - 60px);
         overflow-y: auto;
         scrollbar-width: none;
-        background: #f8fafc;
+        background: #f0faf9;
       }
       .content-area::-webkit-scrollbar {
         display: none;
@@ -234,9 +234,9 @@
        按鈕樣式
     ══════════════════════════ */
 
-      /* 主按鈕：柔和紫 */
+      /* 主按鈕：青綠色漸層 */
       .btn-primary {
-        background: #6366f1;
+        background: linear-gradient(135deg, #00897b 0%, #26a69a 100%);
         color: white;
         border-radius: 14px;
         padding: 14px;
@@ -250,12 +250,12 @@
           transform 0.12s ease,
           box-shadow 0.12s ease,
           background 0.15s ease;
-        box-shadow: 0 4px 16px rgba(99, 102, 241, 0.38);
+        box-shadow: 0 2px 8px rgba(0, 137, 123, 0.2);
       }
       .btn-primary:active {
         transform: scale(0.965);
-        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
-        background: #5254cc;
+        box-shadow: 0 2px 8px rgba(0, 137, 123, 0.25);
+        background: #00695c;
       }
       .btn-primary:disabled {
         background: #e5e7eb;
@@ -264,11 +264,11 @@
         cursor: default;
       }
 
-      /* 次要按鈕：白底紫框 */
+      /* 次要按鈕：白底青綠框 */
       .btn-secondary {
         background: white;
-        color: #6366f1;
-        border: 2px solid #6366f1;
+        color: #00897b;
+        border: 2px solid #00897b;
         border-radius: 14px;
         padding: 13px;
         font-size: 15px;
@@ -282,7 +282,7 @@
       }
       .btn-secondary:active {
         transform: scale(0.965);
-        background: #eef2ff;
+        background: #e0f2f1;
       }
 
       /* ══════════════════════════
@@ -366,7 +366,7 @@
       .journal-textarea {
         width: 100%;
         min-height: 130px;
-        border: 2px solid #e0e7ff;
+        border: 2px solid #b2dfdb;
         border-radius: 12px;
         padding: 13px;
         font-size: 14px;
@@ -381,8 +381,8 @@
         background: white;
       }
       .journal-textarea:focus {
-        border-color: #6366f1;
-        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+        border-color: #00897b;
+        box-shadow: 0 0 0 3px rgba(0, 137, 123, 0.12);
       }
       .journal-textarea::placeholder {
         color: #c4c9d4;
@@ -395,6 +395,30 @@
         filter: grayscale(25%);
         cursor: default;
         pointer-events: none;
+      }
+
+      /* ── 帶圓點網格的 Header ── */
+      .header-with-dots {
+        position: relative;
+        overflow: hidden;
+      }
+      /* 圓點網格背景（偽元素覆蓋在 header 上層） */
+      .header-with-dots::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(
+          rgba(255, 255, 255, 0.1) 1px,
+          transparent 1px
+        );
+        background-size: 20px 20px;
+        pointer-events: none;
+        z-index: 0;
+      }
+      /* 確保 header 內的所有子元素顯示在圓點網格上方 */
+      .header-with-dots > * {
+        position: relative;
+        z-index: 1;
       }
 
       /* ── 底部固定操作列 ── */
@@ -451,12 +475,16 @@
           >
             <!-- 頂部漸層問候 Header -->
             <div
+              class="header-with-dots"
               style="
-                background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+                background: linear-gradient(
+                  135deg,
+                  #004d40 0%,
+                  #00897b 50%,
+                  #26a69a 100%
+                );
                 padding: 22px 22px 32px;
                 border-radius: 0 0 32px 32px;
-                position: relative;
-                overflow: hidden;
               "
             >
               <!-- 裝飾性背景圓圈 -->
@@ -584,7 +612,7 @@
                         style="
                           width: 32px;
                           height: 32px;
-                          background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+                          background: linear-gradient(135deg, #e0f2f1, #b2dfdb);
                           border-radius: 10px;
                           display: flex;
                           align-items: center;
@@ -686,7 +714,7 @@
                         style="
                           width: 32px;
                           height: 32px;
-                          background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+                          background: linear-gradient(135deg, #e0f2f1, #b2dfdb);
                           border-radius: 10px;
                           display: flex;
                           align-items: center;
@@ -773,7 +801,7 @@
                         style="
                           width: 32px;
                           height: 32px;
-                          background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+                          background: linear-gradient(135deg, #e0f2f1, #b2dfdb);
                           border-radius: 10px;
                           display: flex;
                           align-items: center;
@@ -848,12 +876,16 @@
           <div id="screen-roll" class="screen" style="padding-bottom: 90px">
             <!-- 頂部 Header（漸層） -->
             <div
+              class="header-with-dots"
               style="
-                background: linear-gradient(135deg, #6366f1, #8b5cf6);
+                background: linear-gradient(
+                  135deg,
+                  #004d40 0%,
+                  #00897b 50%,
+                  #26a69a 100%
+                );
                 padding: 18px 20px 26px;
                 border-radius: 0 0 28px 28px;
-                position: relative;
-                overflow: hidden;
               "
             >
               <!-- 裝飾圓圈 -->
@@ -1117,7 +1149,7 @@
                     style="
                       font-size: 36px;
                       font-weight: 800;
-                      color: #6366f1;
+                      color: #00897b;
                       letter-spacing: -1px;
                       line-height: 1;
                     "

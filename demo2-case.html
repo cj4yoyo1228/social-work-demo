@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <!-- Tailwind CSS CDN -->
@@ -21,7 +21,7 @@
 
       body {
         font-family: "Noto Sans TC", sans-serif;
-        background-color: #f8fafc;
+        background-color: #f0faf9;
         color: #1f2937;
         margin: 0;
         padding: 0;
@@ -96,7 +96,7 @@
         display: inline-flex;
         align-items: center;
         gap: 4px;
-        color: #6366f1;
+        color: #00897b;
         font-size: 14px;
         font-weight: 500;
         cursor: pointer;
@@ -107,7 +107,7 @@
       }
 
       .nav-back:hover {
-        color: #4f46e5;
+        color: #00695c;
       }
 
       /* ===== 搜尋框 ===== */
@@ -138,7 +138,8 @@
       }
 
       .search-input:focus {
-        border-color: #6366f1;
+        border-color: #00897b;
+        box-shadow: 0 0 0 3px rgba(0, 137, 123, 0.1);
       }
 
       /* ===== 卡片基礎樣式 ===== */
@@ -146,8 +147,8 @@
         background: #ffffff;
         border-radius: 12px;
         box-shadow:
-          0 1px 3px rgba(0, 0, 0, 0.08),
-          0 1px 2px rgba(0, 0, 0, 0.05);
+          0 1px 3px rgba(0, 0, 0, 0.06),
+          0 4px 12px rgba(0, 137, 123, 0.04);
         padding: 16px;
         transition:
           transform 0.2s ease,
@@ -162,7 +163,7 @@
       .card-clickable:hover {
         transform: translateY(-2px);
         box-shadow:
-          0 6px 20px rgba(99, 102, 241, 0.12),
+          0 6px 20px rgba(0, 137, 123, 0.12),
           0 2px 6px rgba(0, 0, 0, 0.08);
       }
 
@@ -246,14 +247,14 @@
         color: #991b1b;
       }
 
-      /* 一般小標籤（紫，觀察紀錄用） */
+      /* 一般小標籤（青綠，觀察紀錄用） */
       .tag-small {
         display: inline-block;
         padding: 3px 9px;
         border-radius: 10px;
         font-size: 12px;
-        background: #eef2ff;
-        color: #4f46e5;
+        background: #e0f2f1;
+        color: #00695c;
         font-weight: 500;
       }
 
@@ -328,7 +329,7 @@
         top: 6px;
         bottom: 6px;
         width: 2px;
-        background: linear-gradient(to bottom, #c7d2fe, #e5e7eb);
+        background: linear-gradient(to bottom, #80cbc4, #e5e7eb);
         border-radius: 1px;
       }
 
@@ -350,9 +351,9 @@
         width: 12px;
         height: 12px;
         border-radius: 50%;
-        background: #6366f1;
+        background: #00897b;
         border: 2.5px solid #ffffff;
-        box-shadow: 0 0 0 2px #c7d2fe;
+        box-shadow: 0 0 0 2px #80cbc4;
         z-index: 1;
       }
 
@@ -408,7 +409,7 @@
         left: 0;
         right: 0;
         padding: 14px 16px 20px;
-        background: linear-gradient(to top, #f8fafc 75%, transparent);
+        background: linear-gradient(to top, #f0faf9 75%, transparent);
         pointer-events: none;
       }
 
@@ -419,7 +420,7 @@
       }
 
       /* ===== 按鈕樣式 ===== */
-      /* 主按鈕（紫） */
+      /* 主按鈕（青綠） */
       .btn-primary {
         display: inline-flex;
         align-items: center;
@@ -427,7 +428,7 @@
         gap: 6px;
         width: 100%;
         padding: 14px 24px;
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        background: linear-gradient(135deg, #00897b 0%, #26a69a 100%);
         color: #ffffff;
         border: none;
         border-radius: 12px;
@@ -436,17 +437,17 @@
         cursor: pointer;
         transition: all 0.2s ease;
         font-family: "Noto Sans TC", sans-serif;
-        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+        box-shadow: 0 2px 8px rgba(0, 137, 123, 0.2);
       }
 
       .btn-primary:hover {
         transform: translateY(-1px);
-        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+        box-shadow: 0 6px 20px rgba(0, 137, 123, 0.45);
       }
 
       .btn-primary:active {
         transform: translateY(0);
-        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        box-shadow: 0 2px 8px rgba(0, 137, 123, 0.3);
       }
 
       /* Phase 2 預留按鈕（灰色不可點擊） */
@@ -545,17 +546,17 @@
       }
 
       .tag-chip:hover {
-        border-color: #a5b4fc;
-        color: #6366f1;
-        background: #f5f3ff;
+        border-color: #80cbc4;
+        color: #00897b;
+        background: #e0f2f1;
       }
 
-      /* 選中狀態（紫色填充） */
+      /* 選中狀態（青綠色填充） */
       .tag-chip.selected {
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-        border-color: #6366f1;
+        background: linear-gradient(135deg, #00897b, #26a69a);
+        border-color: #00897b;
         color: #ffffff;
-        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        box-shadow: 0 2px 8px rgba(0, 137, 123, 0.25);
         transform: scale(1.03);
       }
 
@@ -581,8 +582,8 @@
       }
 
       .record-textarea:focus {
-        border-color: #6366f1;
-        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        border-color: #00897b;
+        box-shadow: 0 0 0 3px rgba(0, 137, 123, 0.1);
       }
 
       /* Phase 2 按鈕群組 */
@@ -745,7 +746,7 @@
       .dot-bounce span {
         width: 5px;
         height: 5px;
-        background: #6366f1;
+        background: #00897b;
         border-radius: 50%;
         display: inline-block;
         animation: dotBounce 1.2s infinite ease-in-out;
@@ -935,7 +936,7 @@
         align-items: center;
         gap: 4px;
         padding: 7px 14px;
-        background: #6366f1;
+        background: #00897b;
         color: white;
         border: none;
         border-radius: 8px;
@@ -947,7 +948,7 @@
       }
 
       .ai-card-adopt-btn:hover {
-        background: #4f46e5;
+        background: #00695c;
         transform: translateY(-1px);
       }
 
@@ -1112,10 +1113,10 @@
           style="
             margin-bottom: 14px;
             padding: 10px 14px;
-            background: #eef2ff;
+            background: #e0f2f1;
             border-radius: 10px;
             font-size: 14px;
-            color: #4f46e5;
+            color: #00695c;
             font-weight: 600;
           "
         >

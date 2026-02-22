@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>永續志工：阿明的成長數據飛輪</title>
 
-    <!-- Google Fonts：載入 Noto Sans TC 繁體中文字型 -->
+    <!-- Google Fonts：載入 Inter（數字/英文）+ Noto Sans TC（中文）字型 -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap"
       rel="stylesheet"
     />
 
@@ -41,8 +41,13 @@
       body {
         margin: 0;
         padding: 0;
-        background: #f8fafc;
+        background: #f0faf9;
         font-family: "Noto Sans TC", sans-serif;
+      }
+
+      /* === Inter 字體用於數字、百分比、進度數值 === */
+      .font-inter {
+        font-family: "Inter", "Noto Sans TC", sans-serif;
       }
 
       /* === CSS Keyframes 動畫定義 === */
@@ -85,10 +90,10 @@
       @keyframes pulse {
         0%,
         100% {
-          box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5);
+          box-shadow: 0 0 0 0 rgba(0, 137, 123, 0.5);
         }
         50% {
-          box-shadow: 0 0 0 8px rgba(59, 130, 246, 0);
+          box-shadow: 0 0 0 8px rgba(0, 137, 123, 0);
         }
       }
 
@@ -182,7 +187,7 @@
         width: 6px;
         height: 6px;
         border-radius: 50%;
-        background-color: #3b82f6;
+        background-color: #00897b;
         display: inline-block;
         animation: bounceDot 1.2s ease-in-out infinite;
       }
@@ -205,7 +210,7 @@
         height: 0;
         border-top: 6px solid transparent;
         border-bottom: 6px solid transparent;
-        border-right: 6px solid #3b82f6;
+        border-right: 6px solid #00897b;
       }
 
       .chat-bubble-right::before {
@@ -326,12 +331,12 @@
        * 顏色常數（色彩代碼集中管理）
        * ------------------------------------------ */
       const COLORS = {
-        brandDeep: "#1E40AF", // 品牌藍（深色）
-        brandBright: "#3B82F6", // 品牌藍（亮色）
+        brandDeep: "#00695C", // 品牌青綠（深色）
+        brandBright: "#00897B", // 品牌青綠（亮色）
         warmDeep: "#EA580C", // 暖橘（深色）
         warmBright: "#F97316", // 暖橘（亮色）
         titleDark: "#1E293B", // 深灰（標題用）
-        background: "#F8FAFC", // 頁面背景
+        background: "#f0faf9", // 頁面背景（教育科技感薄荷綠底）
         card: "#FFFFFF", // 卡片白
         success: "#10B981", // 成功綠
       };
@@ -404,7 +409,7 @@
        * 每個能力對應的色系（Tailwind class 用）
        * ------------------------------------------ */
       const SKILL_COLOR_MAP = {
-        blue: { bg: "#EFF6FF", border: "#3B82F6", text: "#1E40AF" },
+        blue: { bg: "#E0F2F1", border: "#00897B", text: "#00695C" },
         purple: { bg: "#F5F3FF", border: "#8B5CF6", text: "#6D28D9" },
         green: { bg: "#ECFDF5", border: "#10B981", text: "#047857" },
         pink: { bg: "#FDF2F8", border: "#EC4899", text: "#BE185D" },
@@ -457,15 +462,24 @@
 
         return (
           <nav
-            className="sticky top-0 z-50 bg-white shadow-sm"
-            style={{ borderBottom: "1px solid #E2E8F0" }}
+            className="sticky top-0 z-50 shadow-md"
+            style={{
+              /* 3 色深→中→淺漸層，增加深度感 */
+              background:
+                "linear-gradient(135deg, #004D40 0%, #00695C 50%, #00897B 100%)",
+              /* 圓點網格紋理疊加在漸層之上（多重背景語法） */
+              backgroundImage:
+                "radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px), linear-gradient(135deg, #004D40 0%, #00695C 50%, #00897B 100%)",
+              backgroundSize: "20px 20px, 100% 100%",
+              borderBottom: "1px solid rgba(0, 77, 64, 0.4)",
+            }}
           >
             <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
               {/* 左側：返回首頁 */}
               <a
                 href="index.html"
                 className="flex items-center gap-1 text-sm font-medium hover:opacity-70 transition-opacity"
-                style={{ color: COLORS.brandBright }}
+                style={{ color: "rgba(255, 255, 255, 0.9)" }}
               >
                 <span>←</span>
                 <span>回到首頁</span>
@@ -497,13 +511,13 @@
                           style={{
                             backgroundColor:
                               isCurrent || isCompleted
-                                ? COLORS.brandBright
+                                ? "rgba(255,255,255,0.25)"
                                 : "transparent",
-                            color:
-                              isCurrent || isCompleted ? "#FFFFFF" : "#CBD5E1",
+                            color: "#FFFFFF",
                             border: isPending
-                              ? "2px solid #CBD5E1"
-                              : `2px solid ${COLORS.brandBright}`,
+                              ? "2px solid rgba(255,255,255,0.35)"
+                              : "2px solid rgba(255,255,255,0.8)",
+                            fontFamily: '"Inter", "Noto Sans TC", sans-serif',
                           }}
                         >
                           {/* 已完成顯示勾勾，其餘顯示數字 */}
@@ -515,10 +529,10 @@
                           className="text-xs mt-1 whitespace-nowrap"
                           style={{
                             color: isCurrent
-                              ? COLORS.brandBright
+                              ? "#FFFFFF"
                               : isCompleted
-                                ? COLORS.brandDeep
-                                : "#94A3B8",
+                                ? "rgba(255,255,255,0.85)"
+                                : "rgba(255,255,255,0.5)",
                             fontWeight: isCurrent ? 600 : 400,
                           }}
                         >
@@ -534,8 +548,8 @@
                             width: "40px",
                             backgroundColor:
                               stage.id < currentStage
-                                ? COLORS.brandBright
-                                : "#E2E8F0",
+                                ? "rgba(255,255,255,0.8)"
+                                : "rgba(255,255,255,0.25)",
                             marginBottom: "18px", // 對齊圓點中心（扣掉下方標籤高度）
                           }}
                         />
@@ -548,7 +562,10 @@
               {/* 右側：頁面標題 */}
               <span
                 className="text-sm font-semibold hidden sm:block"
-                style={{ color: COLORS.titleDark }}
+                style={{
+                  color: "rgba(255, 255, 255, 0.9)",
+                  fontFamily: '"Inter", "Noto Sans TC", sans-serif',
+                }}
               >
                 永續志工數據飛輪
               </span>
@@ -712,15 +729,22 @@
                 <button
                   onClick={onNext}
                   className="px-8 py-3 rounded-full text-white font-semibold text-base
-                             hover:shadow-lg transition-all duration-300 cursor-pointer"
+                             transition-all duration-300 cursor-pointer"
                   style={{
-                    background: `linear-gradient(135deg, ${COLORS.brandDeep}, ${COLORS.brandBright})`,
+                    background:
+                      "linear-gradient(135deg, #00897B 0%, #26A69A 100%)",
+                    boxShadow: "0 2px 8px rgba(0, 137, 123, 0.2)",
+                    fontFamily: '"Inter", "Noto Sans TC", sans-serif',
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 6px 16px rgba(0, 137, 123, 0.35)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow =
+                      "0 2px 8px rgba(0, 137, 123, 0.2)";
                   }}
                 >
                   前往第二站 →
@@ -857,8 +881,8 @@
                         key={tag.label}
                         className="inline-block px-3 py-1.5 rounded-full text-sm font-medium animate-scale-in"
                         style={{
-                          backgroundColor: "#EFF6FF",
-                          color: "#1E40AF",
+                          backgroundColor: "#E0F2F1",
+                          color: "#00695C",
                           animationDelay: tag.delay,
                         }}
                       >
@@ -883,7 +907,7 @@
                 <div
                   className="rounded-xl p-6"
                   style={{
-                    backgroundColor: "#F8FAFC",
+                    backgroundColor: "#f0faf9",
                     minHeight: "320px",
                   }}
                 >
@@ -922,7 +946,7 @@
                             backgroundColor: "#FFFFFF",
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = "#EFF6FF";
+                            e.currentTarget.style.backgroundColor = "#E0F2F1";
                             e.currentTarget.style.transform = "translateX(4px)";
                           }}
                           onMouseLeave={(e) => {
@@ -964,7 +988,10 @@
                     >
                       <p
                         className="text-sm font-semibold"
-                        style={{ color: "#C2410C" }}
+                        style={{
+                          color: "#C2410C",
+                          fontFamily: '"Inter", "Noto Sans TC", sans-serif',
+                        }}
                       >
                         📈 韌性指標 ↑ 15%
                       </p>
@@ -1001,15 +1028,22 @@
                 <button
                   onClick={onNext}
                   className="px-8 py-3 rounded-full text-white font-semibold text-base
-                             hover:shadow-lg transition-all duration-300 cursor-pointer"
+                             transition-all duration-300 cursor-pointer"
                   style={{
-                    background: `linear-gradient(135deg, ${COLORS.brandDeep}, ${COLORS.brandBright})`,
+                    background:
+                      "linear-gradient(135deg, #00897B 0%, #26A69A 100%)",
+                    boxShadow: "0 2px 8px rgba(0, 137, 123, 0.2)",
+                    fontFamily: '"Inter", "Noto Sans TC", sans-serif',
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 6px 16px rgba(0, 137, 123, 0.35)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow =
+                      "0 2px 8px rgba(0, 137, 123, 0.2)";
                   }}
                 >
                   前往第三站 →
@@ -1127,6 +1161,36 @@
             viewBox="0 0 300 300"
             style={{ width: "100%", maxWidth: `${size}px`, height: "auto" }}
           >
+            {/* SVG 濾鏡定義：圓點微發光效果 */}
+            <defs>
+              <filter
+                id="glow-teal"
+                x="-50%"
+                y="-50%"
+                width="200%"
+                height="200%"
+              >
+                <feGaussianBlur stdDeviation="2.5" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <filter
+                id="glow-orange"
+                x="-50%"
+                y="-50%"
+                width="200%"
+                height="200%"
+              >
+                <feGaussianBlur stdDeviation="3" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
             {/* 背景：四層同心五邊形 */}
             {bgLevels.map((level, idx) => (
               <polygon
@@ -1155,11 +1219,11 @@
               );
             })}
 
-            {/* 資料多邊形：帶有品牌藍填色和描邊 */}
+            {/* 資料多邊形：帶有品牌青綠填色和描邊 */}
             <polygon
               points={dataPolygonPoints}
-              fill="rgba(59, 130, 246, 0.15)"
-              stroke="#3B82F6"
+              fill="rgba(0, 137, 123, 0.15)"
+              stroke="#00897B"
               strokeWidth="2"
               strokeLinejoin="round"
             />
@@ -1182,14 +1246,17 @@
                       stroke="none"
                     />
                   )}
-                  {/* 可點擊的頂點圓點 */}
+                  {/* 可點擊的頂點圓點（加入微發光 filter） */}
                   <circle
                     cx={point.x}
                     cy={point.y}
                     r={circleRadius}
-                    fill={isSelected ? "#F97316" : "#3B82F6"}
+                    fill={isSelected ? "#F97316" : "#00897B"}
                     stroke="white"
                     strokeWidth="2"
+                    filter={
+                      isSelected ? "url(#glow-orange)" : "url(#glow-teal)"
+                    }
                     style={{
                       cursor: "pointer",
                       transition: "r 0.2s ease, fill 0.2s ease",
@@ -1435,7 +1502,10 @@
                     </p>
                     <p
                       className="text-lg font-bold"
-                      style={{ color: COLORS.brandBright }}
+                      style={{
+                        color: COLORS.brandBright,
+                        fontFamily: '"Inter", "Noto Sans TC", sans-serif',
+                      }}
                     >
                       PR 92
                     </p>
@@ -1451,7 +1521,10 @@
                     </p>
                     <p
                       className="text-lg font-bold"
-                      style={{ color: COLORS.warmBright }}
+                      style={{
+                        color: COLORS.warmBright,
+                        fontFamily: '"Inter", "Noto Sans TC", sans-serif',
+                      }}
                     >
                       Top 15%
                     </p>
@@ -1467,7 +1540,10 @@
                     </p>
                     <p
                       className="text-lg font-bold"
-                      style={{ color: COLORS.success }}
+                      style={{
+                        color: COLORS.success,
+                        fontFamily: '"Inter", "Noto Sans TC", sans-serif',
+                      }}
                     >
                       ↑ 32%
                     </p>
@@ -1580,7 +1656,7 @@
             {/* === 證書外框 === */}
             <div
               className="certificate-frame bg-white rounded-2xl shadow-2xl overflow-hidden"
-              style={{ border: "2px solid #2563EB" }}
+              style={{ border: "2px solid #00796B" }}
             >
               {/* 角落裝飾：左下、右下 */}
               <span className="certificate-corner-bl">✦</span>
@@ -1621,7 +1697,7 @@
                   style={{
                     width: "80px",
                     height: "80px",
-                    background: `linear-gradient(135deg, #60A5FA, ${COLORS.brandDeep})`,
+                    background: `linear-gradient(135deg, #26A69A, ${COLORS.brandDeep})`,
                   }}
                 >
                   <span className="text-white font-bold text-lg">阿明</span>
@@ -1687,7 +1763,11 @@
                             </span>
                             <span
                               className="text-sm font-bold"
-                              style={{ color: barColor }}
+                              style={{
+                                color: barColor,
+                                fontFamily:
+                                  '"Inter", "Noto Sans TC", sans-serif',
+                              }}
                             >
                               {score}
                             </span>
@@ -1716,11 +1796,14 @@
                 {/* 綜合評比 */}
                 <div
                   className="text-center mt-6 py-3 rounded-lg"
-                  style={{ backgroundColor: "#F0F9FF" }}
+                  style={{ backgroundColor: "#E0F2F1" }}
                 >
                   <p
                     className="text-sm font-semibold"
-                    style={{ color: COLORS.brandDeep }}
+                    style={{
+                      color: COLORS.brandDeep,
+                      fontFamily: '"Inter", "Noto Sans TC", sans-serif',
+                    }}
                   >
                     綜合評比：PR {avgScore} ∣ 表現優於 {avgScore}% 的同期志工
                   </p>
@@ -1739,7 +1822,7 @@
                     backgroundColor: "transparent",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#EFF6FF";
+                    e.currentTarget.style.backgroundColor = "#E0F2F1";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = "transparent";
@@ -1754,7 +1837,7 @@
                   className="px-6 py-3 rounded-lg font-semibold text-sm text-white transition-all duration-200 cursor-pointer"
                   style={{ backgroundColor: COLORS.brandBright }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#2563EB";
+                    e.currentTarget.style.backgroundColor = "#00796B";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = COLORS.brandBright;
