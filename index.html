@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>社工管理系統 — 互動原型展示</title>
+
+    <!-- Google Fonts：載入 Noto Sans TC，支援繁體中文 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- 共用自定義樣式 -->
+    <link rel="stylesheet" href="shared.css" />
+
+    <style>
+      /* 頁面最小高度，讓內容撐滿全螢幕 */
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* 頂部標題漸層背景 */
+      .hero-header {
+        background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+        color: #ffffff;
+        text-align: center;
+        padding: 48px 24px 64px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* 裝飾性背景圓形 */
+      .hero-header::before {
+        content: "";
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.08);
+        top: -80px;
+        right: -60px;
+      }
+
+      .hero-header::after {
+        content: "";
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.06);
+        bottom: -60px;
+        left: -40px;
+      }
+
+      .hero-title {
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        margin-bottom: 8px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero-subtitle {
+        font-size: 15px;
+        font-weight: 400;
+        opacity: 0.85;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* 主要內容區塊，卡片「浮出」Header */
+      .main-content {
+        flex: 1;
+        padding: 0 24px 48px;
+        margin-top: -32px;
+        position: relative;
+        z-index: 2;
+        max-width: 1100px;
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      /* 響應式 Grid：手機一欄、桌面三欄 */
+      .demo-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      @media (min-width: 768px) {
+        .demo-grid {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 24px;
+        }
+        .main-content {
+          padding: 0 32px 48px;
+        }
+        .hero-title {
+          font-size: 36px;
+        }
+        .hero-subtitle {
+          font-size: 16px;
+        }
+      }
+
+      /* Demo 卡片 */
+      .demo-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 28px 24px 24px;
+        box-shadow:
+          0 2px 8px rgba(99, 102, 241, 0.08),
+          0 1px 3px rgba(0, 0, 0, 0.06);
+        transition:
+          transform 0.25s ease,
+          box-shadow 0.25s ease;
+        display: flex;
+        flex-direction: column;
+        animation: slideUp 0.4s ease both;
+      }
+
+      .demo-card:nth-child(1) {
+        animation-delay: 0.05s;
+      }
+      .demo-card:nth-child(2) {
+        animation-delay: 0.15s;
+      }
+      .demo-card:nth-child(3) {
+        animation-delay: 0.25s;
+      }
+
+      .demo-card:hover {
+        transform: translateY(-6px);
+        box-shadow:
+          0 12px 32px rgba(99, 102, 241, 0.15),
+          0 4px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      /* 卡片 icon 容器 */
+      .card-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 16px;
+        background: #eef2ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        margin-bottom: 20px;
+        transition: transform 0.25s ease;
+      }
+
+      .demo-card:hover .card-icon {
+        transform: scale(1.1);
+      }
+
+      .card-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 8px;
+      }
+
+      .card-desc {
+        font-size: 14px;
+        color: #6b7280;
+        line-height: 1.6;
+        flex: 1;
+        margin-bottom: 20px;
+      }
+
+      /* 連結按鈕 */
+      .card-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 12px 24px;
+        background: #6366f1;
+        color: #ffffff;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        text-decoration: none;
+        transition:
+          background 0.2s ease,
+          transform 0.2s ease;
+        font-family: "Noto Sans TC", sans-serif;
+      }
+
+      .card-link:hover {
+        background: #4f46e5;
+        transform: translateY(-1px);
+      }
+      .card-link:active {
+        transform: translateY(0);
+      }
+      .card-link .arrow {
+        transition: transform 0.2s ease;
+        font-style: normal;
+      }
+      .card-link:hover .arrow {
+        transform: translateX(3px);
+      }
+
+      .page-footer {
+        text-align: center;
+        padding: 16px 24px 32px;
+        font-size: 13px;
+        color: #9ca3af;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 頂部 Header -->
+    <header class="hero-header">
+      <h1 class="hero-title">社工管理系統</h1>
+      <p class="hero-subtitle">互動原型展示</p>
+    </header>
+
+    <!-- 三張 Demo 卡片 -->
+    <main class="main-content">
+      <div class="demo-grid">
+        <!-- 班級管理中心 -->
+        <article class="demo-card">
+          <div class="card-icon">📱</div>
+          <h2 class="card-title">班級管理中心</h2>
+          <p class="card-desc">
+            30
+            秒完成點名，預設全勤、例外管理。讓社工把時間花在孩子身上，不是在紙本表單上。
+          </p>
+          <a href="demo1-class.html" class="card-link">
+            進入 Demo <span class="arrow">→</span>
+          </a>
+        </article>
+
+        <!-- 個案服務紀錄 -->
+        <article class="demo-card">
+          <div class="card-icon">📋</div>
+          <h2 class="card-title">個案服務紀錄</h2>
+          <p class="card-desc">
+            結構化標籤輸入，告別冗長文字紀錄。快速記錄每次服務的關鍵觀察，隨時回顧個案脈絡。
+          </p>
+          <a href="demo2-case.html" class="card-link">
+            進入 Demo <span class="arrow">→</span>
+          </a>
+        </article>
+
+        <!-- 行政管理報表 -->
+        <article class="demo-card">
+          <div class="card-icon">📊</div>
+          <h2 class="card-title">行政管理報表</h2>
+          <p class="card-desc">
+            異常自動浮現，一鍵提醒不漏接。讓主管一眼掌握全局，不需要逐一追問才能發現問題。
+          </p>
+          <a href="demo3-dashboard.html" class="card-link">
+            進入 Demo <span class="arrow">→</span>
+          </a>
+        </article>
+      </div>
+    </main>
+
+    <!-- 底部說明 -->
+    <footer class="page-footer">本系統為互動原型展示，資料皆為模擬</footer>
+  </body>
+</html>

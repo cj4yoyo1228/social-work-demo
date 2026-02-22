@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>永齡督導戰情室</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Noto Sans TC"', "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      /* === 進場動畫 === */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(24px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes countUp {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse-glow {
+        0%,
+        100% {
+          opacity: 1;
+          box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+        }
+        50% {
+          opacity: 0.8;
+          box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+        }
+      }
+      @keyframes shimmer {
+        0% {
+          background-position: -200% 0;
+        }
+        100% {
+          background-position: 200% 0;
+        }
+      }
+
+      .animate-fade-in-up {
+        animation: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        opacity: 0;
+      }
+      .animate-fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+        opacity: 0;
+      }
+      .pulse-glow {
+        animation: pulse-glow 2s ease-in-out infinite;
+      }
+
+      /* === 卡片互動 === */
+      .action-card {
+        transition:
+          transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+          box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .action-card:hover {
+        transform: translateY(-6px);
+        box-shadow:
+          0 20px 40px -12px rgba(0, 0, 0, 0.1),
+          0 8px 16px -8px rgba(0, 0, 0, 0.06);
+      }
+      .kpi-card {
+        transition:
+          transform 0.25s ease,
+          box-shadow 0.25s ease;
+      }
+      .kpi-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.08);
+      }
+
+      /* === 按鈕效果 === */
+      .btn-action {
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      .btn-action:active {
+        transform: scale(0.96);
+      }
+      .btn-action.btn-success {
+        background: linear-gradient(135deg, #059669, #10b981) !important;
+        border-color: #059669 !important;
+        color: white !important;
+        cursor: default;
+      }
+
+      /* === 側邊欄 === */
+      .sidebar-bg {
+        background: linear-gradient(
+          180deg,
+          #1a1647 0%,
+          #2d2872 50%,
+          #3730a3 100%
+        );
+      }
+      .nav-link {
+        transition: all 0.2s ease;
+        position: relative;
+      }
+      .nav-link::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%) scaleY(0);
+        width: 3px;
+        height: 60%;
+        background: white;
+        border-radius: 0 4px 4px 0;
+        transition: transform 0.2s ease;
+      }
+      .nav-link.active::before,
+      .nav-link:hover::before {
+        transform: translateY(-50%) scaleY(1);
+      }
+
+      /* === 自訂捲軸 === */
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+
+      /* === AI 建議區塊裝飾 === */
+      .ai-suggestion {
+        position: relative;
+      }
+      .ai-suggestion::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        border-radius: 3px;
+      }
+      .ai-suggestion-red::before {
+        background: #ef4444;
+      }
+      .ai-suggestion-amber::before {
+        background: #f59e0b;
+      }
+      .ai-suggestion-slate::before {
+        background: #94a3b8;
+      }
+
+      /* === 頂部裝飾漸層 === */
+      .header-accent {
+        background: linear-gradient(
+          135deg,
+          rgba(99, 102, 241, 0.04) 0%,
+          rgba(236, 72, 153, 0.03) 50%,
+          rgba(16, 185, 129, 0.02) 100%
+        );
+      }
+    </style>
+  </head>
+  <body class="bg-[#F8FAFC] font-sans antialiased">
+    <div class="flex min-h-screen">
+      <!-- ========== 左側導覽列 ========== -->
+      <aside
+        class="sidebar-bg w-[260px] text-white flex flex-col fixed h-full z-20 shadow-2xl"
+      >
+        <!-- 返回首頁 -->
+        <div class="px-6 pt-4 pb-1">
+          <a
+            href="index.html"
+            class="text-indigo-300/70 hover:text-white text-[12px] flex items-center gap-1 transition-colors"
+            >← 回到首頁</a
+          >
+        </div>
+
+        <!-- 系統標題 -->
+        <div class="px-6 pt-3 pb-5">
+          <div class="flex items-center gap-3.5">
+            <div
+              class="w-11 h-11 bg-white/10 backdrop-blur rounded-xl flex items-center justify-center text-xl shadow-inner"
+            >
+              🏫
+            </div>
+            <div>
+              <h1 class="text-[15px] font-bold tracking-wider">
+                永齡督導戰情室
+              </h1>
+              <p class="text-[11px] text-indigo-300/80 mt-0.5 tracking-wide">
+                Yonglin Supervisor Hub
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 分隔線 -->
+        <div class="mx-5 border-t border-white/[0.08]"></div>
+
+        <!-- 導覽選單 -->
+        <nav class="flex-1 px-3 py-5 space-y-1">
+          <a
+            href="#"
+            class="nav-link active flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.12] text-white font-medium text-[13px]"
+          >
+            <span class="w-5 text-center text-base">🏠</span>
+            <span>首頁總覽</span>
+          </a>
+          <a
+            href="#"
+            class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-indigo-200/70 hover:bg-white/[0.08] hover:text-white text-[13px]"
+          >
+            <span class="w-5 text-center text-base">📚</span>
+            <span>轄區班級管理</span>
+          </a>
+          <a
+            href="#"
+            class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-indigo-200/70 hover:bg-white/[0.08] hover:text-white text-[13px]"
+          >
+            <span class="w-5 text-center text-base">🔍</span>
+            <span>個案風險追蹤</span>
+          </a>
+          <a
+            href="#"
+            class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-indigo-200/70 hover:bg-white/[0.08] hover:text-white text-[13px]"
+          >
+            <span class="w-5 text-center text-base">💛</span>
+            <span>志工關懷名單</span>
+          </a>
+          <a
+            href="#"
+            class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-indigo-200/70 hover:bg-white/[0.08] hover:text-white text-[13px]"
+          >
+            <span class="w-5 text-center text-base">⚙️</span>
+            <span>系統設定</span>
+          </a>
+        </nav>
+
+        <!-- 使用者資訊 -->
+        <div class="px-5 py-5 border-t border-white/[0.08]">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-9 h-9 bg-gradient-to-br from-indigo-400 to-purple-300 rounded-full flex items-center justify-center text-sm font-black text-white shadow-lg"
+            >
+              林
+            </div>
+            <div>
+              <p class="text-[13px] font-medium">北區督導</p>
+              <p class="text-[11px] text-indigo-300/70">林ＯＯ</p>
+            </div>
+            <div class="ml-auto">
+              <div
+                class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(16,185,129,0.6)]"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ========== 右側主內容區 ========== -->
+      <main class="ml-[260px] flex-1 min-h-screen">
+        <!-- 頂部問候語區 -->
+        <div class="header-accent px-10 pt-9 pb-7">
+          <!-- 日期 -->
+          <p
+            class="text-[13px] text-slate-400 mb-3 animate-fade-in"
+            id="current-date"
+          ></p>
+
+          <!-- 問候語 -->
+          <div class="flex items-start justify-between flex-wrap gap-6">
+            <div class="animate-fade-in" style="animation-delay: 0.1s">
+              <h2 class="text-[26px] font-black text-slate-800 leading-tight">
+                <span id="greeting">早安</span>，林督導！
+              </h2>
+              <p class="text-slate-500 mt-2 text-[14px]">
+                今日有
+                <span
+                  class="inline-flex items-center justify-center bg-red-500 text-white text-[11px] font-black rounded-full w-[22px] h-[22px] mx-0.5 align-middle shadow-sm"
+                  >3</span
+                >
+                項 AI 建議優先處理事項
+              </p>
+            </div>
+          </div>
+
+          <!-- KPI 數字卡片 -->
+          <div class="grid grid-cols-3 gap-5 mt-7">
+            <!-- 出席率 -->
+            <div
+              class="kpi-card bg-white rounded-2xl p-5 shadow-sm border border-slate-100/80 animate-fade-in-up"
+              style="animation-delay: 0.15s"
+            >
+              <div class="flex items-center justify-between mb-3">
+                <p class="text-[13px] text-slate-400 font-medium">
+                  今日轄區出席率
+                </p>
+                <span
+                  class="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center text-sm"
+                  >✅</span
+                >
+              </div>
+              <div class="flex items-end gap-1.5">
+                <span
+                  class="text-[36px] font-black text-emerald-600 leading-none"
+                  data-count="98"
+                  >0</span
+                >
+                <span class="text-base font-bold text-emerald-500 mb-1">%</span>
+              </div>
+              <div class="mt-3 flex items-center gap-2">
+                <span
+                  class="inline-block w-[6px] h-[6px] rounded-full bg-emerald-500"
+                ></span>
+                <span class="text-[11px] text-emerald-600 font-medium"
+                  >表現良好，高於平均</span
+                >
+              </div>
+            </div>
+
+            <!-- 日誌繳交率 -->
+            <div
+              class="kpi-card bg-white rounded-2xl p-5 shadow-sm border border-slate-100/80 animate-fade-in-up"
+              style="animation-delay: 0.25s"
+            >
+              <div class="flex items-center justify-between mb-3">
+                <p class="text-[13px] text-slate-400 font-medium">日誌繳交率</p>
+                <span
+                  class="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center text-sm"
+                  >⚠️</span
+                >
+              </div>
+              <div class="flex items-end gap-1.5">
+                <span
+                  class="text-[36px] font-black text-amber-500 leading-none"
+                  data-count="85"
+                  >0</span
+                >
+                <span class="text-base font-bold text-amber-400 mb-1">%</span>
+              </div>
+              <div class="mt-3 flex items-center gap-2">
+                <span
+                  class="inline-block w-[6px] h-[6px] rounded-full bg-amber-500"
+                ></span>
+                <span class="text-[11px] text-amber-600 font-medium"
+                  >略低，有 4 位尚未繳交</span
+                >
+              </div>
+            </div>
+
+            <!-- 異常預警 -->
+            <div
+              class="kpi-card bg-white rounded-2xl p-5 shadow-sm border border-slate-100/80 animate-fade-in-up"
+              style="animation-delay: 0.35s"
+            >
+              <div class="flex items-center justify-between mb-3">
+                <p class="text-[13px] text-slate-400 font-medium">異常預警數</p>
+                <span
+                  class="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center text-sm"
+                  >🔴</span
+                >
+              </div>
+              <div class="flex items-end gap-1.5">
+                <span
+                  class="text-[36px] font-black text-red-500 leading-none"
+                  data-count="3"
+                  >0</span
+                >
+                <span class="text-base font-bold text-red-400 mb-1">項</span>
+              </div>
+              <div class="mt-3 flex items-center gap-2">
+                <span
+                  class="inline-block w-[6px] h-[6px] rounded-full bg-red-500 pulse-glow"
+                ></span>
+                <span class="text-[11px] text-red-600 font-medium"
+                  >需立即處理</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 區域分隔 -->
+        <div class="px-10">
+          <div class="border-t border-slate-200/60"></div>
+        </div>
+
+        <!-- ===== AI 急迫待辦卡片區 ===== -->
+        <div class="px-10 py-7">
+          <div class="flex items-center gap-3 mb-7">
+            <h3 class="text-[17px] font-bold text-slate-800">
+              🤖 AI 急迫待辦事項
+            </h3>
+            <span
+              class="text-[11px] text-slate-400 bg-slate-100 px-3 py-1 rounded-full font-medium"
+              >依緊急程度排序</span
+            >
+          </div>
+
+          <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <!-- ====== 卡片 1：高風險個案預警 ====== -->
+            <div
+              class="action-card bg-white rounded-2xl shadow-sm border border-red-100/60 border-l-[5px] border-l-red-500 overflow-hidden animate-fade-in-up"
+              style="animation-delay: 0.2s"
+            >
+              <div class="p-6">
+                <!-- 標籤 -->
+                <div class="flex items-center gap-2 mb-4">
+                  <span
+                    class="inline-flex items-center gap-2 bg-red-50 text-red-700 text-[11px] font-bold px-3 py-1.5 rounded-full"
+                  >
+                    <span
+                      class="w-2 h-2 rounded-full bg-red-500 pulse-glow"
+                    ></span>
+                    高風險個案預警
+                  </span>
+                </div>
+
+                <!-- 內容 -->
+                <p class="text-[13px] text-slate-600 leading-[1.8] mb-5">
+                  系統偵測<strong class="text-slate-800 font-bold"
+                    >【忠孝國小A班 - 王小明】</strong
+                  >近期日誌反覆出現<span class="text-red-600 font-medium"
+                    >「情緒失控」</span
+                  >、<span class="text-red-600 font-medium">「家庭衝突」</span
+                  >關鍵字。
+                </p>
+
+                <!-- AI 建議行動 -->
+                <div
+                  class="ai-suggestion ai-suggestion-red bg-red-50/70 rounded-xl p-4 pl-5 mb-5"
+                >
+                  <div class="flex items-center gap-1.5 mb-1.5">
+                    <span class="text-xs">💡</span>
+                    <span class="text-[11px] font-bold text-red-800"
+                      >AI 建議行動</span
+                    >
+                  </div>
+                  <p class="text-[12px] text-red-700/90 leading-relaxed">
+                    建議今日進班或聯絡班級社工了解狀況，優先確認學生安全。
+                  </p>
+                </div>
+
+                <!-- 按鈕 -->
+                <div class="flex gap-2.5">
+                  <button
+                    class="btn-action flex-1 bg-red-500 hover:bg-red-600 text-white text-[12px] font-bold px-4 py-2.5 rounded-xl shadow-sm shadow-red-200"
+                  >
+                    查看完整日誌
+                  </button>
+                  <button
+                    class="btn-action btn-mark flex-1 border border-slate-200 text-slate-500 hover:bg-slate-50 text-[12px] font-medium px-4 py-2.5 rounded-xl"
+                    onclick="handleAction(this, '✅ 已處理')"
+                  >
+                    標記已處理
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ====== 卡片 2：志工情緒預警 ====== -->
+            <div
+              class="action-card bg-white rounded-2xl shadow-sm border border-amber-100/60 border-l-[5px] border-l-amber-400 overflow-hidden animate-fade-in-up"
+              style="animation-delay: 0.35s"
+            >
+              <div class="p-6">
+                <!-- 標籤 -->
+                <div class="flex items-center gap-2 mb-4">
+                  <span
+                    class="inline-flex items-center gap-2 bg-amber-50 text-amber-700 text-[11px] font-bold px-3 py-1.5 rounded-full"
+                  >
+                    <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                    志工情緒預警
+                  </span>
+                </div>
+
+                <!-- 內容 -->
+                <p class="text-[13px] text-slate-600 leading-[1.8] mb-5">
+                  <strong class="text-slate-800 font-bold"
+                    >【大學生社工 - 陳ＯＯ】</strong
+                  >連續三天日誌字數銳減，且文句帶有強烈<span
+                    class="text-amber-600 font-medium"
+                    >「無力感」</span
+                  >與<span class="text-amber-600 font-medium">「挫折」</span>。
+                </p>
+
+                <!-- AI 建議行動 -->
+                <div
+                  class="ai-suggestion ai-suggestion-amber bg-amber-50/70 rounded-xl p-4 pl-5 mb-5"
+                >
+                  <div class="flex items-center gap-1.5 mb-1.5">
+                    <span class="text-xs">💡</span>
+                    <span class="text-[11px] font-bold text-amber-800"
+                      >AI 建議行動</span
+                    >
+                  </div>
+                  <p class="text-[12px] text-amber-700/90 leading-relaxed">
+                    AI 評估有流失風險，建議安排時間進行一對一督導關懷。
+                  </p>
+                </div>
+
+                <!-- 按鈕 -->
+                <div class="flex gap-2.5">
+                  <button
+                    class="btn-action flex-1 bg-amber-500 hover:bg-amber-600 text-white text-[12px] font-bold px-4 py-2.5 rounded-xl shadow-sm shadow-amber-200"
+                    onclick="handleAction(this, '✅ 已發送')"
+                  >
+                    一鍵發送關懷訊息
+                  </button>
+                  <button
+                    class="btn-action flex-1 border border-slate-200 text-slate-500 hover:bg-slate-50 text-[12px] font-medium px-4 py-2.5 rounded-xl"
+                  >
+                    查看志工技能地圖
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ====== 卡片 3：缺交追蹤提醒 ====== -->
+            <div
+              class="action-card bg-white rounded-2xl shadow-sm border border-slate-100 border-l-[5px] border-l-slate-400 overflow-hidden animate-fade-in-up"
+              style="animation-delay: 0.5s"
+            >
+              <div class="p-6">
+                <!-- 標籤 -->
+                <div class="flex items-center gap-2 mb-4">
+                  <span
+                    class="inline-flex items-center gap-2 bg-slate-100 text-slate-600 text-[11px] font-bold px-3 py-1.5 rounded-full"
+                  >
+                    <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                    缺交追蹤提醒
+                  </span>
+                </div>
+
+                <!-- 內容 -->
+                <p class="text-[13px] text-slate-600 leading-[1.8] mb-5">
+                  本週有
+                  <strong class="text-slate-800 font-bold">4 位社工</strong
+                  >尚未繳交班級日誌，其中<strong
+                    class="text-slate-800 font-bold"
+                    >【希望國小B班 - 小張】</strong
+                  >已逾期 3 天，為本週最長未繳紀錄。
+                </p>
+
+                <!-- AI 建議行動 -->
+                <div
+                  class="ai-suggestion ai-suggestion-slate bg-slate-50 rounded-xl p-4 pl-5 mb-5"
+                >
+                  <div class="flex items-center gap-1.5 mb-1.5">
+                    <span class="text-xs">💡</span>
+                    <span class="text-[11px] font-bold text-slate-700"
+                      >AI 建議行動</span
+                    >
+                  </div>
+                  <p class="text-[12px] text-slate-500 leading-relaxed">
+                    建議優先聯繫逾期最久者，系統已自動發送第一輪提醒。
+                  </p>
+                </div>
+
+                <!-- 按鈕 -->
+                <div class="flex gap-2.5">
+                  <button
+                    class="btn-action flex-1 bg-slate-600 hover:bg-slate-700 text-white text-[12px] font-bold px-4 py-2.5 rounded-xl shadow-sm shadow-slate-200"
+                    onclick="handleAction(this, '✅ 已發送')"
+                  >
+                    批次發送提醒
+                  </button>
+                  <button
+                    class="btn-action flex-1 border border-slate-200 text-slate-500 hover:bg-slate-50 text-[12px] font-medium px-4 py-2.5 rounded-xl"
+                  >
+                    查看繳交明細
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 底部資訊 -->
+        <div class="px-10 pb-8">
+          <p class="text-[11px] text-slate-300 text-center mt-4">
+            資料更新時間：<span id="update-time"></span>　｜　由 AI
+            引擎自動分析產生，建議搭配實際觀察做判斷
+          </p>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // === 日期與問候語 ===
+      (function initHeader() {
+        const now = new Date();
+        const hour = now.getHours();
+
+        // 格式化日期
+        const dateStr = now.toLocaleDateString("zh-TW", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          weekday: "long",
+        });
+        document.getElementById("current-date").textContent = dateStr;
+
+        // 更新時間
+        const timeStr = now.toLocaleTimeString("zh-TW", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        document.getElementById("update-time").textContent =
+          `${dateStr} ${timeStr}`;
+
+        // 動態問候語
+        let greeting = "早安";
+        if (hour >= 12 && hour < 18) greeting = "午安";
+        else if (hour >= 18) greeting = "晚安";
+        document.getElementById("greeting").textContent = greeting;
+      })();
+
+      // === KPI 數字跳動動畫 ===
+      function animateCounters() {
+        document.querySelectorAll("[data-count]").forEach((el) => {
+          const target = parseInt(el.dataset.count, 10);
+          const duration = 1400;
+          const startTime = performance.now();
+
+          function update(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            // easeOutExpo：快速到達後減速
+            const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+            el.textContent = Math.round(target * eased);
+            if (progress < 1) {
+              requestAnimationFrame(update);
+            }
+          }
+
+          // 延遲啟動，讓進場動畫先完成
+          setTimeout(() => requestAnimationFrame(update), 400);
+        });
+      }
+      animateCounters();
+
+      // === 按鈕操作處理 ===
+      function handleAction(btn, successText) {
+        // 防止重複點擊
+        if (btn.disabled) return;
+        btn.disabled = true;
+
+        // 先顯示 loading 狀態
+        const originalText = btn.textContent;
+        btn.textContent = "處理中...";
+        btn.style.opacity = "0.7";
+
+        // 模擬處理時間後顯示成功
+        setTimeout(() => {
+          btn.textContent = successText;
+          btn.style.opacity = "1";
+          btn.classList.add("btn-success");
+          btn.style.cursor = "default";
+        }, 600);
+      }
+
+      // === 側邊欄導覽切換 ===
+      document.querySelectorAll(".nav-link").forEach((link) => {
+        link.addEventListener("click", function (e) {
+          e.preventDefault();
+          // 移除所有 active 狀態
+          document.querySelectorAll(".nav-link").forEach((l) => {
+            l.classList.remove(
+              "active",
+              "bg-white/[0.12]",
+              "text-white",
+              "font-medium",
+            );
+            l.classList.add("text-indigo-200/70");
+          });
+          // 設定當前為 active
+          this.classList.add(
+            "active",
+            "bg-white/[0.12]",
+            "text-white",
+            "font-medium",
+          );
+          this.classList.remove("text-indigo-200/70");
+        });
+      });
+    </script>
+  </body>
+</html>

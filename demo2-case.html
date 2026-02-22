@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>個案服務紀錄 — 社工管理系統</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="shared.css" />
+    <style>
+      .page-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 24px 16px;
+        min-height: 100vh;
+      }
+      .page-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .page-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1f2937;
+        flex: 1;
+      }
+      .student-card-content {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .student-card-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1f2937;
+      }
+      .student-card-class {
+        font-size: 13px;
+        color: #6b7280;
+      }
+      .student-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 4px;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .tags-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+      .last-record-date {
+        font-size: 12px;
+        color: #9ca3af;
+        white-space: nowrap;
+      }
+      .last-record-date.has-record {
+        color: #6b7280;
+      }
+      .info-row {
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #f3f4f6;
+      }
+      .info-row:last-child {
+        border-bottom: none;
+      }
+      .info-label {
+        width: 80px;
+        font-size: 13px;
+        color: #9ca3af;
+        flex-shrink: 0;
+      }
+      .info-value {
+        font-size: 14px;
+        color: #1f2937;
+        font-weight: 500;
+        flex: 1;
+      }
+      .section-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 12px;
+      }
+      .record-date {
+        font-size: 12px;
+        color: #9ca3af;
+        margin-bottom: 4px;
+      }
+      .record-note {
+        font-size: 14px;
+        color: #374151;
+        line-height: 1.6;
+        margin-top: 4px;
+      }
+      .empty-hint {
+        text-align: center;
+        color: #9ca3af;
+        font-size: 14px;
+        padding: 24px 0;
+      }
+      .content-with-bottom-btn {
+        padding-bottom: 80px;
+      }
+      .bottom-fixed-btn {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 16px;
+        background: linear-gradient(to top, #f8fafc 70%, transparent);
+      }
+      .bottom-fixed-btn-inner {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      .tag-chips-area {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 4px;
+      }
+      .phase2-buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .record-textarea {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        font-size: 14px;
+        font-family: "Noto Sans TC", sans-serif;
+        line-height: 1.6;
+        outline: none;
+        resize: vertical;
+        min-height: 96px;
+        transition: border-color 0.2s ease;
+        color: #1f2937;
+        box-sizing: border-box;
+      }
+      .record-textarea:focus {
+        border-color: #6366f1;
+      }
+      .form-section {
+        margin-bottom: 16px;
+      }
+      .form-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 8px;
+        display: block;
+      }
+      .student-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .search-wrapper {
+        margin-bottom: 16px;
+      }
+      .records-section {
+        margin-top: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 狀態 1：學生列表 -->
+    <div id="view-list" class="view active">
+      <div class="page-container">
+        <div class="page-header">
+          <a href="index.html" class="nav-back">← 回到首頁</a>
+          <h1 class="page-title">個案服務紀錄</h1>
+        </div>
+        <div class="search-wrapper">
+          <input
+            type="text"
+            id="search-input"
+            class="search-input"
+            placeholder="搜尋學生姓名..."
+            oninput="handleSearch(this.value)"
+          />
+        </div>
+        <div id="student-list" class="student-list fade-in"></div>
+        <div id="no-results" class="empty-hint" style="display: none">
+          找不到符合「<span id="search-keyword"></span>」的學生
+        </div>
+      </div>
+    </div>
+
+    <!-- 狀態 2：學生個別頁面 -->
+    <div id="view-profile" class="view">
+      <div class="page-container content-with-bottom-btn">
+        <div class="page-header">
+          <span
+            class="nav-back"
+            onclick="showView('list')"
+            style="cursor: pointer"
+            >← 返回列表</span
+          >
+          <h1 class="page-title" id="profile-name">學生名字</h1>
+        </div>
+        <div class="card" style="margin-bottom: 16px">
+          <div class="info-row">
+            <span class="info-label">班級</span>
+            <span class="info-value" id="profile-class">—</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">年級</span>
+            <span class="info-value" id="profile-grade">—</span>
+          </div>
+          <div
+            class="info-row"
+            style="align-items: flex-start; padding-top: 10px"
+          >
+            <span class="info-label" style="padding-top: 2px">關注標籤</span>
+            <div id="profile-tags" class="tags-group">—</div>
+          </div>
+        </div>
+        <div class="records-section">
+          <h2 class="section-title">近期紀錄</h2>
+          <div class="card">
+            <div id="profile-records"></div>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-fixed-btn">
+        <div class="bottom-fixed-btn-inner">
+          <button
+            class="btn-primary"
+            style="width: 100%"
+            onclick="goToNewRecord()"
+          >
+            ＋ 新增紀錄
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 狀態 3：新增紀錄 -->
+    <div id="view-new-record" class="view">
+      <div class="page-container content-with-bottom-btn">
+        <div class="page-header">
+          <span
+            class="nav-back"
+            onclick="showView('profile')"
+            style="cursor: pointer"
+            >← 返回</span
+          >
+          <h1 class="page-title">
+            新增紀錄 — <span id="new-record-name">學生名字</span>
+          </h1>
+        </div>
+        <div class="form-section card">
+          <label class="form-label">觀察面向（可多選）</label>
+          <div id="tag-chips-area" class="tag-chips-area"></div>
+        </div>
+        <div class="form-section card">
+          <label class="form-label" for="record-note">觀察紀錄</label>
+          <textarea
+            id="record-note"
+            class="record-textarea"
+            rows="4"
+            placeholder="請輸入觀察紀錄..."
+          ></textarea>
+        </div>
+        <div class="form-section card">
+          <label class="form-label" style="color: #9ca3af"
+            >Phase 2 功能預告</label
+          >
+          <div class="phase2-buttons">
+            <button class="btn-phase2">🎤 語音輸入</button>
+            <button class="btn-phase2">🤖 AI 輔助整理</button>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-fixed-btn">
+        <div class="bottom-fixed-btn-inner">
+          <button
+            class="btn-primary"
+            style="width: 100%"
+            onclick="saveRecord()"
+          >
+            ✅ 儲存紀錄
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="shared.js"></script>
+    <script>
+      /* 目前選中的學生 */
+      let currentStudent = null;
+
+      /* 切換畫面狀態 */
+      function showView(viewName) {
+        document.querySelectorAll(".view").forEach(function (v) {
+          v.classList.remove("active");
+        });
+        var targetView = document.getElementById("view-" + viewName);
+        if (targetView) {
+          targetView.classList.add("active");
+          window.scrollTo(0, 0);
+        }
+      }
+
+      /* 渲染學生列表，支援搜尋過濾 */
+      function renderStudentList(filterText) {
+        filterText = filterText || "";
+        var allStudents = getAllStudents();
+        var listContainer = document.getElementById("student-list");
+        var noResults = document.getElementById("no-results");
+        var searchKeyword = document.getElementById("search-keyword");
+
+        var filtered = filterText
+          ? allStudents.filter(function (s) {
+              return s.name.indexOf(filterText.trim()) !== -1;
+            })
+          : allStudents;
+
+        if (filtered.length === 0) {
+          listContainer.innerHTML = "";
+          noResults.style.display = "block";
+          searchKeyword.textContent = filterText;
+          return;
+        }
+        noResults.style.display = "none";
+
+        var html = "";
+        for (var i = 0; i < filtered.length; i++) {
+          var student = filtered[i];
+          var records = getStudentRecords(student.id);
+          var latestDate = null;
+          if (records.length > 0) {
+            var sorted = records.slice().sort(function (a, b) {
+              return b.date.localeCompare(a.date);
+            });
+            latestDate = sorted[0].date;
+          }
+          var dateDisplay = latestDate
+            ? latestDate.replace(/^\d{4}-0?(\d+)-0?(\d+)$/, "$1/$2")
+            : null;
+
+          var tagsHtml = "";
+          if (student.tags && student.tags.length > 0) {
+            for (var t = 0; t < student.tags.length; t++) {
+              tagsHtml +=
+                '<span class="tag-small">' + student.tags[t] + "</span>";
+            }
+          }
+
+          html +=
+            '<div class="card card-clickable" onclick="goToProfile(\'' +
+            student.id +
+            "')\">";
+          html +=
+            '<div class="student-card-content"><div class="student-card-name">' +
+            student.name +
+            "</div>";
+          html +=
+            '<div class="student-card-class">' + student.className + "</div>";
+          html +=
+            '<div class="student-card-footer"><div class="tags-group">' +
+            tagsHtml +
+            "</div>";
+          html +=
+            '<span class="last-record-date' +
+            (latestDate ? " has-record" : "") +
+            '">' +
+            (latestDate ? "最近：" + dateDisplay : "尚無紀錄") +
+            "</span>";
+          html += "</div></div></div>";
+        }
+        listContainer.innerHTML = html;
+      }
+
+      /* 搜尋處理 */
+      function handleSearch(value) {
+        renderStudentList(value);
+      }
+
+      /* 進入學生個別頁面 */
+      function goToProfile(studentId) {
+        var allStudents = getAllStudents();
+        currentStudent = null;
+        for (var i = 0; i < allStudents.length; i++) {
+          if (allStudents[i].id === studentId) {
+            currentStudent = allStudents[i];
+            break;
+          }
+        }
+        if (!currentStudent) return;
+
+        document.getElementById("profile-name").textContent =
+          currentStudent.name;
+        document.getElementById("profile-class").textContent =
+          currentStudent.className;
+        document.getElementById("profile-grade").textContent =
+          currentStudent.grade;
+
+        var tagsContainer = document.getElementById("profile-tags");
+        if (currentStudent.tags && currentStudent.tags.length > 0) {
+          var tagsHtml = "";
+          for (var t = 0; t < currentStudent.tags.length; t++) {
+            tagsHtml +=
+              '<span class="tag-small">' + currentStudent.tags[t] + "</span>";
+          }
+          tagsContainer.innerHTML = tagsHtml;
+        } else {
+          tagsContainer.innerHTML =
+            '<span style="color: #9ca3af; font-size: 14px;">無特殊標記</span>';
+        }
+
+        renderProfileRecords(studentId);
+        showView("profile");
+      }
+
+      /* 渲染學生的歷史紀錄（時間軸格式） */
+      function renderProfileRecords(studentId) {
+        var records = getStudentRecords(studentId);
+        var recordsContainer = document.getElementById("profile-records");
+
+        if (records.length === 0) {
+          recordsContainer.innerHTML =
+            '<div class="empty-hint">尚無服務紀錄</div>';
+          return;
+        }
+
+        var sorted = records.slice().sort(function (a, b) {
+          return b.date.localeCompare(a.date);
+        });
+
+        var html = '<div class="record-timeline">';
+        for (var i = 0; i < sorted.length; i++) {
+          var record = sorted[i];
+          html += '<div class="record-item">';
+          html +=
+            '<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">';
+          html +=
+            '<span class="record-date">' + formatDate(record.date) + "</span>";
+          html += '<span class="tag-small">' + record.category + "</span>";
+          html += '</div><p class="record-note">' + record.note + "</p></div>";
+        }
+        html += "</div>";
+        recordsContainer.innerHTML = html;
+      }
+
+      /* 日期格式化：2026-02-22 → 2/22 */
+      function formatDate(dateStr) {
+        return dateStr.replace(/^\d{4}-0?(\d+)-0?(\d+)$/, "$1/$2");
+      }
+
+      /* 進入新增紀錄畫面 */
+      function goToNewRecord() {
+        if (!currentStudent) return;
+        document.getElementById("new-record-name").textContent =
+          currentStudent.name;
+        document.getElementById("record-note").value = "";
+
+        var tagArea = document.getElementById("tag-chips-area");
+        var tagHtml = "";
+        for (var i = 0; i < OBSERVATION_TAGS.length; i++) {
+          tagHtml +=
+            '<span class="tag-chip" onclick="toggleTag(this)">' +
+            OBSERVATION_TAGS[i] +
+            "</span>";
+        }
+        tagArea.innerHTML = tagHtml;
+        showView("new-record");
+      }
+
+      /* 切換觀察面向標籤選取狀態 */
+      function toggleTag(element) {
+        element.classList.toggle("selected");
+      }
+
+      /* 儲存新紀錄（存在記憶體中） */
+      function saveRecord() {
+        var selectedEls = document.querySelectorAll(
+          "#tag-chips-area .tag-chip.selected",
+        );
+        var selectedTags = [];
+        for (var i = 0; i < selectedEls.length; i++) {
+          selectedTags.push(selectedEls[i].textContent.trim());
+        }
+        var note = document.getElementById("record-note").value.trim();
+
+        if (selectedTags.length === 0) {
+          showToast("請至少選擇一個觀察面向");
+          return;
+        }
+        if (!note) {
+          showToast("請輸入觀察紀錄內容");
+          return;
+        }
+
+        var today = new Date().toISOString().split("T")[0];
+        var newRecord = {
+          date: today,
+          category: selectedTags.join("、"),
+          note: note,
+        };
+
+        var studentId = currentStudent.id;
+        if (!CASE_RECORDS[studentId]) {
+          CASE_RECORDS[studentId] = [];
+        }
+        CASE_RECORDS[studentId].unshift(newRecord);
+
+        showToast("紀錄已儲存");
+        renderProfileRecords(studentId);
+        showView("profile");
+      }
+
+      /* 頁面載入時渲染學生列表 */
+      document.addEventListener("DOMContentLoaded", function () {
+        renderStudentList();
+      });
+    </script>
+  </body>
+</html>

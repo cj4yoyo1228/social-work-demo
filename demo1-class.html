@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>班級管理中心 — 社工管理系統</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="shared.css" />
+    <style>
+      body {
+        background: #f0f2f5;
+        display: flex;
+        justify-content: center;
+        padding: 24px 16px;
+        min-height: 100vh;
+      }
+
+      /* 手機內容區域 */
+      .phone-inner {
+        padding: 0 0 24px;
+      }
+
+      /* 頂部漸層 Header */
+      .app-header {
+        background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+        color: white;
+        padding: 20px 20px 24px;
+        position: relative;
+      }
+
+      .app-header .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        font-size: 13px;
+        margin-bottom: 12px;
+      }
+
+      .app-header .back-link:hover {
+        color: white;
+      }
+
+      .greeting {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+
+      .sub-info {
+        font-size: 13px;
+        opacity: 0.85;
+      }
+
+      /* 班級任務卡片 */
+      .task-card {
+        background: white;
+        border-radius: 12px;
+        padding: 16px;
+        margin: 0 16px 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      .task-card:first-child {
+        margin-top: -12px;
+      }
+
+      .task-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .task-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+
+      .class-name {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1f2937;
+      }
+
+      .class-time {
+        font-size: 12px;
+        color: #9ca3af;
+      }
+
+      .class-meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 13px;
+        color: #6b7280;
+        margin-bottom: 12px;
+      }
+
+      .start-btn {
+        width: 100%;
+        padding: 10px;
+        background: #6366f1;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s ease;
+        font-family: "Noto Sans TC", sans-serif;
+      }
+
+      .start-btn:hover {
+        background: #4f46e5;
+      }
+
+      .start-btn.done {
+        background: #d1fae5;
+        color: #059669;
+        cursor: default;
+      }
+
+      /* 點名畫面 */
+      .attendance-header {
+        background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+        color: white;
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .attendance-header .back-arrow {
+        cursor: pointer;
+        font-size: 18px;
+        padding: 4px;
+      }
+
+      .attendance-title {
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .attendance-count {
+        font-size: 13px;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 4px 12px;
+        border-radius: 20px;
+      }
+
+      /* 完成畫面 */
+      .complete-screen {
+        text-align: center;
+        padding: 32px 20px;
+      }
+
+      .complete-icon {
+        width: 80px;
+        height: 80px;
+        background: #d1fae5;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        margin: 0 auto 16px;
+      }
+
+      .complete-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 8px;
+      }
+
+      .complete-subtitle {
+        font-size: 14px;
+        color: #6b7280;
+        margin-bottom: 24px;
+      }
+
+      .summary-card {
+        background: #f9fafb;
+        border-radius: 12px;
+        padding: 16px;
+        margin: 0 4px 16px;
+        text-align: left;
+      }
+
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 0;
+        font-size: 14px;
+      }
+
+      .summary-label {
+        color: #6b7280;
+      }
+
+      .summary-value {
+        font-weight: 600;
+        color: #1f2937;
+      }
+
+      .absent-list {
+        text-align: left;
+        margin: 0 4px 20px;
+      }
+
+      .absent-list-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 8px;
+      }
+
+      .absent-student {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        background: #fef2f2;
+        border-radius: 8px;
+        margin-bottom: 6px;
+        font-size: 13px;
+      }
+
+      .absent-student .name {
+        font-weight: 600;
+        color: #1f2937;
+      }
+
+      .absent-student .reason {
+        color: #9ca3af;
+        font-size: 12px;
+      }
+
+      /* 缺席選項下拉 */
+      .absence-options {
+        display: none;
+        padding: 8px 16px 12px 56px;
+        background: #fef2f2;
+        border-bottom: 1px solid #fecaca;
+        animation: fadeIn 0.2s ease;
+      }
+
+      .absence-options.show {
+        display: block;
+      }
+
+      .absence-options select {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 13px;
+        font-family: "Noto Sans TC", sans-serif;
+        color: #374151;
+        background: white;
+        margin-bottom: 6px;
+        outline: none;
+      }
+
+      .absence-options select:focus {
+        border-color: #6366f1;
+      }
+
+      .absence-options input {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 13px;
+        font-family: "Noto Sans TC", sans-serif;
+        outline: none;
+        box-sizing: border-box;
+      }
+
+      .absence-options input:focus {
+        border-color: #6366f1;
+      }
+
+      /* 底部固定按鈕 */
+      .bottom-action {
+        padding: 16px 20px;
+        background: white;
+        border-top: 1px solid #f3f4f6;
+        position: sticky;
+        bottom: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="phone-frame">
+      <!-- ===== 狀態 1：今日任務列表 ===== -->
+      <div id="view-tasks" class="view active">
+        <div class="app-header">
+          <a href="index.html" class="back-link">← 回到首頁</a>
+          <div class="greeting" id="greeting-text">早安，小明！</div>
+          <div class="sub-info" id="tasks-info">今天有 2 個班級等你服務 📱</div>
+        </div>
+        <div class="phone-inner">
+          <div id="task-list" style="padding-top: 24px"></div>
+        </div>
+      </div>
+
+      <!-- ===== 狀態 2：點名畫面 ===== -->
+      <div id="view-attendance" class="view">
+        <div class="attendance-header">
+          <span class="back-arrow" onclick="backToTasks()">←</span>
+          <span class="attendance-title" id="att-class-name">光明國小 A班</span>
+          <span class="attendance-count" id="att-count">12/12 出席</span>
+        </div>
+        <div id="student-list"></div>
+        <div class="bottom-action">
+          <button
+            class="btn-primary"
+            style="width: 100%"
+            id="finish-btn"
+            onclick="finishAttendance()"
+          >
+            ✅ 完成點名
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== 狀態 3：點名完成 ===== -->
+      <div id="view-complete" class="view">
+        <div class="app-header" style="padding-bottom: 20px">
+          <a href="index.html" class="back-link">← 回到首頁</a>
+        </div>
+        <div class="complete-screen">
+          <div class="complete-icon checkmark-animation">✓</div>
+          <div class="complete-title">點名完成！</div>
+          <div class="complete-subtitle" id="complete-class-name">
+            光明國小 A班
+          </div>
+
+          <div class="summary-card">
+            <div class="summary-row">
+              <span class="summary-label">總人數</span>
+              <span class="summary-value" id="sum-total">12</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">出席</span>
+              <span
+                class="summary-value"
+                style="color: #059669"
+                id="sum-present"
+                >11</span
+              >
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">缺席/請假</span>
+              <span class="summary-value" style="color: #dc2626" id="sum-absent"
+                >1</span
+              >
+            </div>
+          </div>
+
+          <div class="absent-list" id="absent-detail"></div>
+
+          <button
+            class="btn-primary"
+            style="width: 100%; margin-bottom: 12px"
+            onclick="showToast('此為 Demo 展示，日誌功能即將推出')"
+          >
+            📝 撰寫今日日誌
+          </button>
+          <button
+            class="btn-secondary"
+            style="width: 100%"
+            onclick="backToTasksFromComplete()"
+          >
+            返回任務列表
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="shared.js"></script>
+    <script>
+      /* === 狀態管理 === */
+
+      /* 目前登入的社工（模擬 sw1 小明） */
+      const CURRENT_WORKER = "sw1";
+
+      /* 各班級點名狀態，key = classId */
+      const attendanceState = {};
+
+      /* 目前正在點名的班級 ID */
+      let currentClassId = null;
+
+      /* === 畫面切換 === */
+      function showView(viewName) {
+        document.querySelectorAll(".view").forEach(function (v) {
+          v.classList.remove("active");
+        });
+        var target = document.getElementById("view-" + viewName);
+        if (target) {
+          target.classList.add("active");
+        }
+      }
+
+      /* === 初始化：渲染任務列表 === */
+      function init() {
+        /* 動態問候語 */
+        var hour = new Date().getHours();
+        var greetText = "早安";
+        if (hour >= 12 && hour < 18) greetText = "午安";
+        else if (hour >= 18) greetText = "晚安";
+        document.getElementById("greeting-text").textContent =
+          greetText + "，小明！";
+
+        /* 取得此社工的班級 */
+        var myClasses = getWorkerClasses(CURRENT_WORKER);
+        document.getElementById("tasks-info").textContent =
+          "今天有 " + myClasses.length + " 個班級等你服務 📱";
+
+        /* 渲染班級卡片 */
+        var container = document.getElementById("task-list");
+        var html = "";
+        for (var i = 0; i < myClasses.length; i++) {
+          var cls = myClasses[i];
+          var isDone = attendanceState[cls.id] && attendanceState[cls.id].done;
+          html +=
+            '<div class="task-card fade-in" style="animation-delay: ' +
+            i * 0.08 +
+            's">';
+          html += '<div class="task-card-header">';
+          html += '<span class="class-name">' + cls.name + "</span>";
+          html += '<span class="class-time">' + cls.time + "</span>";
+          html += "</div>";
+          html += '<div class="class-meta">';
+          html += "<span>🏫 " + cls.school + "</span>";
+          html += "<span>👥 " + cls.studentCount + " 人</span>";
+          html += "</div>";
+          if (isDone) {
+            html += '<button class="start-btn done">✅ 已完成點名</button>';
+          } else {
+            html +=
+              '<button class="start-btn" onclick="startAttendance(\'' +
+              cls.id +
+              "')\">開始點名</button>";
+          }
+          html += "</div>";
+        }
+        container.innerHTML = html;
+      }
+
+      /* === 開始點名 === */
+      function startAttendance(classId) {
+        currentClassId = classId;
+
+        /* 找到班級資訊 */
+        var cls = null;
+        for (var i = 0; i < CLASSES.length; i++) {
+          if (CLASSES[i].id === classId) {
+            cls = CLASSES[i];
+            break;
+          }
+        }
+        if (!cls) return;
+
+        /* 初始化該班的點名狀態（預設全勤） */
+        var students = STUDENTS[classId] || [];
+        if (!attendanceState[classId]) {
+          attendanceState[classId] = {
+            done: false,
+            students: {},
+          };
+          for (var i = 0; i < students.length; i++) {
+            attendanceState[classId].students[students[i].id] = {
+              present: true,
+              reason: "",
+              note: "",
+            };
+          }
+        }
+
+        document.getElementById("att-class-name").textContent = cls.name;
+        renderStudentList(classId);
+        updateAttendanceCount(classId);
+        showView("attendance");
+      }
+
+      /* === 渲染學生點名列表 === */
+      function renderStudentList(classId) {
+        var students = STUDENTS[classId] || [];
+        var state = attendanceState[classId];
+        var container = document.getElementById("student-list");
+        var html = "";
+
+        for (var i = 0; i < students.length; i++) {
+          var s = students[i];
+          var st = state.students[s.id];
+          var isPresent = st.present;
+          var rowClass = isPresent ? "" : " absent";
+
+          html +=
+            '<div class="student-row' +
+            rowClass +
+            '" onclick="toggleStudent(\'' +
+            classId +
+            "', '" +
+            s.id +
+            "')\">";
+          html += '<div class="status-icon">';
+          html += isPresent ? "✅" : "❌";
+          html += "</div>";
+          html += '<div class="student-name">' + s.name + "</div>";
+
+          /* 學生標籤 */
+          if (s.tags && s.tags.length > 0) {
+            for (var t = 0; t < s.tags.length; t++) {
+              var tagClass = "tag-small";
+              if (s.tags[t] === "情緒起伏大" || s.tags[t] === "家庭狀況特殊") {
+                tagClass += " warning";
+              }
+              html +=
+                '<span class="' + tagClass + '">' + s.tags[t] + "</span> ";
+            }
+          }
+          html += "</div>";
+
+          /* 缺席詳情展開區 */
+          if (!isPresent) {
+            html +=
+              '<div class="absence-options show" id="absence-' + s.id + '">';
+            html +=
+              "<select onchange=\"setReason('" +
+              classId +
+              "', '" +
+              s.id +
+              "', this.value)\">";
+            html += '<option value="">選擇原因...</option>';
+            html +=
+              '<option value="事假"' +
+              (st.reason === "事假" ? " selected" : "") +
+              ">事假</option>";
+            html +=
+              '<option value="病假"' +
+              (st.reason === "病假" ? " selected" : "") +
+              ">病假</option>";
+            html +=
+              '<option value="無故缺席"' +
+              (st.reason === "無故缺席" ? " selected" : "") +
+              ">無故缺席</option>";
+            html +=
+              '<option value="其他"' +
+              (st.reason === "其他" ? " selected" : "") +
+              ">其他</option>";
+            html += "</select>";
+            html +=
+              '<input type="text" placeholder="備註（選填）" value="' +
+              (st.note || "") +
+              '" onchange="setNote(\'' +
+              classId +
+              "', '" +
+              s.id +
+              '\', this.value)" onclick="event.stopPropagation()" />';
+            html += "</div>";
+          }
+        }
+
+        container.innerHTML = html;
+      }
+
+      /* === 切換學生出席狀態 === */
+      function toggleStudent(classId, studentId) {
+        var state = attendanceState[classId];
+        var st = state.students[studentId];
+        st.present = !st.present;
+        if (st.present) {
+          st.reason = "";
+          st.note = "";
+        }
+        renderStudentList(classId);
+        updateAttendanceCount(classId);
+      }
+
+      /* === 設定缺席原因 === */
+      function setReason(classId, studentId, value) {
+        attendanceState[classId].students[studentId].reason = value;
+        event.stopPropagation();
+      }
+
+      /* === 設定缺席備註 === */
+      function setNote(classId, studentId, value) {
+        attendanceState[classId].students[studentId].note = value;
+      }
+
+      /* === 更新出席人數顯示 === */
+      function updateAttendanceCount(classId) {
+        var state = attendanceState[classId];
+        var total = 0;
+        var present = 0;
+        var keys = Object.keys(state.students);
+        for (var i = 0; i < keys.length; i++) {
+          total++;
+          if (state.students[keys[i]].present) present++;
+        }
+        document.getElementById("att-count").textContent =
+          present + "/" + total + " 出席";
+      }
+
+      /* === 完成點名 === */
+      function finishAttendance() {
+        var state = attendanceState[currentClassId];
+        var keys = Object.keys(state.students);
+        var absentStudents = [];
+
+        /* 檢查是否有缺席但沒選原因的 */
+        for (var i = 0; i < keys.length; i++) {
+          var st = state.students[keys[i]];
+          if (!st.present) {
+            if (!st.reason) {
+              showToast("請為缺席學生選擇原因");
+              return;
+            }
+            /* 找到學生名字 */
+            var students = STUDENTS[currentClassId] || [];
+            for (var j = 0; j < students.length; j++) {
+              if (students[j].id === keys[i]) {
+                absentStudents.push({
+                  name: students[j].name,
+                  reason: st.reason,
+                  note: st.note,
+                });
+                break;
+              }
+            }
+          }
+        }
+
+        /* 標記完成 */
+        state.done = true;
+
+        /* 計算統計 */
+        var total = keys.length;
+        var absentCount = absentStudents.length;
+        var presentCount = total - absentCount;
+
+        /* 找到班級名稱 */
+        var className = "";
+        for (var i = 0; i < CLASSES.length; i++) {
+          if (CLASSES[i].id === currentClassId) {
+            className = CLASSES[i].name;
+            break;
+          }
+        }
+
+        /* 填入完成畫面 */
+        document.getElementById("complete-class-name").textContent = className;
+        document.getElementById("sum-total").textContent = total;
+        document.getElementById("sum-present").textContent = presentCount;
+        document.getElementById("sum-absent").textContent = absentCount;
+
+        /* 缺席名單 */
+        var absentHtml = "";
+        if (absentStudents.length > 0) {
+          absentHtml += '<div class="absent-list-title">缺席/請假名單</div>';
+          for (var i = 0; i < absentStudents.length; i++) {
+            var a = absentStudents[i];
+            absentHtml += '<div class="absent-student">';
+            absentHtml += "❌ ";
+            absentHtml += '<span class="name">' + a.name + "</span>";
+            absentHtml += '<span class="reason">' + a.reason;
+            if (a.note) absentHtml += "（" + a.note + "）";
+            absentHtml += "</span>";
+            absentHtml += "</div>";
+          }
+        }
+        document.getElementById("absent-detail").innerHTML = absentHtml;
+
+        showView("complete");
+      }
+
+      /* === 返回任務列表 === */
+      function backToTasks() {
+        showView("tasks");
+        init();
+      }
+
+      function backToTasksFromComplete() {
+        showView("tasks");
+        init();
+      }
+
+      /* 頁面載入 */
+      document.addEventListener("DOMContentLoaded", init);
+    </script>
+  </body>
+</html>
