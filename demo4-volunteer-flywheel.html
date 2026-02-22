@@ -207,6 +207,73 @@
       ];
 
       /* ------------------------------------------
+       * 職場能力資料（六項指標）
+       * 每項包含：企業定義 (corpDef) 與永齡實作定義 (ylDef)
+       * ------------------------------------------ */
+      const SKILLS = [
+        {
+          id: "communication",
+          name: "溝通力",
+          icon: "💬",
+          corpDef: "有效傳遞資訊並達成共識。",
+          ylDef: "能引導不同背景的學童進行情緒表達與衝突調解。",
+          color: "blue",
+        },
+        {
+          id: "leadership",
+          name: "領導力",
+          icon: "🎯",
+          corpDef: "帶領團隊達成目標，激發成員潛能。",
+          ylDef: "能在混齡環境中安排小組任務並激勵學童參與。",
+          color: "purple",
+        },
+        {
+          id: "problem-solving",
+          name: "問題解決",
+          icon: "🧩",
+          corpDef: "分析問題根因並提出有效解決方案。",
+          ylDef: "能因應課堂突發狀況即時調整教學策略。",
+          color: "green",
+        },
+        {
+          id: "teamwork",
+          name: "團隊合作",
+          icon: "🤝",
+          corpDef: "與他人協作完成共同目標。",
+          ylDef: "能與班導師、家長及其他志工有效協調配合。",
+          color: "pink",
+        },
+        {
+          id: "resilience",
+          name: "韌性",
+          icon: "💪",
+          corpDef: "面對挫折能快速調適並持續前進。",
+          ylDef: "面對學童情緒爆發或教學挫折，能調整心態繼續投入。",
+          color: "orange",
+        },
+        {
+          id: "empathy",
+          name: "同理心",
+          icon: "❤️",
+          corpDef: "理解他人感受並做出適當回應。",
+          ylDef: "能感知學童情緒變化，用適齡的方式給予支持。",
+          color: "red",
+        },
+      ];
+
+      /* ------------------------------------------
+       * 每個能力對應的色系（Tailwind class 用）
+       * ------------------------------------------ */
+      const SKILL_COLOR_MAP = {
+        blue: { bg: "#EFF6FF", border: "#3B82F6", text: "#1E40AF" },
+        purple: { bg: "#F5F3FF", border: "#8B5CF6", text: "#6D28D9" },
+        green: { bg: "#ECFDF5", border: "#10B981", text: "#047857" },
+        pink: { bg: "#FDF2F8", border: "#EC4899", text: "#BE185D" },
+        orange: { bg: "#FFF7ED", border: "#F97316", text: "#C2410C" },
+        red: { bg: "#FEF2F2", border: "#EF4444", text: "#B91C1C" },
+      };
+
+      /* ------------------------------------------
        * TopNav 元件：頂部導覽列
        * - 固定在頁面最上方
        * - 包含返回首頁連結、進度指示器、標題
@@ -354,6 +421,180 @@
       }
 
       /* ------------------------------------------
+       * Stage1 元件：第一站 — 職場指標對標
+       * - 顯示六張能力卡片（2x3 grid）
+       * - 點擊卡片展開企業定義 & 永齡實作
+       * - 點過「溝通力」後顯示前進按鈕
+       * ------------------------------------------ */
+      function Stage1({ onNext }) {
+        // 目前選中的卡片 id（null 表示沒選）
+        const [selectedSkill, setSelectedSkill] = useState(null);
+        // 是否曾點擊過「溝通力」，點過才顯示前進按鈕
+        const [hasTappedComm, setHasTappedComm] = useState(false);
+
+        /**
+         * handleCardClick：點擊卡片的處理
+         * - 如果點的是已選中的卡片 → 收合（設為 null）
+         * - 否則展開該卡片
+         * - 若點到溝通力，標記 hasTappedComm
+         */
+        const handleCardClick = useCallback((skillId) => {
+          setSelectedSkill((prev) => (prev === skillId ? null : skillId));
+          if (skillId === "communication") {
+            setHasTappedComm(true);
+          }
+        }, []);
+
+        return (
+          <div className="max-w-3xl mx-auto px-4 py-10 stage-enter">
+            {/* 標題區域 */}
+            <div className="text-center mb-8">
+              <h1
+                className="text-3xl md:text-4xl font-bold mb-3"
+                style={{ color: COLORS.titleDark }}
+              >
+                🏢 永齡職場力字典
+              </h1>
+              <p className="text-base" style={{ color: "#64748B" }}>
+                點擊任一能力，看看企業怎麼定義，永齡怎麼實踐
+              </p>
+            </div>
+
+            {/* 2x3 能力卡片 grid */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {SKILLS.map((skill, index) => {
+                const isSelected = selectedSkill === skill.id;
+                const colors = SKILL_COLOR_MAP[skill.color];
+
+                return (
+                  <div
+                    key={skill.id}
+                    onClick={() => handleCardClick(skill.id)}
+                    className="rounded-xl cursor-pointer select-none animate-fade-in-up"
+                    style={{
+                      /* 動畫延遲：卡片逐一浮現 */
+                      animationDelay: `${index * 0.08}s`,
+                      background: isSelected
+                        ? colors.bg
+                        : "rgba(255,255,255,0.85)",
+                      border: isSelected
+                        ? `2px solid ${colors.border}`
+                        : "2px solid transparent",
+                      boxShadow: isSelected
+                        ? `0 4px 20px ${colors.border}33`
+                        : "0 1px 4px rgba(0,0,0,0.06)",
+                      /* 用 transition 做平滑展開/收合 + hover 浮起 */
+                      transition: "all 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
+                      transform: isSelected
+                        ? "translateY(-2px)"
+                        : "translateY(0)",
+                      padding: "20px",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isSelected) {
+                        e.currentTarget.style.transform = "translateY(-4px)";
+                        e.currentTarget.style.boxShadow =
+                          "0 6px 16px rgba(0,0,0,0.1)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isSelected) {
+                        e.currentTarget.style.transform = "translateY(0)";
+                        e.currentTarget.style.boxShadow =
+                          "0 1px 4px rgba(0,0,0,0.06)";
+                      }
+                    }}
+                  >
+                    {/* 卡片上方：圖示 + 能力名稱 */}
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-2xl">{skill.icon}</span>
+                      <span
+                        className="text-base font-semibold"
+                        style={{
+                          color: isSelected ? colors.text : COLORS.titleDark,
+                        }}
+                      >
+                        {skill.name}
+                      </span>
+                    </div>
+
+                    {/* 展開區域：企業定義 + 永齡實作（用 max-height 做平滑展開） */}
+                    <div
+                      style={{
+                        maxHeight: isSelected ? "200px" : "0px",
+                        opacity: isSelected ? 1 : 0,
+                        overflow: "hidden",
+                        transition:
+                          "max-height 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease",
+                        marginTop: isSelected ? "12px" : "0px",
+                      }}
+                    >
+                      {/* 企業定義 */}
+                      <div className="mb-2">
+                        <span
+                          className="text-xs font-medium"
+                          style={{ color: "#94A3B8" }}
+                        >
+                          🏢 企業定義
+                        </span>
+                        <p
+                          className="text-sm mt-1"
+                          style={{ color: COLORS.titleDark, lineHeight: "1.6" }}
+                        >
+                          {skill.corpDef}
+                        </p>
+                      </div>
+
+                      {/* 永齡實作 */}
+                      <div>
+                        <span
+                          className="text-xs font-medium"
+                          style={{ color: "#94A3B8" }}
+                        >
+                          🌱 永齡實作
+                        </span>
+                        <p
+                          className="text-sm mt-1"
+                          style={{ color: COLORS.titleDark, lineHeight: "1.6" }}
+                        >
+                          {skill.ylDef}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* 前進按鈕：點過溝通力後才顯示 */}
+            {hasTappedComm && (
+              <div
+                className="flex justify-center mt-10 animate-fade-in-up"
+                style={{ animationDelay: "0.1s" }}
+              >
+                <button
+                  onClick={onNext}
+                  className="px-8 py-3 rounded-full text-white font-semibold text-base
+                             hover:shadow-lg transition-all duration-300 cursor-pointer"
+                  style={{
+                    background: `linear-gradient(135deg, ${COLORS.brandDeep}, ${COLORS.brandBright})`,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                  }}
+                >
+                  前往第二站 →
+                </button>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      /* ------------------------------------------
        * App 元件：主應用程式
        * - 管理當前站點 (currentStage)
        * - 管理轉場動畫 (stageTransition)
@@ -408,7 +649,15 @@
                 stageTransition ? "opacity-0" : "opacity-100"
               }`}
             >
-              <StagePlaceholder stageId={currentStage} label={currentLabel} />
+              {/* 第一站：職場指標對標（正式元件） */}
+              {currentStage === 1 && <Stage1 onNext={() => goToStage(2)} />}
+              {/* 第二站、第三站：暫時佔位（後續任務替換） */}
+              {currentStage === 2 && (
+                <StagePlaceholder stageId={2} label="第二站" />
+              )}
+              {currentStage === 3 && (
+                <StagePlaceholder stageId={3} label="第三站" />
+              )}
             </main>
           </div>
         );
