@@ -705,6 +705,296 @@
           padding: 6px 12px;
         }
       }
+
+      /* ===== AI 即時反思引導系統樣式 ===== */
+
+      /* 文字框上方的小提示文字 */
+      .ai-hint-text {
+        font-size: 12px;
+        color: #9ca3af;
+        margin-bottom: 8px;
+        display: block;
+        font-weight: 400;
+      }
+
+      /* AI 分析中的等待提示（帶彈跳圓點動畫） */
+      .ai-analyzing {
+        display: none;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 8px;
+        padding: 6px 10px;
+        background: #f9fafb;
+        border-radius: 8px;
+        width: fit-content;
+      }
+
+      .ai-analyzing.visible {
+        display: flex;
+      }
+
+      /* 彈跳圓點動畫 */
+      .dot-bounce {
+        display: flex;
+        gap: 3px;
+        align-items: center;
+      }
+
+      .dot-bounce span {
+        width: 5px;
+        height: 5px;
+        background: #6366f1;
+        border-radius: 50%;
+        display: inline-block;
+        animation: dotBounce 1.2s infinite ease-in-out;
+      }
+
+      .dot-bounce span:nth-child(1) {
+        animation-delay: 0s;
+      }
+      .dot-bounce span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .dot-bounce span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes dotBounce {
+        0%,
+        80%,
+        100% {
+          transform: scale(0.6);
+          opacity: 0.4;
+        }
+        40% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      /* AI 引導卡片容器（卡片插入此處） */
+      .ai-guidance-container {
+        margin-top: 10px;
+        overflow: hidden;
+      }
+
+      /* AI 引導卡片基礎樣式 */
+      .ai-guidance-card {
+        border-radius: 12px;
+        padding: 14px 16px;
+        position: relative;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        animation: aiCardSlideIn 0.35s ease forwards;
+      }
+
+      /* 卡片進場動畫（slideUp + fadeIn） */
+      @keyframes aiCardSlideIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* 卡片退場動畫 */
+      @keyframes aiCardSlideOut {
+        from {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+      }
+
+      .ai-guidance-card.hiding {
+        animation: aiCardSlideOut 0.25s ease forwards;
+      }
+
+      /* 情境一：情緒波動（紅色） */
+      .ai-card-emotion {
+        border-left: 4px solid #ef4444;
+        background: #fef2f2;
+      }
+
+      /* 情境二：高風險預警（橘色 + 加強視覺） */
+      .ai-card-risk {
+        border-left: 4px solid #f97316;
+        background: #fff7ed;
+        border: 2px solid #f97316;
+        border-left: 6px solid #f97316;
+      }
+
+      /* 情境二：橘色脈動邊框效果 */
+      @keyframes riskPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.3);
+        }
+        50% {
+          box-shadow: 0 0 0 6px rgba(249, 115, 22, 0);
+        }
+      }
+
+      .ai-card-risk {
+        animation:
+          aiCardSlideIn 0.35s ease forwards,
+          riskPulse 2s ease-in-out 0.4s infinite;
+      }
+
+      .ai-card-risk.hiding {
+        animation: aiCardSlideOut 0.25s ease forwards;
+      }
+
+      /* 情境三：正向行為（綠色） */
+      .ai-card-positive {
+        border-left: 4px solid #10b981;
+        background: #ecfdf5;
+      }
+
+      /* 右上角「🤖 AI 引導」標示 */
+      .ai-card-badge {
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        font-size: 11px;
+        color: #9ca3af;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+
+      /* 卡片內的關閉按鈕（X） */
+      .ai-card-close {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 22px;
+        height: 22px;
+        background: rgba(0, 0, 0, 0.08);
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 12px;
+        color: #6b7280;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        padding: 0;
+        transition: background 0.2s ease;
+        font-family: "Noto Sans TC", sans-serif;
+      }
+
+      .ai-card-close:hover {
+        background: rgba(0, 0, 0, 0.15);
+        color: #374151;
+      }
+
+      /* 卡片標籤（🔴 偵測到情緒波動 等） */
+      .ai-card-label {
+        font-size: 13px;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 8px;
+        padding-right: 60px; /* 避免被右上角 badge 蓋到 */
+      }
+
+      /* 引導追問文字 */
+      .ai-card-question {
+        font-size: 13px;
+        color: #374151;
+        line-height: 1.65;
+        margin-bottom: 10px;
+      }
+
+      /* 數據價值提示（小字灰色） */
+      .ai-card-data-hint {
+        font-size: 12px;
+        color: #9ca3af;
+        line-height: 1.5;
+        margin-bottom: 12px;
+      }
+
+      /* 卡片底部按鈕區 */
+      .ai-card-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      /* 「採納建議」按鈕 */
+      .ai-card-adopt-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 7px 14px;
+        background: #6366f1;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: "Noto Sans TC", sans-serif;
+      }
+
+      .ai-card-adopt-btn:hover {
+        background: #4f46e5;
+        transform: translateY(-1px);
+      }
+
+      .ai-card-adopt-btn:active {
+        transform: translateY(0);
+      }
+
+      /* 按鈕已採納狀態 */
+      .ai-card-adopt-btn.adopted {
+        background: #10b981;
+        cursor: default;
+        transform: none;
+      }
+
+      /* 「略過」按鈕（文字連結風格） */
+      .ai-card-skip-btn {
+        font-size: 12px;
+        color: #9ca3af;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 6px;
+        transition:
+          color 0.2s ease,
+          background 0.2s ease;
+        font-family: "Noto Sans TC", sans-serif;
+      }
+
+      .ai-card-skip-btn:hover {
+        color: #6b7280;
+        background: rgba(0, 0, 0, 0.05);
+      }
+
+      /* 手機版優化 */
+      @media (max-width: 480px) {
+        .ai-card-label {
+          font-size: 12px;
+        }
+        .ai-card-question {
+          font-size: 12px;
+        }
+        .ai-card-adopt-btn {
+          font-size: 12px;
+          padding: 6px 12px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -839,14 +1129,30 @@
           <div id="tag-chips-area" class="tag-chips-area"></div>
         </div>
 
-        <!-- 簡短描述文字框 -->
+        <!-- 簡短描述文字框（含 AI 即時引導） -->
         <div class="form-section card">
           <label class="form-label" for="record-note">觀察描述</label>
+          <!-- 文字框上方提示：告知志工 AI 會即時引導 -->
+          <span class="ai-hint-text"
+            >💡 輸入觀察內容後，AI 將即時分析並提供反思引導</span
+          >
           <textarea
             id="record-note"
             class="record-textarea"
             placeholder="請描述你觀察到的情況..."
+            oninput="handleNoteInput()"
           ></textarea>
+          <!-- AI 分析中的等待提示（彈跳圓點） -->
+          <div id="ai-analyzing" class="ai-analyzing">
+            <span>🤖 AI 分析中</span>
+            <div class="dot-bounce">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+          <!-- AI 引導卡片會動態插入到這裡 -->
+          <div id="ai-guidance-container" class="ai-guidance-container"></div>
         </div>
 
         <!-- Phase 2 預留功能（灰色不可點擊） -->
@@ -1388,6 +1694,11 @@
         // 清空文字框
         document.getElementById("record-note").value = "";
 
+        // 重置 AI 引導相關狀態（清除計時器、卡片、分析提示）
+        if (typeof clearAllAiGuidance === "function") {
+          clearAllAiGuidance();
+        }
+
         // 渲染觀察面向標籤（全部初始為未選中）
         var tagArea = document.getElementById("tag-chips-area");
         var tagHtml = "";
@@ -1476,6 +1787,327 @@
           if (callback) callback();
         }, 1200);
       }
+
+      /* ============================================================
+         AI 即時反思引導系統
+         ============================================================ */
+
+      /* 三個情境的定義：關鍵字、卡片樣式、引導內容 */
+      var AI_SCENARIOS = [
+        {
+          /* 情境二（優先級最高）：高風險預警 — 家庭疏忽 */
+          id: "risk",
+          priority: 1,
+          keywords: [
+            "特別累",
+            "味道",
+            "不想吃",
+            "受傷",
+            "瘀青",
+            "髒",
+            "沒吃早餐",
+          ],
+          cardClass: "ai-card-risk",
+          label: "⚠️ 系統重要提醒 — 疑似生活照顧疏忽",
+          question:
+            "偵測到疑似「生活照顧疏忽」指標。請您回想並補充：學童是否有提及昨晚家裡的狀況？是否有發現學童身上有其他異常外傷？",
+          dataHint: "📊 您補充的資訊將優先同步給各校督導，協助及時介入",
+          /* 採納後插入文字框的引導補充模板 */
+          template:
+            "\n\n---\n【AI 引導補充】\n學童提及的家庭狀況：\n身體外觀異常觀察：\n是否需要通報：",
+        },
+        {
+          /* 情境一（優先級第二）：學習挫折與情緒 */
+          id: "emotion",
+          priority: 2,
+          keywords: [
+            "不專心",
+            "發脾氣",
+            "大發脾氣",
+            "情緒失控",
+            "哭",
+            "生氣",
+            "打人",
+          ],
+          cardClass: "ai-card-emotion",
+          label: "🔴 偵測到情緒波動",
+          question:
+            "偵測到學童有強烈的情緒波動。請問發脾氣前，是否有遇到特定的題型卡關？您當下使用了什麼方式（如：轉移注意力、拆解步驟）來安撫他，且效果如何？",
+          dataHint: "📊 補充後可協助督導釐清是學習障礙還是純情緒問題",
+          template:
+            "\n\n---\n【AI 引導補充】\n情緒爆發的觸發點：\n使用的安撫方式：\n效果評估：",
+        },
+        {
+          /* 情境三（優先級最低）：正向行為與班級氛圍 */
+          id: "positive",
+          priority: 3,
+          keywords: ["氣氛好", "很棒", "進步", "幫忙", "開心", "主動", "合作"],
+          cardClass: "ai-card-positive",
+          label: "🌟 正向行為紀錄",
+          question:
+            "太棒了！為了具體記錄孩子的成長，請問今天您使用了什麼特別的班級經營技巧（如：分組競賽、代幣獎勵）讓氣氛變好？這位同學的主動幫忙，跟過去相比有什麼突破嗎？",
+          dataHint: "📊 具體記錄可建立班級正向經營的成功案例庫",
+          template:
+            "\n\n---\n【AI 引導補充】\n使用的班級經營技巧：\n學童的具體突破：\n後續跟進計畫：",
+        },
+      ];
+
+      /* 目前顯示的卡片情境 ID */
+      var currentCardScenarioId = null;
+
+      /* debounce 計時器（用來延遲 800ms 才顯示卡片） */
+      var aiDebounceTimer = null;
+
+      /* ============================================================
+         處理文字框輸入事件（debounce 800ms）
+         ============================================================ */
+      function handleNoteInput() {
+        var text = document.getElementById("record-note").value;
+
+        /* 若文字框是空的，清除所有 AI 引導 */
+        if (!text.trim()) {
+          clearAllAiGuidance();
+          return;
+        }
+
+        /* 清除上一個 debounce 計時器 */
+        if (aiDebounceTimer) {
+          clearTimeout(aiDebounceTimer);
+          aiDebounceTimer = null;
+        }
+
+        /* 先偵測關鍵字，找出優先級最高的情境 */
+        var matchedScenario = detectScenario(text);
+
+        if (!matchedScenario) {
+          /* 沒有匹配的關鍵字：關閉卡片和 loading */
+          hideAnalyzing();
+          if (currentCardScenarioId) {
+            hideCurrentCard(function () {
+              currentCardScenarioId = null;
+            });
+          }
+          return;
+        }
+
+        /* 如果已經顯示的是同一個情境，不重複觸發 */
+        if (currentCardScenarioId === matchedScenario.id) {
+          return;
+        }
+
+        /* 顯示「AI 分析中...」提示 */
+        showAnalyzing();
+
+        /* 延遲 800ms 後顯示 AI 引導卡片（模擬 AI 分析時間） */
+        aiDebounceTimer = setTimeout(function () {
+          hideAnalyzing();
+          showAiCard(matchedScenario);
+        }, 800);
+      }
+
+      /* ============================================================
+         偵測文字中的關鍵字，回傳優先級最高的情境
+         ============================================================ */
+      function detectScenario(text) {
+        var matched = null;
+
+        for (var i = 0; i < AI_SCENARIOS.length; i++) {
+          var scenario = AI_SCENARIOS[i];
+          var keywords = scenario.keywords;
+
+          /* 逐一檢查關鍵字（用 includes 簡單匹配） */
+          for (var k = 0; k < keywords.length; k++) {
+            if (text.includes(keywords[k])) {
+              /* 找到匹配！確認是否比目前暫存的優先級更高 */
+              if (!matched || scenario.priority < matched.priority) {
+                matched = scenario;
+              }
+              break; /* 同一個情境只需匹配到一個關鍵字就夠 */
+            }
+          }
+        }
+
+        return matched;
+      }
+
+      /* ============================================================
+         顯示「AI 分析中...」等待提示
+         ============================================================ */
+      function showAnalyzing() {
+        var el = document.getElementById("ai-analyzing");
+        if (el) el.classList.add("visible");
+      }
+
+      /* ============================================================
+         隱藏「AI 分析中...」等待提示
+         ============================================================ */
+      function hideAnalyzing() {
+        var el = document.getElementById("ai-analyzing");
+        if (el) el.classList.remove("visible");
+      }
+
+      /* ============================================================
+         顯示 AI 引導卡片（舊卡片先淡出，新卡片淡入）
+         ============================================================ */
+      function showAiCard(scenario) {
+        var container = document.getElementById("ai-guidance-container");
+        if (!container) return;
+
+        /* 如果已有卡片，先淡出再顯示新卡片 */
+        var existingCard = container.querySelector(".ai-guidance-card");
+        if (existingCard) {
+          existingCard.classList.add("hiding");
+          setTimeout(function () {
+            container.innerHTML = "";
+            renderAiCard(container, scenario);
+            currentCardScenarioId = scenario.id;
+          }, 260);
+        } else {
+          renderAiCard(container, scenario);
+          currentCardScenarioId = scenario.id;
+        }
+      }
+
+      /* ============================================================
+         渲染 AI 引導卡片 HTML
+         ============================================================ */
+      function renderAiCard(container, scenario) {
+        /* 建立卡片元素 */
+        var card = document.createElement("div");
+        card.className = "ai-guidance-card " + scenario.cardClass;
+        card.setAttribute("data-scenario-id", scenario.id);
+
+        /* 右上角 AI 標示 */
+        var badge = document.createElement("span");
+        badge.className = "ai-card-badge";
+        badge.textContent = "🤖 AI 引導";
+        card.appendChild(badge);
+
+        /* 卡片標籤 */
+        var label = document.createElement("div");
+        label.className = "ai-card-label";
+        label.textContent = scenario.label;
+        card.appendChild(label);
+
+        /* 引導追問 */
+        var question = document.createElement("div");
+        question.className = "ai-card-question";
+        question.textContent = scenario.question;
+        card.appendChild(question);
+
+        /* 數據價值提示 */
+        var dataHint = document.createElement("div");
+        dataHint.className = "ai-card-data-hint";
+        dataHint.textContent = scenario.dataHint;
+        card.appendChild(dataHint);
+
+        /* 按鈕區 */
+        var actions = document.createElement("div");
+        actions.className = "ai-card-actions";
+
+        /* 採納建議按鈕（閉包綁定 scenario） */
+        var adoptBtn = document.createElement("button");
+        adoptBtn.className = "ai-card-adopt-btn";
+        adoptBtn.textContent = "採納建議，補充描述 ✏️";
+        adoptBtn.onclick = (function (s, btn) {
+          return function () {
+            adoptAiSuggestion(s, btn);
+          };
+        })(scenario, adoptBtn);
+        actions.appendChild(adoptBtn);
+
+        /* 略過按鈕 */
+        var skipBtn = document.createElement("button");
+        skipBtn.className = "ai-card-skip-btn";
+        skipBtn.textContent = "略過";
+        skipBtn.onclick = function () {
+          hideCurrentCard(function () {
+            currentCardScenarioId = null;
+          });
+        };
+        actions.appendChild(skipBtn);
+
+        card.appendChild(actions);
+
+        /* 插入容器 */
+        container.appendChild(card);
+      }
+
+      /* ============================================================
+         採納 AI 建議：在文字框中追加引導補充模板
+         ============================================================ */
+      function adoptAiSuggestion(scenario, btn) {
+        /* 按鈕狀態改為「已採納」 */
+        btn.textContent = "✅ 已採納";
+        btn.classList.add("adopted");
+        btn.onclick = null; /* 防止重複點擊 */
+
+        /* 在文字框追加引導模板 */
+        var textarea = document.getElementById("record-note");
+        if (textarea) {
+          textarea.value = textarea.value + scenario.template;
+          /* 讓文字框自動捲到底部，方便使用者繼續輸入 */
+          textarea.scrollTop = textarea.scrollHeight;
+          /* 聚焦到文字框，讓使用者直接繼續輸入 */
+          textarea.focus();
+          /* 把游標移到最末端 */
+          var len = textarea.value.length;
+          textarea.setSelectionRange(len, len);
+        }
+      }
+
+      /* ============================================================
+         隱藏目前顯示的卡片（帶退場動畫）
+         ============================================================ */
+      function hideCurrentCard(callback) {
+        var container = document.getElementById("ai-guidance-container");
+        if (!container) return;
+
+        var card = container.querySelector(".ai-guidance-card");
+        if (card) {
+          card.classList.add("hiding");
+          setTimeout(function () {
+            container.innerHTML = "";
+            if (callback) callback();
+          }, 260);
+        } else {
+          if (callback) callback();
+        }
+      }
+
+      /* ============================================================
+         清除所有 AI 引導（文字框清空時呼叫）
+         ============================================================ */
+      function clearAllAiGuidance() {
+        /* 清除 debounce 計時器 */
+        if (aiDebounceTimer) {
+          clearTimeout(aiDebounceTimer);
+          aiDebounceTimer = null;
+        }
+
+        /* 隱藏分析提示 */
+        hideAnalyzing();
+
+        /* 移除卡片 */
+        var container = document.getElementById("ai-guidance-container");
+        if (container) {
+          container.innerHTML = "";
+        }
+
+        currentCardScenarioId = null;
+      }
+
+      /* ============================================================
+         進入狀態 3 時，重置 AI 引導狀態
+         ============================================================ */
+      var _originalGoToNewRecord = goToNewRecord;
+      goToNewRecord = function () {
+        /* 重置 AI 引導狀態 */
+        clearAllAiGuidance();
+        currentCardScenarioId = null;
+        /* 呼叫原本的 goToNewRecord */
+        _originalGoToNewRecord.call(this);
+      };
 
       /* ============================================================
          頁面初始化

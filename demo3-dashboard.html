@@ -71,6 +71,28 @@
           background-position: 200% 0;
         }
       }
+      /* view 切換淡入動畫 */
+      @keyframes viewFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      /* 雷達圖動畫：從 0 到 1 展開 */
+      @keyframes radarExpand {
+        from {
+          transform: scale(0);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
 
       .animate-fade-in-up {
         animation: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
@@ -82,6 +104,10 @@
       }
       .pulse-glow {
         animation: pulse-glow 2s ease-in-out infinite;
+      }
+      /* view 切換時的淡入效果 */
+      .view-section {
+        animation: viewFadeIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
       }
 
       /* === 卡片互動 === */
@@ -199,6 +225,164 @@
           rgba(16, 185, 129, 0.02) 100%
         );
       }
+
+      /* === 篩選膠囊按鈕 === */
+      .filter-pill {
+        transition: all 0.2s ease;
+        cursor: pointer;
+        padding: 6px 16px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 500;
+        border: 1.5px solid #e2e8f0;
+        color: #64748b;
+        background: white;
+        outline: none;
+      }
+      .filter-pill:hover {
+        border-color: #6366f1;
+        color: #6366f1;
+      }
+      .filter-pill.active {
+        background: #6366f1;
+        border-color: #6366f1;
+        color: white;
+      }
+
+      /* === 班級卡片 === */
+      .class-card {
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+      .class-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 28px -8px rgba(99, 102, 241, 0.15);
+      }
+
+      /* === 風險標籤 === */
+      .risk-badge-high {
+        background: #fef2f2;
+        color: #dc2626;
+      }
+      .risk-badge-mid {
+        background: #fffbeb;
+        color: #d97706;
+      }
+      .risk-badge-low {
+        background: #f0fdf4;
+        color: #16a34a;
+      }
+
+      /* === 志工卡片 === */
+      .volunteer-card {
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+      .volunteer-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.08);
+      }
+
+      /* === Modal 樣式 === */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.2s ease;
+      }
+      .modal-box {
+        background: white;
+        border-radius: 20px;
+        padding: 36px;
+        width: 480px;
+        max-width: 95vw;
+        max-height: 90vh;
+        overflow-y: auto;
+        animation: fadeInUp 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.25);
+      }
+
+      /* === Toast 提示 === */
+      .toast {
+        position: fixed;
+        bottom: 32px;
+        right: 32px;
+        background: #1e293b;
+        color: white;
+        padding: 14px 22px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 500;
+        z-index: 9999;
+        animation: fadeInUp 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.3);
+      }
+      .toast.hide {
+        animation: fadeIn 0.3s ease reverse;
+      }
+
+      /* === 出席率顏色 === */
+      .rate-good {
+        color: #10b981;
+      }
+      .rate-mid {
+        color: #f59e0b;
+      }
+      .rate-bad {
+        color: #ef4444;
+      }
+
+      /* 列表行懸停 */
+      .case-row {
+        transition: background 0.15s ease;
+      }
+      .case-row:hover {
+        background: #f8fafc;
+      }
+
+      /* === 視角切換器 === */
+      .persp-pill {
+        transition: all 0.25s ease;
+        cursor: pointer;
+        padding: 7px 18px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1.5px solid #e2e8f0;
+        color: #64748b;
+        background: white;
+        outline: none;
+      }
+      .persp-pill:hover {
+        border-color: #6366f1;
+        color: #6366f1;
+      }
+      .persp-pill.active {
+        background: linear-gradient(135deg, #6366f1, #818cf8);
+        border-color: #6366f1;
+        color: white;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+      }
+
+      /* === 區域卡片頂部色條 === */
+      .region-bar-north {
+        background: #3b82f6;
+      }
+      .region-bar-central {
+        background: #10b981;
+      }
+      .region-bar-south {
+        background: #f97316;
+      }
+      .region-bar-east {
+        background: #8b5cf6;
+      }
     </style>
   </head>
   <body class="bg-[#F8FAFC] font-sans antialiased">
@@ -238,10 +422,11 @@
         <!-- 分隔線 -->
         <div class="mx-5 border-t border-white/[0.08]"></div>
 
-        <!-- 導覽選單 -->
+        <!-- 導覽選單：每個 a 加上 data-view 屬性對應 view ID -->
         <nav class="flex-1 px-3 py-5 space-y-1">
           <a
             href="#"
+            data-view="view-home"
             class="nav-link active flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.12] text-white font-medium text-[13px]"
           >
             <span class="w-5 text-center text-base">🏠</span>
@@ -249,6 +434,7 @@
           </a>
           <a
             href="#"
+            data-view="view-classes"
             class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-indigo-200/70 hover:bg-white/[0.08] hover:text-white text-[13px]"
           >
             <span class="w-5 text-center text-base">📚</span>
@@ -256,6 +442,7 @@
           </a>
           <a
             href="#"
+            data-view="view-cases"
             class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-indigo-200/70 hover:bg-white/[0.08] hover:text-white text-[13px]"
           >
             <span class="w-5 text-center text-base">🔍</span>
@@ -263,6 +450,7 @@
           </a>
           <a
             href="#"
+            data-view="view-volunteers"
             class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-indigo-200/70 hover:bg-white/[0.08] hover:text-white text-[13px]"
           >
             <span class="w-5 text-center text-base">💛</span>
@@ -270,6 +458,15 @@
           </a>
           <a
             href="#"
+            data-view="view-ai"
+            class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-indigo-200/70 hover:bg-white/[0.08] hover:text-white text-[13px]"
+          >
+            <span class="w-5 text-center text-base">🤖</span>
+            <span>AI 智慧分析</span>
+          </a>
+          <a
+            href="#"
+            data-view="view-settings"
             class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-indigo-200/70 hover:bg-white/[0.08] hover:text-white text-[13px]"
           >
             <span class="w-5 text-center text-base">⚙️</span>
@@ -300,340 +497,1645 @@
 
       <!-- ========== 右側主內容區 ========== -->
       <main class="ml-[260px] flex-1 min-h-screen">
-        <!-- 頂部問候語區 -->
-        <div class="header-accent px-10 pt-9 pb-7">
-          <!-- 日期 -->
-          <p
-            class="text-[13px] text-slate-400 mb-3 animate-fade-in"
-            id="current-date"
-          ></p>
-
-          <!-- 問候語 -->
-          <div class="flex items-start justify-between flex-wrap gap-6">
-            <div class="animate-fade-in" style="animation-delay: 0.1s">
-              <h2 class="text-[26px] font-black text-slate-800 leading-tight">
-                <span id="greeting">早安</span>，林督導！
-              </h2>
-              <p class="text-slate-500 mt-2 text-[14px]">
-                今日有
-                <span
-                  class="inline-flex items-center justify-center bg-red-500 text-white text-[11px] font-black rounded-full w-[22px] h-[22px] mx-0.5 align-middle shadow-sm"
-                  >3</span
-                >
-                項 AI 建議優先處理事項
-              </p>
-            </div>
-          </div>
-
-          <!-- KPI 數字卡片 -->
-          <div class="grid grid-cols-3 gap-5 mt-7">
-            <!-- 出席率 -->
-            <div
-              class="kpi-card bg-white rounded-2xl p-5 shadow-sm border border-slate-100/80 animate-fade-in-up"
-              style="animation-delay: 0.15s"
-            >
-              <div class="flex items-center justify-between mb-3">
-                <p class="text-[13px] text-slate-400 font-medium">
-                  今日轄區出席率
-                </p>
-                <span
-                  class="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center text-sm"
-                  >✅</span
-                >
-              </div>
-              <div class="flex items-end gap-1.5">
-                <span
-                  class="text-[36px] font-black text-emerald-600 leading-none"
-                  data-count="98"
-                  >0</span
-                >
-                <span class="text-base font-bold text-emerald-500 mb-1">%</span>
-              </div>
-              <div class="mt-3 flex items-center gap-2">
-                <span
-                  class="inline-block w-[6px] h-[6px] rounded-full bg-emerald-500"
-                ></span>
-                <span class="text-[11px] text-emerald-600 font-medium"
-                  >表現良好，高於平均</span
-                >
-              </div>
-            </div>
-
-            <!-- 日誌繳交率 -->
-            <div
-              class="kpi-card bg-white rounded-2xl p-5 shadow-sm border border-slate-100/80 animate-fade-in-up"
-              style="animation-delay: 0.25s"
-            >
-              <div class="flex items-center justify-between mb-3">
-                <p class="text-[13px] text-slate-400 font-medium">日誌繳交率</p>
-                <span
-                  class="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center text-sm"
-                  >⚠️</span
-                >
-              </div>
-              <div class="flex items-end gap-1.5">
-                <span
-                  class="text-[36px] font-black text-amber-500 leading-none"
-                  data-count="85"
-                  >0</span
-                >
-                <span class="text-base font-bold text-amber-400 mb-1">%</span>
-              </div>
-              <div class="mt-3 flex items-center gap-2">
-                <span
-                  class="inline-block w-[6px] h-[6px] rounded-full bg-amber-500"
-                ></span>
-                <span class="text-[11px] text-amber-600 font-medium"
-                  >略低，有 4 位尚未繳交</span
-                >
-              </div>
-            </div>
-
-            <!-- 異常預警 -->
-            <div
-              class="kpi-card bg-white rounded-2xl p-5 shadow-sm border border-slate-100/80 animate-fade-in-up"
-              style="animation-delay: 0.35s"
-            >
-              <div class="flex items-center justify-between mb-3">
-                <p class="text-[13px] text-slate-400 font-medium">異常預警數</p>
-                <span
-                  class="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center text-sm"
-                  >🔴</span
-                >
-              </div>
-              <div class="flex items-end gap-1.5">
-                <span
-                  class="text-[36px] font-black text-red-500 leading-none"
-                  data-count="3"
-                  >0</span
-                >
-                <span class="text-base font-bold text-red-400 mb-1">項</span>
-              </div>
-              <div class="mt-3 flex items-center gap-2">
-                <span
-                  class="inline-block w-[6px] h-[6px] rounded-full bg-red-500 pulse-glow"
-                ></span>
-                <span class="text-[11px] text-red-600 font-medium"
-                  >需立即處理</span
-                >
-              </div>
-            </div>
-          </div>
+        <!-- 視角切換器 -->
+        <div
+          id="perspective-bar"
+          class="px-10 pt-5 pb-4 flex items-center gap-3 border-b border-slate-100 bg-white/60 backdrop-blur sticky top-0 z-10"
+        >
+          <span class="text-[12px] text-slate-400 font-medium mr-1"
+            >管理視角</span
+          >
+          <button
+            onclick="switchPerspective('supervisor')"
+            class="persp-pill active"
+            data-persp="supervisor"
+          >
+            👤 督導視角
+          </button>
+          <button
+            onclick="switchPerspective('branch')"
+            class="persp-pill"
+            data-persp="branch"
+          >
+            🏫 分校視角
+          </button>
+          <button
+            onclick="switchPerspective('hq')"
+            class="persp-pill"
+            data-persp="hq"
+          >
+            🏢 總部視角
+          </button>
         </div>
 
-        <!-- 區域分隔 -->
-        <div class="px-10">
-          <div class="border-t border-slate-200/60"></div>
-        </div>
+        <!-- ================================================================
+             VIEW 1：首頁總覽（保留原有內容）
+        ================================================================ -->
+        <div id="view-home">
+          <!-- 頂部問候語區 -->
+          <div class="header-accent px-10 pt-9 pb-7">
+            <!-- 日期 -->
+            <p
+              class="text-[13px] text-slate-400 mb-3 animate-fade-in"
+              id="current-date"
+            ></p>
 
-        <!-- ===== AI 急迫待辦卡片區 ===== -->
-        <div class="px-10 py-7">
-          <div class="flex items-center gap-3 mb-7">
-            <h3 class="text-[17px] font-bold text-slate-800">
-              🤖 AI 急迫待辦事項
-            </h3>
-            <span
-              class="text-[11px] text-slate-400 bg-slate-100 px-3 py-1 rounded-full font-medium"
-              >依緊急程度排序</span
-            >
-          </div>
-
-          <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-            <!-- ====== 卡片 1：高風險個案預警 ====== -->
-            <div
-              class="action-card bg-white rounded-2xl shadow-sm border border-red-100/60 border-l-[5px] border-l-red-500 overflow-hidden animate-fade-in-up"
-              style="animation-delay: 0.2s"
-            >
-              <div class="p-6">
-                <!-- 標籤 -->
-                <div class="flex items-center gap-2 mb-4">
+            <!-- 問候語 -->
+            <div class="flex items-start justify-between flex-wrap gap-6">
+              <div class="animate-fade-in" style="animation-delay: 0.1s">
+                <h2 class="text-[26px] font-black text-slate-800 leading-tight">
+                  <span id="greeting">早安</span>，林督導！
+                </h2>
+                <p class="text-slate-500 mt-2 text-[14px]">
+                  今日有
                   <span
-                    class="inline-flex items-center gap-2 bg-red-50 text-red-700 text-[11px] font-bold px-3 py-1.5 rounded-full"
+                    class="inline-flex items-center justify-center bg-red-500 text-white text-[11px] font-black rounded-full w-[22px] h-[22px] mx-0.5 align-middle shadow-sm"
+                    >3</span
                   >
-                    <span
-                      class="w-2 h-2 rounded-full bg-red-500 pulse-glow"
-                    ></span>
-                    高風險個案預警
-                  </span>
-                </div>
-
-                <!-- 內容 -->
-                <p class="text-[13px] text-slate-600 leading-[1.8] mb-5">
-                  系統偵測<strong class="text-slate-800 font-bold"
-                    >【忠孝國小A班 - 王小明】</strong
-                  >近期日誌反覆出現<span class="text-red-600 font-medium"
-                    >「情緒失控」</span
-                  >、<span class="text-red-600 font-medium">「家庭衝突」</span
-                  >關鍵字。
+                  項 AI 建議優先處理事項
                 </p>
+              </div>
+            </div>
 
-                <!-- AI 建議行動 -->
-                <div
-                  class="ai-suggestion ai-suggestion-red bg-red-50/70 rounded-xl p-4 pl-5 mb-5"
-                >
-                  <div class="flex items-center gap-1.5 mb-1.5">
-                    <span class="text-xs">💡</span>
-                    <span class="text-[11px] font-bold text-red-800"
-                      >AI 建議行動</span
+            <!-- KPI 數字卡片 -->
+            <div class="grid grid-cols-3 gap-5 mt-7">
+              <!-- 出席率 -->
+              <div
+                class="kpi-card bg-white rounded-2xl p-5 shadow-sm border border-slate-100/80 animate-fade-in-up"
+                style="animation-delay: 0.15s"
+              >
+                <div class="flex items-center justify-between mb-3">
+                  <p class="text-[13px] text-slate-400 font-medium">
+                    今日轄區出席率
+                  </p>
+                  <span
+                    class="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center text-sm"
+                    >✅</span
+                  >
+                </div>
+                <div class="flex items-end gap-1.5">
+                  <span
+                    class="text-[36px] font-black text-emerald-600 leading-none"
+                    data-count="98"
+                    >0</span
+                  >
+                  <span class="text-base font-bold text-emerald-500 mb-1"
+                    >%</span
+                  >
+                </div>
+                <div class="mt-3 flex items-center gap-2">
+                  <span
+                    class="inline-block w-[6px] h-[6px] rounded-full bg-emerald-500"
+                  ></span>
+                  <span class="text-[11px] text-emerald-600 font-medium"
+                    >表現良好，高於平均</span
+                  >
+                </div>
+              </div>
+
+              <!-- 日誌繳交率 -->
+              <div
+                class="kpi-card bg-white rounded-2xl p-5 shadow-sm border border-slate-100/80 animate-fade-in-up"
+                style="animation-delay: 0.25s"
+              >
+                <div class="flex items-center justify-between mb-3">
+                  <p class="text-[13px] text-slate-400 font-medium">
+                    日誌繳交率
+                  </p>
+                  <span
+                    class="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center text-sm"
+                    >⚠️</span
+                  >
+                </div>
+                <div class="flex items-end gap-1.5">
+                  <span
+                    class="text-[36px] font-black text-amber-500 leading-none"
+                    data-count="85"
+                    >0</span
+                  >
+                  <span class="text-base font-bold text-amber-400 mb-1">%</span>
+                </div>
+                <div class="mt-3 flex items-center gap-2">
+                  <span
+                    class="inline-block w-[6px] h-[6px] rounded-full bg-amber-500"
+                  ></span>
+                  <span class="text-[11px] text-amber-600 font-medium"
+                    >略低，有 4 位尚未繳交</span
+                  >
+                </div>
+              </div>
+
+              <!-- 異常預警 -->
+              <div
+                class="kpi-card bg-white rounded-2xl p-5 shadow-sm border border-slate-100/80 animate-fade-in-up"
+                style="animation-delay: 0.35s"
+              >
+                <div class="flex items-center justify-between mb-3">
+                  <p class="text-[13px] text-slate-400 font-medium">
+                    異常預警數
+                  </p>
+                  <span
+                    class="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center text-sm"
+                    >🔴</span
+                  >
+                </div>
+                <div class="flex items-end gap-1.5">
+                  <span
+                    class="text-[36px] font-black text-red-500 leading-none"
+                    data-count="3"
+                    >0</span
+                  >
+                  <span class="text-base font-bold text-red-400 mb-1">項</span>
+                </div>
+                <div class="mt-3 flex items-center gap-2">
+                  <span
+                    class="inline-block w-[6px] h-[6px] rounded-full bg-red-500 pulse-glow"
+                  ></span>
+                  <span class="text-[11px] text-red-600 font-medium"
+                    >需立即處理</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 區域分隔 -->
+          <div class="px-10">
+            <div class="border-t border-slate-200/60"></div>
+          </div>
+
+          <!-- AI 急迫待辦卡片區 -->
+          <div class="px-10 py-7">
+            <div class="flex items-center gap-3 mb-7">
+              <h3 class="text-[17px] font-bold text-slate-800">
+                🤖 AI 急迫待辦事項
+              </h3>
+              <span
+                class="text-[11px] text-slate-400 bg-slate-100 px-3 py-1 rounded-full font-medium"
+                >依緊急程度排序</span
+              >
+            </div>
+
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+              <!-- 卡片 1：高風險個案預警 -->
+              <div
+                class="action-card bg-white rounded-2xl shadow-sm border border-red-100/60 border-l-[5px] border-l-red-500 overflow-hidden animate-fade-in-up"
+                style="animation-delay: 0.2s"
+              >
+                <div class="p-6">
+                  <div class="flex items-center gap-2 mb-4">
+                    <span
+                      class="inline-flex items-center gap-2 bg-red-50 text-red-700 text-[11px] font-bold px-3 py-1.5 rounded-full"
                     >
+                      <span
+                        class="w-2 h-2 rounded-full bg-red-500 pulse-glow"
+                      ></span>
+                      高風險個案預警
+                    </span>
                   </div>
-                  <p class="text-[12px] text-red-700/90 leading-relaxed">
-                    建議今日進班或聯絡班級社工了解狀況，優先確認學生安全。
+                  <p class="text-[13px] text-slate-600 leading-[1.8] mb-5">
+                    系統偵測<strong class="text-slate-800 font-bold"
+                      >【忠孝國小A班 - 王小明】</strong
+                    >近期日誌反覆出現<span class="text-red-600 font-medium"
+                      >「情緒失控」</span
+                    >、<span class="text-red-600 font-medium">「家庭衝突」</span
+                    >關鍵字。
+                  </p>
+                  <div
+                    class="ai-suggestion ai-suggestion-red bg-red-50/70 rounded-xl p-4 pl-5 mb-5"
+                  >
+                    <div class="flex items-center gap-1.5 mb-1.5">
+                      <span class="text-xs">💡</span>
+                      <span class="text-[11px] font-bold text-red-800"
+                        >AI 建議行動</span
+                      >
+                    </div>
+                    <p class="text-[12px] text-red-700/90 leading-relaxed">
+                      建議今日進班或聯絡班級社工了解狀況，優先確認學生安全。
+                    </p>
+                  </div>
+                  <div class="flex gap-2.5">
+                    <button
+                      class="btn-action flex-1 bg-red-500 hover:bg-red-600 text-white text-[12px] font-bold px-4 py-2.5 rounded-xl shadow-sm shadow-red-200"
+                    >
+                      查看完整日誌
+                    </button>
+                    <button
+                      class="btn-action btn-mark flex-1 border border-slate-200 text-slate-500 hover:bg-slate-50 text-[12px] font-medium px-4 py-2.5 rounded-xl"
+                      onclick="handleAction(this, '✅ 已處理')"
+                    >
+                      標記已處理
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 卡片 2：志工情緒預警 -->
+              <div
+                class="action-card bg-white rounded-2xl shadow-sm border border-amber-100/60 border-l-[5px] border-l-amber-400 overflow-hidden animate-fade-in-up"
+                style="animation-delay: 0.35s"
+              >
+                <div class="p-6">
+                  <div class="flex items-center gap-2 mb-4">
+                    <span
+                      class="inline-flex items-center gap-2 bg-amber-50 text-amber-700 text-[11px] font-bold px-3 py-1.5 rounded-full"
+                    >
+                      <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                      志工情緒預警
+                    </span>
+                  </div>
+                  <p class="text-[13px] text-slate-600 leading-[1.8] mb-5">
+                    <strong class="text-slate-800 font-bold"
+                      >【大學生社工 - 陳ＯＯ】</strong
+                    >連續三天日誌字數銳減，且文句帶有強烈<span
+                      class="text-amber-600 font-medium"
+                      >「無力感」</span
+                    >與<span class="text-amber-600 font-medium">「挫折」</span
+                    >。
+                  </p>
+                  <div
+                    class="ai-suggestion ai-suggestion-amber bg-amber-50/70 rounded-xl p-4 pl-5 mb-5"
+                  >
+                    <div class="flex items-center gap-1.5 mb-1.5">
+                      <span class="text-xs">💡</span>
+                      <span class="text-[11px] font-bold text-amber-800"
+                        >AI 建議行動</span
+                      >
+                    </div>
+                    <p class="text-[12px] text-amber-700/90 leading-relaxed">
+                      AI 評估有流失風險，建議安排時間進行一對一督導關懷。
+                    </p>
+                  </div>
+                  <div class="flex gap-2.5">
+                    <button
+                      class="btn-action flex-1 bg-amber-500 hover:bg-amber-600 text-white text-[12px] font-bold px-4 py-2.5 rounded-xl shadow-sm shadow-amber-200"
+                      onclick="handleAction(this, '✅ 已發送')"
+                    >
+                      一鍵發送關懷訊息
+                    </button>
+                    <button
+                      class="btn-action flex-1 border border-slate-200 text-slate-500 hover:bg-slate-50 text-[12px] font-medium px-4 py-2.5 rounded-xl"
+                    >
+                      查看志工技能地圖
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 卡片 3：缺交追蹤提醒 -->
+              <div
+                class="action-card bg-white rounded-2xl shadow-sm border border-slate-100 border-l-[5px] border-l-slate-400 overflow-hidden animate-fade-in-up"
+                style="animation-delay: 0.5s"
+              >
+                <div class="p-6">
+                  <div class="flex items-center gap-2 mb-4">
+                    <span
+                      class="inline-flex items-center gap-2 bg-slate-100 text-slate-600 text-[11px] font-bold px-3 py-1.5 rounded-full"
+                    >
+                      <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                      缺交追蹤提醒
+                    </span>
+                  </div>
+                  <p class="text-[13px] text-slate-600 leading-[1.8] mb-5">
+                    本週有<strong class="text-slate-800 font-bold"
+                      >4 位社工</strong
+                    >尚未繳交班級日誌，其中<strong
+                      class="text-slate-800 font-bold"
+                      >【希望國小B班 - 小張】</strong
+                    >已逾期 3 天，為本週最長未繳紀錄。
+                  </p>
+                  <div
+                    class="ai-suggestion ai-suggestion-slate bg-slate-50 rounded-xl p-4 pl-5 mb-5"
+                  >
+                    <div class="flex items-center gap-1.5 mb-1.5">
+                      <span class="text-xs">💡</span>
+                      <span class="text-[11px] font-bold text-slate-700"
+                        >AI 建議行動</span
+                      >
+                    </div>
+                    <p class="text-[12px] text-slate-500 leading-relaxed">
+                      建議優先聯繫逾期最久者，系統已自動發送第一輪提醒。
+                    </p>
+                  </div>
+                  <div class="flex gap-2.5">
+                    <button
+                      class="btn-action flex-1 bg-slate-600 hover:bg-slate-700 text-white text-[12px] font-bold px-4 py-2.5 rounded-xl shadow-sm shadow-slate-200"
+                      onclick="handleAction(this, '✅ 已發送')"
+                    >
+                      批次發送提醒
+                    </button>
+                    <button
+                      class="btn-action flex-1 border border-slate-200 text-slate-500 hover:bg-slate-50 text-[12px] font-medium px-4 py-2.5 rounded-xl"
+                    >
+                      查看繳交明細
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 底部資訊 -->
+          <div class="px-10 pb-8">
+            <p class="text-[11px] text-slate-300 text-center mt-4">
+              資料更新時間：<span id="update-time"></span>　｜　由 AI
+              引擎自動分析產生，建議搭配實際觀察做判斷
+            </p>
+          </div>
+        </div>
+        <!-- /view-home -->
+
+        <!-- ================================================================
+             VIEW 2：轄區班級管理
+        ================================================================ -->
+        <div id="view-classes" style="display: none">
+          <div class="px-10 pt-9 pb-7">
+            <!-- 頁面標題 + 篩選 -->
+            <div class="flex items-center justify-between flex-wrap gap-4 mb-8">
+              <div>
+                <h2 class="text-[24px] font-black text-slate-800">
+                  📚 轄區班級管理
+                </h2>
+                <p class="text-slate-400 text-[13px] mt-1">
+                  共 12 個班級，今日出席率整體良好
+                </p>
+              </div>
+              <!-- 篩選膠囊 -->
+              <div class="flex gap-2" id="class-filters">
+                <button class="filter-pill active" data-filter="all">
+                  全部
+                </button>
+                <button class="filter-pill" data-filter="done">
+                  ✅ 已點名
+                </button>
+                <button class="filter-pill" data-filter="pending">
+                  ⚠️ 未點名
+                </button>
+              </div>
+            </div>
+
+            <!-- 班級卡片網格 -->
+            <div class="grid grid-cols-3 gap-5" id="class-grid">
+              <!-- 班級卡片由 JS 動態產生 -->
+            </div>
+
+            <!-- 底部統計 -->
+            <div
+              class="mt-8 bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex items-center gap-8"
+            >
+              <div class="text-center">
+                <p class="text-[28px] font-black text-[#6366F1]">12</p>
+                <p class="text-[12px] text-slate-400 mt-1">班級總數</p>
+              </div>
+              <div class="w-px h-10 bg-slate-100"></div>
+              <div class="text-center">
+                <p class="text-[28px] font-black text-emerald-500">7</p>
+                <p class="text-[12px] text-slate-400 mt-1">日誌已繳</p>
+              </div>
+              <div class="w-px h-10 bg-slate-100"></div>
+              <div class="text-center">
+                <p class="text-[28px] font-black text-amber-500">5</p>
+                <p class="text-[12px] text-slate-400 mt-1">日誌未繳</p>
+              </div>
+              <div class="w-px h-10 bg-slate-100"></div>
+              <div class="text-center">
+                <p class="text-[28px] font-black text-slate-700">96.4%</p>
+                <p class="text-[12px] text-slate-400 mt-1">平均出席率</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /view-classes -->
+
+        <!-- ================================================================
+             VIEW 3：個案風險追蹤
+        ================================================================ -->
+        <div id="view-cases" style="display: none">
+          <div class="px-10 pt-9 pb-7">
+            <!-- 頁面標題 + 篩選 -->
+            <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+              <div>
+                <h2 class="text-[24px] font-black text-slate-800">
+                  🔍 個案風險追蹤
+                </h2>
+                <p class="text-slate-400 text-[13px] mt-1">
+                  AI 持續監測日誌關鍵字，自動分級預警
+                </p>
+              </div>
+              <!-- 風險篩選 -->
+              <div class="flex gap-2" id="case-filters">
+                <button class="filter-pill active" data-filter="all">
+                  全部
+                </button>
+                <button class="filter-pill" data-filter="high">
+                  🔴 高風險
+                </button>
+                <button class="filter-pill" data-filter="mid">🟡 中風險</button>
+                <button class="filter-pill" data-filter="low">🟢 低風險</button>
+              </div>
+            </div>
+
+            <!-- 風險統計小卡 -->
+            <div class="grid grid-cols-3 gap-4 mb-8">
+              <div class="bg-red-50 rounded-2xl p-5 border border-red-100">
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">🔴</span>
+                  <div>
+                    <p class="text-[28px] font-black text-red-600 leading-none">
+                      3
+                    </p>
+                    <p class="text-[12px] text-red-400 mt-1 font-medium">
+                      高風險個案
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="bg-amber-50 rounded-2xl p-5 border border-amber-100">
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">🟡</span>
+                  <div>
+                    <p
+                      class="text-[28px] font-black text-amber-600 leading-none"
+                    >
+                      5
+                    </p>
+                    <p class="text-[12px] text-amber-400 mt-1 font-medium">
+                      中風險個案
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="bg-emerald-50 rounded-2xl p-5 border border-emerald-100"
+              >
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">🟢</span>
+                  <div>
+                    <p
+                      class="text-[28px] font-black text-emerald-600 leading-none"
+                    >
+                      20
+                    </p>
+                    <p class="text-[12px] text-emerald-400 mt-1 font-medium">
+                      低風險／穩定
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 個案列表 -->
+            <div
+              class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden"
+            >
+              <div
+                class="px-6 py-4 border-b border-slate-100 flex items-center gap-2"
+              >
+                <span class="text-[13px] font-bold text-slate-700"
+                  >個案列表</span
+                >
+                <span
+                  class="text-[11px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full"
+                  id="case-count-badge"
+                  >共 28 筆</span
+                >
+              </div>
+              <!-- 表頭 -->
+              <div
+                class="grid px-6 py-3 bg-slate-50 text-[11px] font-bold text-slate-400 uppercase tracking-wider"
+                style="grid-template-columns: 2fr 2fr 1.5fr 3fr 2fr 1.5fr"
+              >
+                <span>學生姓名</span>
+                <span>班級</span>
+                <span>風險等級</span>
+                <span>最新異常摘要</span>
+                <span>最後更新</span>
+                <span>操作</span>
+              </div>
+              <!-- 列表內容由 JS 產生 -->
+              <div id="case-list"></div>
+            </div>
+          </div>
+        </div>
+        <!-- /view-cases -->
+
+        <!-- ================================================================
+             VIEW 4：志工關懷名單
+        ================================================================ -->
+        <div id="view-volunteers" style="display: none">
+          <div class="px-10 pt-9 pb-7">
+            <!-- 頁面標題 + 篩選 -->
+            <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+              <div>
+                <h2 class="text-[24px] font-black text-slate-800">
+                  💛 志工關懷名單
+                </h2>
+                <p class="text-slate-400 text-[13px] mt-1">
+                  定期關懷志工狀態，預防服務中斷
+                </p>
+              </div>
+              <!-- 狀態篩選 -->
+              <div class="flex gap-2" id="volunteer-filters">
+                <button class="filter-pill active" data-filter="all">
+                  全部
+                </button>
+                <button class="filter-pill" data-filter="concern">
+                  ⚠️ 需關注
+                </button>
+                <button class="filter-pill" data-filter="normal">
+                  ✅ 正常
+                </button>
+              </div>
+            </div>
+
+            <!-- 狀態統計小卡 -->
+            <div class="grid grid-cols-2 gap-4 mb-8">
+              <div class="bg-amber-50 rounded-2xl p-5 border border-amber-100">
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">⚠️</span>
+                  <div>
+                    <p
+                      class="text-[28px] font-black text-amber-600 leading-none"
+                    >
+                      2
+                    </p>
+                    <p class="text-[12px] text-amber-400 mt-1 font-medium">
+                      需關注志工
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="bg-emerald-50 rounded-2xl p-5 border border-emerald-100"
+              >
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">✅</span>
+                  <div>
+                    <p
+                      class="text-[28px] font-black text-emerald-600 leading-none"
+                    >
+                      4
+                    </p>
+                    <p class="text-[12px] text-emerald-400 mt-1 font-medium">
+                      正常狀態
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 志工卡片列表 -->
+            <div class="grid grid-cols-2 gap-5" id="volunteer-grid">
+              <!-- 由 JS 動態產生 -->
+            </div>
+          </div>
+        </div>
+        <!-- /view-volunteers -->
+
+        <!-- ================================================================
+             VIEW 5：系統設定（簡易 placeholder）
+        ================================================================ -->
+        <div id="view-settings" style="display: none">
+          <div
+            class="px-10 pt-9 pb-7 flex flex-col items-center justify-center min-h-[60vh]"
+          >
+            <div class="text-center">
+              <div class="text-6xl mb-6">⚙️</div>
+              <h2 class="text-[22px] font-bold text-slate-700 mb-3">
+                系統設定功能開發中...
+              </h2>
+              <p class="text-slate-400 text-[14px] leading-relaxed max-w-sm">
+                此功能尚在規劃階段，預計於下一個版本上線。<br />如有緊急需求，請聯繫技術團隊。
+              </p>
+              <div
+                class="mt-8 bg-indigo-50 border border-indigo-100 rounded-2xl px-8 py-5 inline-block"
+              >
+                <p class="text-[13px] text-indigo-600 font-medium">
+                  🚧 預計上線：2026 年 Q2
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /view-settings -->
+
+        <!-- ================================================================
+             VIEW 6：AI 智慧分析（督導視角 sidebar 子頁面）
+        ================================================================ -->
+        <div id="view-ai" style="display: none">
+          <div class="px-10 py-8">
+            <div class="flex items-center gap-3 mb-6">
+              <h3 class="text-[20px] font-black text-slate-800">
+                🤖 AI 智慧分析報告
+              </h3>
+              <span
+                class="text-[11px] text-slate-400 bg-slate-100 px-2.5 py-0.5 rounded-full"
+                >每日自動更新</span
+              >
+            </div>
+
+            <!-- 掃描統計 -->
+            <div class="grid grid-cols-3 gap-4 mb-8">
+              <div
+                class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100"
+              >
+                <p class="text-[12px] text-slate-400 mb-2">今日掃描日誌</p>
+                <p
+                  class="text-[28px] font-black text-indigo-600"
+                  data-count-ai="12"
+                >
+                  0
+                </p>
+                <p class="text-[11px] text-slate-400 mt-1">篇</p>
+              </div>
+              <div
+                class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100"
+              >
+                <p class="text-[12px] text-slate-400 mb-2">自動標記異常</p>
+                <p
+                  class="text-[28px] font-black text-red-500"
+                  data-count-ai="3"
+                >
+                  0
+                </p>
+                <p class="text-[11px] text-slate-400 mt-1">筆</p>
+              </div>
+              <div
+                class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100"
+              >
+                <p class="text-[12px] text-slate-400 mb-2">掃描覆蓋率</p>
+                <p
+                  class="text-[28px] font-black text-emerald-600"
+                  data-count-ai="100"
+                >
+                  0
+                </p>
+                <p class="text-[11px] text-slate-400 mt-1">%</p>
+              </div>
+            </div>
+
+            <!-- AI 標記的異常日誌 -->
+            <div class="mb-8">
+              <h4 class="text-[15px] font-bold text-slate-700 mb-4">
+                ⚠️ AI 標記異常日誌
+              </h4>
+              <div class="space-y-3">
+                <div
+                  class="bg-white rounded-xl p-5 shadow-sm border-l-4 border-l-red-500 border border-slate-100"
+                >
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2">
+                      <span
+                        class="text-[12px] font-bold bg-red-50 text-red-600 px-2.5 py-0.5 rounded-full"
+                        >🔴 已轉為高風險</span
+                      >
+                      <span class="text-[12px] text-slate-400"
+                        >小明 · 2/22 日誌</span
+                      >
+                    </div>
+                  </div>
+                  <p class="text-[13px] text-slate-600 leading-relaxed">
+                    AI 偵測「情緒失控」關鍵字出現
+                    <strong>3 次</strong
+                    >，符合風險升級條件。已自動更新個案風險等級。
                   </p>
                 </div>
+                <div
+                  class="bg-white rounded-xl p-5 shadow-sm border-l-4 border-l-amber-400 border border-slate-100"
+                >
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2">
+                      <span
+                        class="text-[12px] font-bold bg-amber-50 text-amber-600 px-2.5 py-0.5 rounded-full"
+                        >🟡 志工情緒預警</span
+                      >
+                      <span class="text-[12px] text-slate-400"
+                        >小陳 · 2/21 日誌</span
+                      >
+                    </div>
+                  </div>
+                  <p class="text-[13px] text-slate-600 leading-relaxed">
+                    日誌字數從
+                    <strong>267 字銳減至 45 字</strong
+                    >，且偵測到「無力感」「好累」等負面情緒詞彙。
+                  </p>
+                </div>
+                <div
+                  class="bg-white rounded-xl p-5 shadow-sm border-l-4 border-l-slate-400 border border-slate-100"
+                >
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2">
+                      <span
+                        class="text-[12px] font-bold bg-slate-100 text-slate-600 px-2.5 py-0.5 rounded-full"
+                        >⚠️ 行政追蹤</span
+                      >
+                      <span class="text-[12px] text-slate-400"
+                        >小張 · 2/20 起</span
+                      >
+                    </div>
+                  </div>
+                  <p class="text-[13px] text-slate-600 leading-relaxed">
+                    連續
+                    <strong>3 天未繳交日誌</strong
+                    >。系統已自動發送第一輪提醒，建議直接聯繫了解狀況。
+                  </p>
+                </div>
+              </div>
+            </div>
 
-                <!-- 按鈕 -->
-                <div class="flex gap-2.5">
-                  <button
-                    class="btn-action flex-1 bg-red-500 hover:bg-red-600 text-white text-[12px] font-bold px-4 py-2.5 rounded-xl shadow-sm shadow-red-200"
+            <!-- 班級經營趨勢 -->
+            <div>
+              <h4 class="text-[15px] font-bold text-slate-700 mb-4">
+                📊 班級經營 AI 趨勢分析
+              </h4>
+              <div class="space-y-3">
+                <div
+                  class="bg-white rounded-xl p-5 shadow-sm border border-slate-100"
+                >
+                  <div class="flex items-center gap-3 mb-2">
+                    <span class="text-[14px] font-bold text-slate-800"
+                      >光明國小 A班</span
+                    >
+                    <span
+                      class="text-[11px] bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full font-medium"
+                      >↑ 正向</span
+                    >
+                  </div>
+                  <p class="text-[13px] text-slate-500 leading-relaxed">
+                    出席率穩定維持 100%，班級氛圍持續正向。AI
+                    建議維持現行經營策略，可作為典範班級分享。
+                  </p>
+                </div>
+                <div
+                  class="bg-white rounded-xl p-5 shadow-sm border border-slate-100"
+                >
+                  <div class="flex items-center gap-3 mb-2">
+                    <span class="text-[14px] font-bold text-slate-800"
+                      >希望國小 B班</span
+                    >
+                    <span
+                      class="text-[11px] bg-red-50 text-red-600 px-2 py-0.5 rounded-full font-medium"
+                      >↓ 需關注</span
+                    >
+                  </div>
+                  <p class="text-[13px] text-slate-500 leading-relaxed">
+                    出席率連續三天下降趨勢（96%→93%→91%），且有 2
+                    名高風險學童。建議本週安排進班觀察。
+                  </p>
+                </div>
+                <div
+                  class="bg-white rounded-xl p-5 shadow-sm border border-slate-100"
+                >
+                  <div class="flex items-center gap-3 mb-2">
+                    <span class="text-[14px] font-bold text-slate-800"
+                      >陽光國小 C班</span
+                    >
+                    <span
+                      class="text-[11px] bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full font-medium"
+                      >↑ 衝突上升</span
+                    >
+                  </div>
+                  <p class="text-[13px] text-slate-500 leading-relaxed">
+                    同儕衝突頻率較上週增加
+                    40%，日誌中「吵架」「打人」關鍵字上升。建議安排班級團體活動。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================================================================
+             VIEW HQ：總部視角
+        ================================================================ -->
+        <div id="view-hq" style="display: none">
+          <div class="header-accent px-10 pt-9 pb-7">
+            <p class="text-[13px] text-slate-400 mb-3" id="hq-date"></p>
+            <h2 class="text-[26px] font-black text-slate-800 leading-tight">
+              早安，管理團隊！
+            </h2>
+            <p class="text-slate-500 mt-2 text-[14px]">以下是全台服務概況</p>
+
+            <!-- KPI -->
+            <div class="grid grid-cols-4 gap-4 mt-7">
+              <div
+                class="kpi-card bg-white rounded-2xl p-5 shadow-sm border border-slate-100"
+              >
+                <p class="text-[12px] text-slate-400 mb-2">全台服務班級</p>
+                <div class="flex items-end gap-1">
+                  <span
+                    class="text-[32px] font-black text-indigo-600"
+                    data-count-hq="48"
+                    >0</span
+                  ><span class="text-sm font-bold text-indigo-400 mb-1"
+                    >班</span
                   >
-                    查看完整日誌
-                  </button>
+                </div>
+              </div>
+              <div
+                class="kpi-card bg-white rounded-2xl p-5 shadow-sm border border-slate-100"
+              >
+                <p class="text-[12px] text-slate-400 mb-2">全台平均出席率</p>
+                <div class="flex items-end gap-1">
+                  <span
+                    class="text-[32px] font-black text-emerald-600"
+                    data-count-hq="95"
+                    >0</span
+                  ><span class="text-sm font-bold text-emerald-400 mb-1"
+                    >.2%</span
+                  >
+                </div>
+                <p class="text-[11px] text-emerald-600 mt-1">✅ 表現良好</p>
+              </div>
+              <div
+                class="kpi-card bg-white rounded-2xl p-5 shadow-sm border border-slate-100"
+              >
+                <p class="text-[12px] text-slate-400 mb-2">全台日誌繳交率</p>
+                <div class="flex items-end gap-1">
+                  <span
+                    class="text-[32px] font-black text-amber-500"
+                    data-count-hq="82"
+                    >0</span
+                  ><span class="text-sm font-bold text-amber-400 mb-1"
+                    >.3%</span
+                  >
+                </div>
+                <p class="text-[11px] text-amber-600 mt-1">⚠️ 需持續關注</p>
+              </div>
+              <div
+                class="kpi-card bg-white rounded-2xl p-5 shadow-sm border border-slate-100"
+              >
+                <p class="text-[12px] text-slate-400 mb-2">全台高風險個案</p>
+                <div class="flex items-end gap-1">
+                  <span
+                    class="text-[32px] font-black text-red-500"
+                    data-count-hq="12"
+                    >0</span
+                  ><span class="text-sm font-bold text-red-400 mb-1">人</span>
+                </div>
+                <p class="text-[11px] text-red-600 mt-1">🔴 需積極處理</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="px-10 py-6">
+            <!-- 區域風險分布 -->
+            <h3 class="text-[16px] font-bold text-slate-800 mb-4">
+              🗺️ 全台區域風險分布
+            </h3>
+            <div class="grid grid-cols-2 gap-4 mb-8">
+              <div
+                class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden"
+              >
+                <div class="h-1.5 region-bar-north"></div>
+                <div class="p-5">
+                  <h4 class="text-[15px] font-bold text-slate-800 mb-3">
+                    🔵 北區
+                  </h4>
+                  <div class="grid grid-cols-2 gap-3 text-[13px]">
+                    <div>
+                      <span class="text-slate-400">班級數</span
+                      ><span class="float-right font-bold text-slate-700"
+                        >12 班</span
+                      >
+                    </div>
+                    <div>
+                      <span class="text-slate-400">出席率</span
+                      ><span class="float-right font-bold text-emerald-600"
+                        >96.1%</span
+                      >
+                    </div>
+                    <div>
+                      <span class="text-slate-400">高風險</span
+                      ><span class="float-right font-bold text-red-500"
+                        >3 人</span
+                      >
+                    </div>
+                    <div>
+                      <span class="text-slate-400">日誌率</span
+                      ><span class="float-right font-bold text-emerald-600"
+                        >88%</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden"
+              >
+                <div class="h-1.5 region-bar-central"></div>
+                <div class="p-5">
+                  <h4 class="text-[15px] font-bold text-slate-800 mb-3">
+                    🟢 中區
+                  </h4>
+                  <div class="grid grid-cols-2 gap-3 text-[13px]">
+                    <div>
+                      <span class="text-slate-400">班級數</span
+                      ><span class="float-right font-bold text-slate-700"
+                        >14 班</span
+                      >
+                    </div>
+                    <div>
+                      <span class="text-slate-400">出席率</span
+                      ><span class="float-right font-bold text-emerald-600"
+                        >94.5%</span
+                      >
+                    </div>
+                    <div>
+                      <span class="text-slate-400">高風險</span
+                      ><span class="float-right font-bold text-red-500"
+                        >4 人</span
+                      >
+                    </div>
+                    <div>
+                      <span class="text-slate-400">日誌率</span
+                      ><span class="float-right font-bold text-amber-500"
+                        >79% ⚠️</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden"
+              >
+                <div class="h-1.5 region-bar-south"></div>
+                <div class="p-5">
+                  <h4 class="text-[15px] font-bold text-slate-800 mb-3">
+                    🟠 南區
+                  </h4>
+                  <div class="grid grid-cols-2 gap-3 text-[13px]">
+                    <div>
+                      <span class="text-slate-400">班級數</span
+                      ><span class="float-right font-bold text-slate-700"
+                        >13 班</span
+                      >
+                    </div>
+                    <div>
+                      <span class="text-slate-400">出席率</span
+                      ><span class="float-right font-bold text-emerald-600"
+                        >95.8%</span
+                      >
+                    </div>
+                    <div>
+                      <span class="text-slate-400">高風險</span
+                      ><span class="float-right font-bold text-red-500"
+                        >2 人</span
+                      >
+                    </div>
+                    <div>
+                      <span class="text-slate-400">日誌率</span
+                      ><span class="float-right font-bold text-emerald-600"
+                        >85%</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden"
+              >
+                <div class="h-1.5 region-bar-east"></div>
+                <div class="p-5">
+                  <h4 class="text-[15px] font-bold text-slate-800 mb-3">
+                    🟣 東區
+                  </h4>
+                  <div class="grid grid-cols-2 gap-3 text-[13px]">
+                    <div>
+                      <span class="text-slate-400">班級數</span
+                      ><span class="float-right font-bold text-slate-700"
+                        >9 班</span
+                      >
+                    </div>
+                    <div>
+                      <span class="text-slate-400">出席率</span
+                      ><span class="float-right font-bold text-amber-500"
+                        >93.2% ⚠️</span
+                      >
+                    </div>
+                    <div>
+                      <span class="text-slate-400">高風險</span
+                      ><span class="float-right font-bold text-red-500"
+                        >3 人</span
+                      >
+                    </div>
+                    <div>
+                      <span class="text-slate-400">日誌率</span
+                      ><span class="float-right font-bold text-red-500"
+                        >76% 🔴</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- AI 覆蓋率統計 -->
+            <div
+              class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100 mb-8"
+            >
+              <h4 class="text-[14px] font-bold text-indigo-800 mb-4">
+                🤖 AI 系統覆蓋率
+              </h4>
+              <div class="grid grid-cols-3 gap-6">
+                <div>
+                  <p class="text-[12px] text-indigo-500 mb-1">日誌掃描覆蓋率</p>
+                  <p class="text-[24px] font-black text-indigo-700">98.5%</p>
+                  <div class="w-full bg-indigo-200/50 rounded-full h-2 mt-2">
+                    <div
+                      class="bg-indigo-500 h-2 rounded-full"
+                      style="width: 98.5%"
+                    ></div>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-[12px] text-indigo-500 mb-1">
+                    本週自動標記風險
+                  </p>
+                  <p class="text-[24px] font-black text-indigo-700">8 筆</p>
+                </div>
+                <div>
+                  <p class="text-[12px] text-indigo-500 mb-1">
+                    自動產出趨勢報告
+                  </p>
+                  <p class="text-[24px] font-black text-indigo-700">48 份</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 跨區繳交率表格 -->
+            <h3 class="text-[16px] font-bold text-slate-800 mb-4">
+              📋 跨區日誌繳交達成率
+            </h3>
+            <div
+              class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden"
+            >
+              <table class="w-full text-[13px]">
+                <thead>
+                  <tr class="bg-slate-50 text-slate-500 text-left">
+                    <th class="px-5 py-3 font-medium">區域</th>
+                    <th class="px-5 py-3 font-medium">應繳</th>
+                    <th class="px-5 py-3 font-medium">已繳</th>
+                    <th class="px-5 py-3 font-medium">繳交率</th>
+                    <th class="px-5 py-3 font-medium">狀態</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-t border-slate-100">
+                    <td class="px-5 py-3 font-medium text-slate-700">
+                      🔵 北區
+                    </td>
+                    <td class="px-5 py-3">24</td>
+                    <td class="px-5 py-3">21</td>
+                    <td class="px-5 py-3 font-bold text-emerald-600">88%</td>
+                    <td class="px-5 py-3">
+                      <span
+                        class="bg-emerald-50 text-emerald-600 text-[11px] px-2 py-0.5 rounded-full font-medium"
+                        >✅ 達標</span
+                      >
+                    </td>
+                  </tr>
+                  <tr class="border-t border-slate-100">
+                    <td class="px-5 py-3 font-medium text-slate-700">
+                      🟢 中區
+                    </td>
+                    <td class="px-5 py-3">28</td>
+                    <td class="px-5 py-3">22</td>
+                    <td class="px-5 py-3 font-bold text-amber-500">79%</td>
+                    <td class="px-5 py-3">
+                      <span
+                        class="bg-amber-50 text-amber-600 text-[11px] px-2 py-0.5 rounded-full font-medium"
+                        >⚠️ 偏低</span
+                      >
+                    </td>
+                  </tr>
+                  <tr class="border-t border-slate-100">
+                    <td class="px-5 py-3 font-medium text-slate-700">
+                      🟠 南區
+                    </td>
+                    <td class="px-5 py-3">26</td>
+                    <td class="px-5 py-3">22</td>
+                    <td class="px-5 py-3 font-bold text-emerald-600">85%</td>
+                    <td class="px-5 py-3">
+                      <span
+                        class="bg-emerald-50 text-emerald-600 text-[11px] px-2 py-0.5 rounded-full font-medium"
+                        >✅ 達標</span
+                      >
+                    </td>
+                  </tr>
+                  <tr class="border-t border-slate-100">
+                    <td class="px-5 py-3 font-medium text-slate-700">
+                      🟣 東區
+                    </td>
+                    <td class="px-5 py-3">18</td>
+                    <td class="px-5 py-3">14</td>
+                    <td class="px-5 py-3 font-bold text-red-500">76%</td>
+                    <td class="px-5 py-3">
+                      <span
+                        class="bg-red-50 text-red-600 text-[11px] px-2 py-0.5 rounded-full font-medium"
+                        >🔴 待改善</span
+                      >
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- /view-hq -->
+
+        <!-- ================================================================
+             VIEW BRANCH：分校視角
+        ================================================================ -->
+        <div id="view-branch" style="display: none">
+          <div class="header-accent px-10 pt-9 pb-7">
+            <p class="text-[13px] text-slate-400 mb-3" id="branch-date"></p>
+            <h2 class="text-[26px] font-black text-slate-800 leading-tight">
+              早安，張主任！
+            </h2>
+            <p class="text-slate-500 mt-2 text-[14px]">
+              以下是北區分校今日概況
+            </p>
+
+            <!-- KPI -->
+            <div class="grid grid-cols-4 gap-4 mt-7">
+              <div
+                class="kpi-card bg-white rounded-2xl p-5 shadow-sm border border-slate-100"
+              >
+                <p class="text-[12px] text-slate-400 mb-2">轄區班級數</p>
+                <div class="flex items-end gap-1">
+                  <span
+                    class="text-[32px] font-black text-indigo-600"
+                    data-count-branch="12"
+                    >0</span
+                  ><span class="text-sm font-bold text-indigo-400 mb-1"
+                    >班</span
+                  >
+                </div>
+              </div>
+              <div
+                class="kpi-card bg-white rounded-2xl p-5 shadow-sm border border-slate-100"
+              >
+                <p class="text-[12px] text-slate-400 mb-2">今日日誌繳交率</p>
+                <div class="flex items-end gap-1">
+                  <span
+                    class="text-[32px] font-black text-amber-500"
+                    data-count-branch="75"
+                    >0</span
+                  ><span class="text-sm font-bold text-amber-400 mb-1">%</span>
+                </div>
+                <p class="text-[11px] text-amber-600 mt-1">⚠️ 低於標準</p>
+              </div>
+              <div
+                class="kpi-card bg-white rounded-2xl p-5 shadow-sm border border-slate-100"
+              >
+                <p class="text-[12px] text-slate-400 mb-2">中高風險個案</p>
+                <div class="flex items-end gap-1">
+                  <span
+                    class="text-[32px] font-black text-red-500"
+                    data-count-branch="5"
+                    >0</span
+                  ><span class="text-sm font-bold text-red-400 mb-1">人</span>
+                </div>
+                <p class="text-[11px] text-red-600 mt-1">🔴 需優先處理</p>
+              </div>
+              <div
+                class="kpi-card bg-white rounded-2xl p-5 shadow-sm border border-slate-100"
+              >
+                <p class="text-[12px] text-slate-400 mb-2">待處理提醒</p>
+                <div class="flex items-end gap-1">
+                  <span
+                    class="text-[32px] font-black text-slate-700"
+                    data-count-branch="7"
+                    >0</span
+                  ><span class="text-sm font-bold text-slate-400 mb-1">項</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="px-10 py-6">
+            <!-- 日誌催繳清單 -->
+            <div class="mb-8">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-[16px] font-bold text-slate-800">
+                  📋 日誌催繳清單
+                </h3>
+                <span
+                  class="text-[12px] text-red-500 bg-red-50 px-3 py-1 rounded-full font-bold"
+                  >未繳 3 人</span
+                >
+              </div>
+              <div class="space-y-3">
+                <div
+                  class="bg-white rounded-xl p-5 shadow-sm border border-slate-100 flex items-center justify-between"
+                >
+                  <div class="flex items-center gap-4">
+                    <div
+                      class="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center text-sm font-black text-red-600"
+                    >
+                      張
+                    </div>
+                    <div>
+                      <p class="text-[14px] font-bold text-slate-800">
+                        小張<span class="text-slate-400 font-normal ml-2"
+                          >希望國小 B班</span
+                        >
+                      </p>
+                      <p class="text-[12px] text-red-500 mt-0.5">
+                        🔴 逾期 3 天
+                      </p>
+                    </div>
+                  </div>
                   <button
-                    class="btn-action btn-mark flex-1 border border-slate-200 text-slate-500 hover:bg-slate-50 text-[12px] font-medium px-4 py-2.5 rounded-xl"
+                    class="btn-action bg-red-500 hover:bg-red-600 text-white text-[12px] font-medium px-4 py-2 rounded-lg"
+                    onclick="handleAction(this, '✅ 已提醒')"
+                  >
+                    一鍵提醒
+                  </button>
+                </div>
+                <div
+                  class="bg-white rounded-xl p-5 shadow-sm border border-slate-100 flex items-center justify-between"
+                >
+                  <div class="flex items-center gap-4">
+                    <div
+                      class="w-10 h-10 bg-amber-50 rounded-full flex items-center justify-center text-sm font-black text-amber-600"
+                    >
+                      陳
+                    </div>
+                    <div>
+                      <p class="text-[14px] font-bold text-slate-800">
+                        小陳<span class="text-slate-400 font-normal ml-2"
+                          >仁愛國小 E班</span
+                        >
+                      </p>
+                      <p class="text-[12px] text-amber-500 mt-0.5">
+                        🟡 逾期 1 天
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    class="btn-action bg-amber-500 hover:bg-amber-600 text-white text-[12px] font-medium px-4 py-2 rounded-lg"
+                    onclick="handleAction(this, '✅ 已提醒')"
+                  >
+                    一鍵提醒
+                  </button>
+                </div>
+                <div
+                  class="bg-white rounded-xl p-5 shadow-sm border border-slate-100 flex items-center justify-between"
+                >
+                  <div class="flex items-center gap-4">
+                    <div
+                      class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-sm font-black text-slate-600"
+                    >
+                      明
+                    </div>
+                    <div>
+                      <p class="text-[14px] font-bold text-slate-800">
+                        小明<span class="text-slate-400 font-normal ml-2"
+                          >忠孝國小 H班</span
+                        >
+                      </p>
+                      <p class="text-[12px] text-slate-500 mt-0.5">
+                        ⏰ 今日到期
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    class="btn-action bg-slate-600 hover:bg-slate-700 text-white text-[12px] font-medium px-4 py-2 rounded-lg"
+                    onclick="handleAction(this, '✅ 已提醒')"
+                  >
+                    一鍵提醒
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 中高風險預警清單 -->
+            <div class="mb-8">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-[16px] font-bold text-slate-800">
+                  ⚠️ 中高風險預警
+                </h3>
+                <span
+                  class="text-[12px] text-red-500 bg-red-50 px-3 py-1 rounded-full font-bold"
+                  >5 人</span
+                >
+              </div>
+              <div
+                class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden"
+              >
+                <div
+                  class="border-b border-slate-100 p-4 flex items-center justify-between"
+                >
+                  <div class="flex items-center gap-3">
+                    <span
+                      class="text-[12px] font-bold bg-red-50 text-red-600 px-2.5 py-0.5 rounded-full"
+                      >🔴 高風險</span
+                    >
+                    <span class="text-[13px] font-bold text-slate-800"
+                      >王小明</span
+                    >
+                    <span class="text-[12px] text-slate-400">忠孝國小 A班</span>
+                  </div>
+                  <button
+                    class="btn-action text-[12px] font-medium text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg"
                     onclick="handleAction(this, '✅ 已處理')"
                   >
-                    標記已處理
+                    介入處理
+                  </button>
+                </div>
+                <div
+                  class="border-b border-slate-100 p-4 flex items-center justify-between"
+                >
+                  <div class="flex items-center gap-3">
+                    <span
+                      class="text-[12px] font-bold bg-red-50 text-red-600 px-2.5 py-0.5 rounded-full"
+                      >🔴 高風險</span
+                    >
+                    <span class="text-[13px] font-bold text-slate-800"
+                      >周子瑜</span
+                    >
+                    <span class="text-[12px] text-slate-400"
+                      >希望國小 B班 — 連續兩週未出席</span
+                    >
+                  </div>
+                  <button
+                    class="btn-action text-[12px] font-medium text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg"
+                    onclick="handleAction(this, '✅ 已處理')"
+                  >
+                    介入處理
+                  </button>
+                </div>
+                <div
+                  class="border-b border-slate-100 p-4 flex items-center justify-between"
+                >
+                  <div class="flex items-center gap-3">
+                    <span
+                      class="text-[12px] font-bold bg-amber-50 text-amber-600 px-2.5 py-0.5 rounded-full"
+                      >🟡 中風險</span
+                    >
+                    <span class="text-[13px] font-bold text-slate-800"
+                      >李大華</span
+                    >
+                    <span class="text-[12px] text-slate-400"
+                      >希望國小 B班 — 學習退縮跡象</span
+                    >
+                  </div>
+                  <button
+                    class="btn-action text-[12px] font-medium text-amber-600 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-lg"
+                    onclick="handleAction(this, '✅ 持續觀察中')"
+                  >
+                    持續觀察
+                  </button>
+                </div>
+                <div
+                  class="border-b border-slate-100 p-4 flex items-center justify-between"
+                >
+                  <div class="flex items-center gap-3">
+                    <span
+                      class="text-[12px] font-bold bg-amber-50 text-amber-600 px-2.5 py-0.5 rounded-full"
+                      >🟡 中風險</span
+                    >
+                    <span class="text-[13px] font-bold text-slate-800"
+                      >林小芬</span
+                    >
+                    <span class="text-[12px] text-slate-400"
+                      >陽光國小 C班 — 人際互動異常</span
+                    >
+                  </div>
+                  <button
+                    class="btn-action text-[12px] font-medium text-amber-600 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-lg"
+                    onclick="handleAction(this, '✅ 持續觀察中')"
+                  >
+                    持續觀察
+                  </button>
+                </div>
+                <div class="p-4 flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <span
+                      class="text-[12px] font-bold bg-amber-50 text-amber-600 px-2.5 py-0.5 rounded-full"
+                      >🟡 中風險</span
+                    >
+                    <span class="text-[13px] font-bold text-slate-800"
+                      >劉建宏</span
+                    >
+                    <span class="text-[12px] text-slate-400"
+                      >陽光國小 C班 — 同儕衝突增加</span
+                    >
+                  </div>
+                  <button
+                    class="btn-action text-[12px] font-medium text-amber-600 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-lg"
+                    onclick="handleAction(this, '✅ 持續觀察中')"
+                  >
+                    持續觀察
                   </button>
                 </div>
               </div>
             </div>
 
-            <!-- ====== 卡片 2：志工情緒預警 ====== -->
-            <div
-              class="action-card bg-white rounded-2xl shadow-sm border border-amber-100/60 border-l-[5px] border-l-amber-400 overflow-hidden animate-fade-in-up"
-              style="animation-delay: 0.35s"
-            >
-              <div class="p-6">
-                <!-- 標籤 -->
-                <div class="flex items-center gap-2 mb-4">
-                  <span
-                    class="inline-flex items-center gap-2 bg-amber-50 text-amber-700 text-[11px] font-bold px-3 py-1.5 rounded-full"
-                  >
-                    <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                    志工情緒預警
-                  </span>
-                </div>
-
-                <!-- 內容 -->
-                <p class="text-[13px] text-slate-600 leading-[1.8] mb-5">
-                  <strong class="text-slate-800 font-bold"
-                    >【大學生社工 - 陳ＯＯ】</strong
-                  >連續三天日誌字數銳減，且文句帶有強烈<span
-                    class="text-amber-600 font-medium"
-                    >「無力感」</span
-                  >與<span class="text-amber-600 font-medium">「挫折」</span>。
-                </p>
-
-                <!-- AI 建議行動 -->
+            <!-- 出席異常預警 -->
+            <div class="mb-8">
+              <h3 class="text-[16px] font-bold text-slate-800 mb-4">
+                📊 出席異常班級
+              </h3>
+              <div class="grid grid-cols-3 gap-4">
                 <div
-                  class="ai-suggestion ai-suggestion-amber bg-amber-50/70 rounded-xl p-4 pl-5 mb-5"
+                  class="bg-white rounded-xl p-4 shadow-sm border border-slate-100"
                 >
-                  <div class="flex items-center gap-1.5 mb-1.5">
-                    <span class="text-xs">💡</span>
-                    <span class="text-[11px] font-bold text-amber-800"
-                      >AI 建議行動</span
-                    >
-                  </div>
-                  <p class="text-[12px] text-amber-700/90 leading-relaxed">
-                    AI 評估有流失風險，建議安排時間進行一對一督導關懷。
+                  <p class="text-[13px] font-bold text-slate-800 mb-1">
+                    希望國小 B班
                   </p>
+                  <p class="text-[22px] font-black text-amber-500">93%</p>
+                  <p class="text-[11px] text-slate-400 mt-1">缺席 1 人</p>
                 </div>
-
-                <!-- 按鈕 -->
-                <div class="flex gap-2.5">
-                  <button
-                    class="btn-action flex-1 bg-amber-500 hover:bg-amber-600 text-white text-[12px] font-bold px-4 py-2.5 rounded-xl shadow-sm shadow-amber-200"
-                    onclick="handleAction(this, '✅ 已發送')"
-                  >
-                    一鍵發送關懷訊息
-                  </button>
-                  <button
-                    class="btn-action flex-1 border border-slate-200 text-slate-500 hover:bg-slate-50 text-[12px] font-medium px-4 py-2.5 rounded-xl"
-                  >
-                    查看志工技能地圖
-                  </button>
+                <div
+                  class="bg-white rounded-xl p-4 shadow-sm border border-slate-100"
+                >
+                  <p class="text-[13px] font-bold text-slate-800 mb-1">
+                    信義國小 F班
+                  </p>
+                  <p class="text-[22px] font-black text-red-500">86%</p>
+                  <p class="text-[11px] text-slate-400 mt-1">缺席 2 人</p>
+                </div>
+                <div
+                  class="bg-white rounded-xl p-4 shadow-sm border border-slate-100"
+                >
+                  <p class="text-[13px] font-bold text-slate-800 mb-1">
+                    忠孝國小 H班
+                  </p>
+                  <p class="text-[22px] font-black text-amber-500">90%</p>
+                  <p class="text-[11px] text-slate-400 mt-1">缺席 1 人</p>
                 </div>
               </div>
             </div>
 
-            <!-- ====== 卡片 3：缺交追蹤提醒 ====== -->
+            <!-- AI 分析摘要 -->
             <div
-              class="action-card bg-white rounded-2xl shadow-sm border border-slate-100 border-l-[5px] border-l-slate-400 overflow-hidden animate-fade-in-up"
-              style="animation-delay: 0.5s"
+              class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100"
             >
-              <div class="p-6">
-                <!-- 標籤 -->
-                <div class="flex items-center gap-2 mb-4">
-                  <span
-                    class="inline-flex items-center gap-2 bg-slate-100 text-slate-600 text-[11px] font-bold px-3 py-1.5 rounded-full"
-                  >
-                    <span class="w-2 h-2 rounded-full bg-slate-400"></span>
-                    缺交追蹤提醒
-                  </span>
-                </div>
-
-                <!-- 內容 -->
-                <p class="text-[13px] text-slate-600 leading-[1.8] mb-5">
-                  本週有
-                  <strong class="text-slate-800 font-bold">4 位社工</strong
-                  >尚未繳交班級日誌，其中<strong
-                    class="text-slate-800 font-bold"
-                    >【希望國小B班 - 小張】</strong
-                  >已逾期 3 天，為本週最長未繳紀錄。
+              <h4 class="text-[14px] font-bold text-indigo-800 mb-3">
+                🤖 AI 本週分析摘要
+              </h4>
+              <div
+                class="space-y-2.5 text-[13px] text-indigo-700 leading-relaxed"
+              >
+                <p>
+                  📌 本週 AI 共掃描 <strong>84 篇日誌</strong>，自動標記
+                  <strong>5 筆異常紀錄</strong>。
                 </p>
-
-                <!-- AI 建議行動 -->
-                <div
-                  class="ai-suggestion ai-suggestion-slate bg-slate-50 rounded-xl p-4 pl-5 mb-5"
-                >
-                  <div class="flex items-center gap-1.5 mb-1.5">
-                    <span class="text-xs">💡</span>
-                    <span class="text-[11px] font-bold text-slate-700"
-                      >AI 建議行動</span
-                    >
-                  </div>
-                  <p class="text-[12px] text-slate-500 leading-relaxed">
-                    建議優先聯繫逾期最久者，系統已自動發送第一輪提醒。
-                  </p>
-                </div>
-
-                <!-- 按鈕 -->
-                <div class="flex gap-2.5">
-                  <button
-                    class="btn-action flex-1 bg-slate-600 hover:bg-slate-700 text-white text-[12px] font-bold px-4 py-2.5 rounded-xl shadow-sm shadow-slate-200"
-                    onclick="handleAction(this, '✅ 已發送')"
-                  >
-                    批次發送提醒
-                  </button>
-                  <button
-                    class="btn-action flex-1 border border-slate-200 text-slate-500 hover:bg-slate-50 text-[12px] font-medium px-4 py-2.5 rounded-xl"
-                  >
-                    查看繳交明細
-                  </button>
-                </div>
+                <p>
+                  📌 重點發現：<strong>希望國小 B 班</strong
+                  >連續三天出席率下降趨勢，建議分校重點關注。
+                </p>
+                <p>
+                  📌
+                  志工情緒指數：整體穩定，<strong>小陳</strong>需特別關注（連續低字數
+                  + 負面詞頻上升）。
+                </p>
               </div>
             </div>
           </div>
         </div>
-
-        <!-- 底部資訊 -->
-        <div class="px-10 pb-8">
-          <p class="text-[11px] text-slate-300 text-center mt-4">
-            資料更新時間：<span id="update-time"></span>　｜　由 AI
-            引擎自動分析產生，建議搭配實際觀察做判斷
-          </p>
-        </div>
+        <!-- /view-branch -->
       </main>
     </div>
 
+    <!-- ================================================================
+         志工技能地圖 Modal
+    ================================================================ -->
+    <div
+      id="skill-modal"
+      class="modal-overlay"
+      style="display: none"
+      onclick="closeModalOutside(event)"
+    >
+      <div class="modal-box" onclick="event.stopPropagation()">
+        <!-- Modal 頂部：志工資訊 -->
+        <div class="flex items-center gap-4 mb-6">
+          <!-- 大頭照 placeholder（圓形色塊 + 名字首字） -->
+          <div
+            id="modal-avatar"
+            class="w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl font-black shadow-lg"
+            style="background: linear-gradient(135deg, #6366f1, #8b5cf6)"
+          >
+            <span id="modal-avatar-char">明</span>
+          </div>
+          <div>
+            <h3 class="text-[18px] font-black text-slate-800" id="modal-name">
+              小明
+            </h3>
+            <p class="text-[13px] text-slate-400" id="modal-class">
+              光明國小 A班 + D班
+            </p>
+            <p
+              class="text-[12px] text-indigo-500 font-medium mt-1"
+              id="modal-duration"
+            >
+              已服務 8 個月
+            </p>
+          </div>
+          <button
+            class="ml-auto w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition-colors"
+            onclick="closeModal()"
+          >
+            ✕
+          </button>
+        </div>
+
+        <!-- 標題 -->
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-[15px] font-bold text-slate-700">🗺️ 技能地圖</span>
+          <span
+            class="text-[11px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full"
+            >AI 評估結果</span
+          >
+        </div>
+
+        <!-- 雷達圖 Canvas -->
+        <div class="flex justify-center mb-5">
+          <canvas id="radar-canvas" width="300" height="280"></canvas>
+        </div>
+
+        <!-- 雷達圖圖例 -->
+        <div class="grid grid-cols-5 gap-2 mb-5">
+          <div class="text-center">
+            <div class="text-lg mb-1">📚</div>
+            <p class="text-[10px] text-slate-500 leading-tight">課堂管理</p>
+          </div>
+          <div class="text-center">
+            <div class="text-lg mb-1">👁️</div>
+            <p class="text-[10px] text-slate-500 leading-tight">個案觀察</p>
+          </div>
+          <div class="text-center">
+            <div class="text-lg mb-1">📝</div>
+            <p class="text-[10px] text-slate-500 leading-tight">日誌撰寫</p>
+          </div>
+          <div class="text-center">
+            <div class="text-lg mb-1">🤝</div>
+            <p class="text-[10px] text-slate-500 leading-tight">團隊協作</p>
+          </div>
+          <div class="text-center">
+            <div class="text-lg mb-1">💝</div>
+            <p class="text-[10px] text-slate-500 leading-tight">情緒支持</p>
+          </div>
+        </div>
+
+        <!-- AI 分析摘要 -->
+        <div class="bg-indigo-50 rounded-xl p-4 border border-indigo-100 mb-5">
+          <div class="flex items-center gap-1.5 mb-2">
+            <span class="text-sm">🤖</span>
+            <span class="text-[12px] font-bold text-indigo-700"
+              >AI 分析摘要</span
+            >
+          </div>
+          <p
+            class="text-[13px] text-indigo-600/90 leading-relaxed"
+            id="modal-ai-summary"
+          >
+            小明在課堂管理和團隊協作表現優異，建議加強個案觀察能力。
+          </p>
+        </div>
+
+        <!-- 關閉按鈕 -->
+        <button
+          class="w-full bg-[#6366F1] hover:bg-indigo-600 text-white font-bold py-3 rounded-xl transition-colors"
+          onclick="closeModal()"
+        >
+          關閉
+        </button>
+      </div>
+    </div>
+
     <script>
-      // === 日期與問候語 ===
+      // ================================================================
+      // 工具函式：顯示 Toast 提示
+      // ================================================================
+      function showToast(msg) {
+        // 移除舊的 toast
+        const old = document.querySelector(".toast");
+        if (old) old.remove();
+
+        const toast = document.createElement("div");
+        toast.className = "toast";
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+
+        // 2.5 秒後自動消失
+        setTimeout(() => {
+          toast.style.opacity = "0";
+          toast.style.transition = "opacity 0.3s";
+          setTimeout(() => toast.remove(), 300);
+        }, 2500);
+      }
+
+      // ================================================================
+      // 首頁：日期與問候語初始化
+      // ================================================================
       (function initHeader() {
         const now = new Date();
         const hour = now.getHours();
 
-        // 格式化日期
         const dateStr = now.toLocaleDateString("zh-TW", {
           year: "numeric",
           month: "long",
@@ -642,7 +2144,6 @@
         });
         document.getElementById("current-date").textContent = dateStr;
 
-        // 更新時間
         const timeStr = now.toLocaleTimeString("zh-TW", {
           hour: "2-digit",
           minute: "2-digit",
@@ -650,14 +2151,15 @@
         document.getElementById("update-time").textContent =
           `${dateStr} ${timeStr}`;
 
-        // 動態問候語
         let greeting = "早安";
         if (hour >= 12 && hour < 18) greeting = "午安";
         else if (hour >= 18) greeting = "晚安";
         document.getElementById("greeting").textContent = greeting;
       })();
 
-      // === KPI 數字跳動動畫 ===
+      // ================================================================
+      // 首頁：KPI 數字跳動動畫
+      // ================================================================
       function animateCounters() {
         document.querySelectorAll("[data-count]").forEach((el) => {
           const target = parseInt(el.dataset.count, 10);
@@ -670,29 +2172,23 @@
             // easeOutExpo：快速到達後減速
             const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
             el.textContent = Math.round(target * eased);
-            if (progress < 1) {
-              requestAnimationFrame(update);
-            }
+            if (progress < 1) requestAnimationFrame(update);
           }
-
           // 延遲啟動，讓進場動畫先完成
           setTimeout(() => requestAnimationFrame(update), 400);
         });
       }
       animateCounters();
 
-      // === 按鈕操作處理 ===
+      // ================================================================
+      // 首頁：按鈕操作處理
+      // ================================================================
       function handleAction(btn, successText) {
-        // 防止重複點擊
         if (btn.disabled) return;
         btn.disabled = true;
-
-        // 先顯示 loading 狀態
         const originalText = btn.textContent;
         btn.textContent = "處理中...";
         btn.style.opacity = "0.7";
-
-        // 模擬處理時間後顯示成功
         setTimeout(() => {
           btn.textContent = successText;
           btn.style.opacity = "1";
@@ -701,30 +2197,950 @@
         }, 600);
       }
 
-      // === 側邊欄導覽切換 ===
-      document.querySelectorAll(".nav-link").forEach((link) => {
-        link.addEventListener("click", function (e) {
-          e.preventDefault();
-          // 移除所有 active 狀態
+      // ================================================================
+      // VIEW 切換邏輯
+      // ================================================================
+      // 督導視角的 sidebar view 列表
+      const supervisorViews = [
+        "view-home",
+        "view-classes",
+        "view-cases",
+        "view-volunteers",
+        "view-ai",
+        "view-settings",
+      ];
+      // 所有 view（含跨視角）
+      const allViews = [...supervisorViews, "view-hq", "view-branch"];
+      // 當前視角
+      let currentPerspective = "supervisor";
+      // 側邊欄是否可用
+      let sidebarEnabled = true;
+
+      function switchView(viewId) {
+        // 隱藏所有 view
+        allViews.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.style.display = "none";
+        });
+
+        // 顯示目標 view，並套用淡入動畫
+        const target = document.getElementById(viewId);
+        if (target) {
+          target.style.display = "block";
+          target.classList.remove("view-section");
+          void target.offsetWidth;
+          target.classList.add("view-section");
+        }
+
+        // AI 分析 View 的 KPI 計數器動畫
+        if (viewId === "view-ai") {
+          animateCustomCounters("data-count-ai");
+        }
+      }
+
+      // ================================================================
+      // 視角切換邏輯（總部 / 分校 / 督導）
+      // ================================================================
+      function switchPerspective(persp) {
+        currentPerspective = persp;
+
+        // 更新 pill active 狀態
+        document.querySelectorAll(".persp-pill").forEach((p) => {
+          p.classList.toggle("active", p.getAttribute("data-persp") === persp);
+        });
+
+        if (persp === "supervisor") {
+          // 督導視角：啟用 sidebar，切回首頁
+          sidebarEnabled = true;
           document.querySelectorAll(".nav-link").forEach((l) => {
-            l.classList.remove(
-              "active",
-              "bg-white/[0.12]",
-              "text-white",
-              "font-medium",
-            );
-            l.classList.add("text-indigo-200/70");
+            l.style.opacity = "1";
+            l.style.pointerEvents = "auto";
           });
-          // 設定當前為 active
-          this.classList.add(
+          switchView("view-home");
+          // 重設 sidebar active 到首頁
+          setActiveSidebarLink("view-home");
+        } else if (persp === "hq") {
+          // 總部視角：停用 sidebar，顯示總部內容
+          sidebarEnabled = false;
+          dimSidebar();
+          switchView("view-hq");
+          // 設定日期
+          const hqDate = document.getElementById("hq-date");
+          if (hqDate)
+            hqDate.textContent =
+              document.getElementById("current-date").textContent;
+          // 觸發 KPI 動畫
+          animateCustomCounters("data-count-hq");
+        } else if (persp === "branch") {
+          // 分校視角：停用 sidebar，顯示分校內容
+          sidebarEnabled = false;
+          dimSidebar();
+          switchView("view-branch");
+          // 設定日期
+          const brDate = document.getElementById("branch-date");
+          if (brDate)
+            brDate.textContent =
+              document.getElementById("current-date").textContent;
+          // 觸發 KPI 動畫
+          animateCustomCounters("data-count-branch");
+        }
+      }
+
+      // 讓 sidebar 半透明（非督導視角時）
+      function dimSidebar() {
+        document.querySelectorAll(".nav-link").forEach((l) => {
+          l.style.opacity = "0.4";
+          l.style.pointerEvents = "none";
+        });
+      }
+
+      // 設定 sidebar 的 active 連結
+      function setActiveSidebarLink(viewId) {
+        document.querySelectorAll(".nav-link").forEach((l) => {
+          l.classList.remove(
             "active",
             "bg-white/[0.12]",
             "text-white",
             "font-medium",
           );
-          this.classList.remove("text-indigo-200/70");
+          l.classList.add("text-indigo-200/70");
+        });
+        const target = document.querySelector('[data-view="' + viewId + '"]');
+        if (target) {
+          target.classList.add(
+            "active",
+            "bg-white/[0.12]",
+            "text-white",
+            "font-medium",
+          );
+          target.classList.remove("text-indigo-200/70");
+        }
+      }
+
+      // 自訂 data-count 屬性的 KPI 動畫（給總部和分校用）
+      function animateCustomCounters(attr) {
+        document.querySelectorAll("[" + attr + "]").forEach((el) => {
+          const target = parseInt(el.getAttribute(attr), 10);
+          const duration = 1200;
+          const startTime = performance.now();
+          function update(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+            el.textContent = Math.round(target * eased);
+            if (progress < 1) requestAnimationFrame(update);
+          }
+          setTimeout(() => requestAnimationFrame(update), 200);
+        });
+      }
+
+      // 側邊欄點擊事件
+      document.querySelectorAll(".nav-link").forEach((link) => {
+        link.addEventListener("click", function (e) {
+          e.preventDefault();
+          // 非督導視角時，sidebar 不可用
+          if (!sidebarEnabled) return;
+
+          // 更新 active 樣式
+          const viewId = this.getAttribute("data-view");
+          setActiveSidebarLink(viewId);
+
+          // 切換對應 view
+          if (viewId) switchView(viewId);
         });
       });
+
+      // ================================================================
+      // VIEW 2：轄區班級管理 - 資料與渲染
+      // ================================================================
+      const classData = [
+        {
+          name: "光明國小 A班",
+          worker: "小明",
+          students: 12,
+          rate: 100,
+          logged: true,
+        },
+        {
+          name: "希望國小 B班",
+          worker: "小張",
+          students: 15,
+          rate: 93,
+          logged: false,
+        },
+        {
+          name: "陽光國小 C班",
+          worker: "小李",
+          students: 10,
+          rate: 100,
+          logged: true,
+        },
+        {
+          name: "光明國小 D班",
+          worker: "小明",
+          students: 13,
+          rate: 92,
+          logged: true,
+        },
+        {
+          name: "仁愛國小 E班",
+          worker: "小陳",
+          students: 11,
+          rate: 100,
+          logged: false,
+        },
+        {
+          name: "信義國小 F班",
+          worker: "小林",
+          students: 14,
+          rate: 86,
+          logged: true,
+        },
+        {
+          name: "和平國小 G班",
+          worker: "小王",
+          students: 12,
+          rate: 100,
+          logged: true,
+        },
+        {
+          name: "忠孝國小 H班",
+          worker: "小明",
+          students: 10,
+          rate: 90,
+          logged: false,
+        },
+        {
+          name: "大同國小 I班",
+          worker: "小張",
+          students: 13,
+          rate: 100,
+          logged: true,
+        },
+        {
+          name: "中山國小 J班",
+          worker: "小李",
+          students: 11,
+          rate: 100,
+          logged: true,
+        },
+        {
+          name: "建國國小 K班",
+          worker: "小陳",
+          students: 15,
+          rate: 93,
+          logged: false,
+        },
+        {
+          name: "復興國小 L班",
+          worker: "小林",
+          students: 12,
+          rate: 100,
+          logged: true,
+        },
+      ];
+
+      // 出席率對應顏色
+      function getRateColor(rate) {
+        if (rate >= 95)
+          return {
+            text: "text-emerald-600",
+            bg: "bg-emerald-50",
+            dot: "bg-emerald-500",
+          };
+        if (rate >= 80)
+          return {
+            text: "text-amber-600",
+            bg: "bg-amber-50",
+            dot: "bg-amber-500",
+          };
+        return { text: "text-red-600", bg: "bg-red-50", dot: "bg-red-500" };
+      }
+
+      // 渲染班級卡片
+      function renderClasses(filter) {
+        const grid = document.getElementById("class-grid");
+        grid.innerHTML = "";
+
+        const filtered = classData.filter((c) => {
+          if (filter === "done") return c.logged;
+          if (filter === "pending") return !c.logged;
+          return true;
+        });
+
+        filtered.forEach((c, i) => {
+          const color = getRateColor(c.rate);
+          const card = document.createElement("div");
+          card.className =
+            "class-card bg-white rounded-2xl p-5 shadow-sm border border-slate-100";
+          card.style.animationDelay = `${i * 0.05}s`;
+          card.innerHTML = `
+            <div class="flex items-start justify-between mb-4">
+              <div>
+                <h4 class="text-[14px] font-bold text-slate-800">${c.name}</h4>
+                <p class="text-[12px] text-slate-400 mt-0.5">負責社工：${c.worker}</p>
+              </div>
+              <span class="text-[11px] font-bold px-2 py-1 rounded-full ${c.logged ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"}">
+                ${c.logged ? "✅ 已繳" : "⚠️ 未繳"}
+              </span>
+            </div>
+            <div class="flex items-center gap-4 mb-4">
+              <div class="flex items-center gap-1.5">
+                <span class="text-[12px] text-slate-400">👥</span>
+                <span class="text-[13px] font-medium text-slate-700">${c.students} 人</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="inline-block w-[6px] h-[6px] rounded-full ${color.dot}"></span>
+                <span class="text-[13px] font-bold ${color.text}">${c.rate}%</span>
+                <span class="text-[11px] text-slate-400">出席率</span>
+              </div>
+            </div>
+            <!-- 出席率進度條 -->
+            <div class="w-full bg-slate-100 rounded-full h-1.5 mb-4">
+              <div class="h-1.5 rounded-full ${color.dot} transition-all duration-500" style="width: ${c.rate}%"></div>
+            </div>
+            <button
+              class="w-full bg-[#6366F1]/10 hover:bg-[#6366F1] text-[#6366F1] hover:text-white text-[12px] font-bold py-2 rounded-xl transition-all duration-200"
+              onclick="showToast('📚 正在開啟 ${c.name} 班級詳情...')"
+            >查看班級</button>
+          `;
+          grid.appendChild(card);
+        });
+
+        // 若無結果
+        if (filtered.length === 0) {
+          grid.innerHTML =
+            '<div class="col-span-3 text-center py-12 text-slate-400">沒有符合條件的班級</div>';
+        }
+      }
+
+      // 篩選按鈕綁定
+      document
+        .querySelectorAll("#class-filters .filter-pill")
+        .forEach((btn) => {
+          btn.addEventListener("click", function () {
+            document
+              .querySelectorAll("#class-filters .filter-pill")
+              .forEach((b) => b.classList.remove("active"));
+            this.classList.add("active");
+            renderClasses(this.dataset.filter);
+          });
+        });
+
+      // 初始渲染
+      renderClasses("all");
+
+      // ================================================================
+      // VIEW 3：個案風險追蹤 - 資料與渲染
+      // ================================================================
+      const caseData = [
+        // 高風險
+        {
+          name: "王小明",
+          cls: "忠孝國小 A班",
+          risk: "high",
+          summary: "近期日誌反覆出現情緒失控關鍵字",
+          date: "2026/02/22",
+        },
+        {
+          name: "周子瑜",
+          cls: "希望國小 B班",
+          risk: "high",
+          summary: "連續兩週未出席，家訪未果",
+          date: "2026/02/21",
+        },
+        {
+          name: "劉建宏",
+          cls: "陽光國小 C班",
+          risk: "high",
+          summary: "與同儕衝突頻率上升，導師反映擔憂",
+          date: "2026/02/20",
+        },
+        // 中風險
+        {
+          name: "林雅婷",
+          cls: "仁愛國小 E班",
+          risk: "mid",
+          summary: "近期情緒起伏較大，日誌顯示焦慮傾向",
+          date: "2026/02/22",
+        },
+        {
+          name: "陳冠宇",
+          cls: "信義國小 F班",
+          risk: "mid",
+          summary: "出席率下滑至 80%，請假原因不明",
+          date: "2026/02/21",
+        },
+        {
+          name: "黃子軒",
+          cls: "和平國小 G班",
+          risk: "mid",
+          summary: "與老師關係緊張，課堂參與度降低",
+          date: "2026/02/20",
+        },
+        {
+          name: "蔡依林",
+          cls: "大同國小 I班",
+          risk: "mid",
+          summary: "近期飲食習慣改變，志工觀察到外貌消瘦",
+          date: "2026/02/19",
+        },
+        {
+          name: "吳宗憲",
+          cls: "建國國小 K班",
+          risk: "mid",
+          summary: "家長反映孩子最近情緒低落",
+          date: "2026/02/18",
+        },
+        // 低風險
+        {
+          name: "李思穎",
+          cls: "光明國小 A班",
+          risk: "low",
+          summary: "整體表現穩定，適應良好",
+          date: "2026/02/22",
+        },
+        {
+          name: "張育豪",
+          cls: "光明國小 D班",
+          risk: "low",
+          summary: "近期功課進步，出席率 100%",
+          date: "2026/02/22",
+        },
+        {
+          name: "許芷涵",
+          cls: "中山國小 J班",
+          risk: "low",
+          summary: "志工回報孩子積極參與活動",
+          date: "2026/02/21",
+        },
+        {
+          name: "趙冠翔",
+          cls: "復興國小 L班",
+          risk: "low",
+          summary: "學習態度良好，無異常狀況",
+          date: "2026/02/21",
+        },
+        {
+          name: "鄭雨廷",
+          cls: "希望國小 B班",
+          risk: "low",
+          summary: "人際關係融洽，心情開朗",
+          date: "2026/02/20",
+        },
+        {
+          name: "楊雅雯",
+          cls: "陽光國小 C班",
+          risk: "low",
+          summary: "各科成績穩定，家庭支持充足",
+          date: "2026/02/20",
+        },
+        {
+          name: "何文軒",
+          cls: "忠孝國小 H班",
+          risk: "low",
+          summary: "無異常，志工觀察正常",
+          date: "2026/02/19",
+        },
+        {
+          name: "宋佳馨",
+          cls: "大同國小 I班",
+          risk: "low",
+          summary: "出席率 100%，態度積極",
+          date: "2026/02/19",
+        },
+        {
+          name: "方俊傑",
+          cls: "信義國小 F班",
+          risk: "low",
+          summary: "作業按時繳交，表現穩定",
+          date: "2026/02/18",
+        },
+        {
+          name: "葉詩涵",
+          cls: "和平國小 G班",
+          risk: "low",
+          summary: "近期日誌反映情緒正面",
+          date: "2026/02/18",
+        },
+        {
+          name: "鍾子鈞",
+          cls: "仁愛國小 E班",
+          risk: "low",
+          summary: "對課程投入度高，無異常",
+          date: "2026/02/17",
+        },
+        {
+          name: "盧冠霖",
+          cls: "建國國小 K班",
+          risk: "low",
+          summary: "整體狀況穩定，持續追蹤中",
+          date: "2026/02/17",
+        },
+        {
+          name: "謝欣妤",
+          cls: "中山國小 J班",
+          risk: "low",
+          summary: "無警示關鍵字，日誌撰寫正常",
+          date: "2026/02/16",
+        },
+        {
+          name: "邱庭煊",
+          cls: "復興國小 L班",
+          risk: "low",
+          summary: "出席率高，志工給予正面評估",
+          date: "2026/02/16",
+        },
+        {
+          name: "翁昱豪",
+          cls: "光明國小 A班",
+          risk: "low",
+          summary: "家庭狀況穩定，學校表現良好",
+          date: "2026/02/15",
+        },
+        {
+          name: "施雅雯",
+          cls: "陽光國小 C班",
+          risk: "low",
+          summary: "人際互動正常，情緒穩定",
+          date: "2026/02/15",
+        },
+        {
+          name: "黃怡君",
+          cls: "光明國小 D班",
+          risk: "low",
+          summary: "近期課堂參與積極，表現進步",
+          date: "2026/02/14",
+        },
+        {
+          name: "羅紫綺",
+          cls: "忠孝國小 H班",
+          risk: "low",
+          summary: "與同儕關係良好，無異常",
+          date: "2026/02/14",
+        },
+        {
+          name: "江柏緯",
+          cls: "信義國小 F班",
+          risk: "low",
+          summary: "穩定服務中，持續觀察",
+          date: "2026/02/13",
+        },
+        {
+          name: "蘇威儒",
+          cls: "建國國小 K班",
+          risk: "low",
+          summary: "整體狀況良好，表現穩定",
+          date: "2026/02/13",
+        },
+      ];
+
+      const riskMeta = {
+        high: { label: "🔴 高風險", badgeClass: "risk-badge-high" },
+        mid: { label: "🟡 中風險", badgeClass: "risk-badge-mid" },
+        low: { label: "🟢 低風險", badgeClass: "risk-badge-low" },
+      };
+
+      // 渲染個案列表
+      function renderCases(filter) {
+        const list = document.getElementById("case-list");
+        const badge = document.getElementById("case-count-badge");
+        list.innerHTML = "";
+
+        const filtered = caseData.filter((c) => {
+          if (filter === "high") return c.risk === "high";
+          if (filter === "mid") return c.risk === "mid";
+          if (filter === "low") return c.risk === "low";
+          return true;
+        });
+
+        badge.textContent = `共 ${filtered.length} 筆`;
+
+        filtered.forEach((c) => {
+          const meta = riskMeta[c.risk];
+          const row = document.createElement("div");
+          row.className =
+            "case-row grid px-6 py-4 border-b border-slate-50 items-center";
+          row.style.gridTemplateColumns = "2fr 2fr 1.5fr 3fr 2fr 1.5fr";
+          row.innerHTML = `
+            <span class="text-[13px] font-semibold text-slate-800">${c.name}</span>
+            <span class="text-[12px] text-slate-500">${c.cls}</span>
+            <span class="inline-flex items-center text-[11px] font-bold px-2 py-1 rounded-full w-fit ${meta.badgeClass}">${meta.label}</span>
+            <span class="text-[12px] text-slate-500 pr-4 leading-relaxed">${c.summary}</span>
+            <span class="text-[12px] text-slate-400">${c.date}</span>
+            <button
+              class="text-[11px] font-bold text-[#6366F1] border border-[#6366F1]/30 bg-[#6366F1]/5 hover:bg-[#6366F1] hover:text-white px-3 py-1.5 rounded-lg transition-all duration-200 w-fit"
+              onclick="showToast('🔍 正在開啟 ${c.name} 的個案詳情...')"
+            >查看詳情</button>
+          `;
+          list.appendChild(row);
+        });
+
+        if (filtered.length === 0) {
+          list.innerHTML =
+            '<div class="text-center py-12 text-slate-400 text-[13px]">沒有符合條件的個案</div>';
+        }
+      }
+
+      // 篩選按鈕綁定
+      document.querySelectorAll("#case-filters .filter-pill").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          document
+            .querySelectorAll("#case-filters .filter-pill")
+            .forEach((b) => b.classList.remove("active"));
+          this.classList.add("active");
+          renderCases(this.dataset.filter);
+        });
+      });
+
+      // 初始渲染
+      renderCases("all");
+
+      // ================================================================
+      // VIEW 4：志工關懷名單 - 資料與渲染
+      // ================================================================
+      const volunteerData = [
+        {
+          name: "小明",
+          classes: "光明國小 A班 + D班",
+          status: "normal",
+          statusEmoji: "😊",
+          statusText: "正常",
+          summary: "今天孩子們表現很棒，上課氣氛融洽！",
+          duration: "已服務 8 個月",
+          skills: [88, 72, 80, 90, 75], // 課堂管理、個案觀察、日誌撰寫、團隊協作、情緒支持
+          aiSummary:
+            "小明在課堂管理和團隊協作表現優異，建議加強個案觀察能力，可參加下次觀察技巧培訓。",
+        },
+        {
+          name: "小張",
+          classes: "希望國小 B班",
+          status: "concern",
+          statusEmoji: "😟",
+          statusText: "需關注",
+          summary: "覺得很累，不知道怎麼幫助他，感覺自己不夠好...",
+          duration: "已服務 6 個月",
+          skills: [65, 60, 55, 70, 45],
+          aiSummary:
+            "小張近期情緒支持和日誌撰寫能力指標下滑，整體狀態需關注，建議安排一對一督導面談。",
+        },
+        {
+          name: "小李",
+          classes: "陽光國小 C班",
+          status: "normal",
+          statusEmoji: "😊",
+          statusText: "正常",
+          summary: "學生進步很多，很有成就感，繼續加油！",
+          duration: "已服務 12 個月",
+          skills: [82, 88, 90, 85, 92],
+          aiSummary:
+            "小李在情緒支持和日誌撰寫上表現特別突出，是全隊標竿，可邀請分享最佳實踐。",
+        },
+        {
+          name: "小陳",
+          classes: "仁愛國小 E班 + 建國國小 K班",
+          status: "concern",
+          statusEmoji: "😰",
+          statusText: "急需關懷",
+          summary: "連續三天字數銳減...很累，感覺快撐不下去了...",
+          duration: "已服務 3 個月",
+          skills: [50, 48, 30, 55, 25],
+          aiSummary:
+            "小陳所有技能指標均低於平均，且近期日誌帶有明顯無力感，急需安排緊急關懷面談。",
+        },
+        {
+          name: "小林",
+          classes: "信義國小 F班 + 復興國小 L班",
+          status: "normal",
+          statusEmoji: "😊",
+          statusText: "正常",
+          summary: "新學期適應良好，班上孩子都很可愛！",
+          duration: "已服務 4 個月",
+          skills: [70, 65, 72, 68, 78],
+          aiSummary:
+            "小林整體技能均衡，情緒支持表現較突出，新人適應順利，建議持續關注課堂管理技巧提升。",
+        },
+        {
+          name: "小王",
+          classes: "和平國小 G班",
+          status: "normal",
+          statusEmoji: "😊",
+          statusText: "正常",
+          summary: "孩子們今天很開心，笑聲不斷，充實的一天！",
+          duration: "已服務 10 個月",
+          skills: [85, 80, 78, 82, 88],
+          aiSummary:
+            "小王在情緒支持和課堂管理上均有出色表現，服務經驗豐富，可擔任新志工的輔導員。",
+        },
+      ];
+
+      // 渲染志工卡片
+      function renderVolunteers(filter) {
+        const grid = document.getElementById("volunteer-grid");
+        grid.innerHTML = "";
+
+        const filtered = volunteerData.filter((v) => {
+          if (filter === "concern") return v.status === "concern";
+          if (filter === "normal") return v.status === "normal";
+          return true;
+        });
+
+        filtered.forEach((v, i) => {
+          // 狀態樣式
+          const statusStyle = {
+            normal: { bg: "bg-emerald-50", text: "text-emerald-600" },
+            concern:
+              v.statusEmoji === "😰"
+                ? { bg: "bg-red-50", text: "text-red-600" }
+                : { bg: "bg-amber-50", text: "text-amber-600" },
+          }[v.status] || { bg: "bg-slate-50", text: "text-slate-600" };
+
+          const card = document.createElement("div");
+          card.className =
+            "volunteer-card bg-white rounded-2xl p-6 shadow-sm border border-slate-100";
+
+          card.innerHTML = `
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <!-- 大頭照 placeholder -->
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-400 to-purple-400 flex items-center justify-center text-white font-black text-base shadow-sm">
+                  ${v.name.slice(1)}
+                </div>
+                <div>
+                  <h4 class="text-[15px] font-bold text-slate-800">${v.name}</h4>
+                  <p class="text-[11px] text-slate-400 mt-0.5">${v.classes}</p>
+                </div>
+              </div>
+              <!-- 情緒狀態 -->
+              <span class="text-[11px] font-bold px-3 py-1 rounded-full ${statusStyle.bg} ${statusStyle.text}">
+                ${v.statusEmoji} ${v.statusText}
+              </span>
+            </div>
+
+            <!-- 近期日誌摘要 -->
+            <div class="bg-slate-50 rounded-xl p-3 mb-4 border-l-3 border-l-slate-300" style="border-left: 3px solid #e2e8f0;">
+              <p class="text-[12px] text-slate-600 leading-relaxed italic">"${v.summary}"</p>
+            </div>
+
+            <!-- 服務時長 -->
+            <div class="flex items-center gap-1.5 mb-5">
+              <span class="text-sm">⏱️</span>
+              <span class="text-[12px] text-slate-500 font-medium">${v.duration}</span>
+            </div>
+
+            <!-- 操作按鈕 -->
+            <div class="flex gap-2">
+              <button
+                class="flex-1 bg-[#6366F1]/10 hover:bg-[#6366F1] text-[#6366F1] hover:text-white text-[11px] font-bold py-2 rounded-xl transition-all duration-200"
+                onclick="openSkillModal(${i})"
+              >🗺️ 查看技能地圖</button>
+              <button
+                class="flex-1 bg-[#EC4899]/10 hover:bg-[#EC4899] text-[#EC4899] hover:text-white text-[11px] font-bold py-2 rounded-xl transition-all duration-200"
+                onclick="showToast('💌 已發送關懷訊息給 ${v.name}！')"
+              >💌 發送關懷訊息</button>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+
+        if (filtered.length === 0) {
+          grid.innerHTML =
+            '<div class="col-span-2 text-center py-12 text-slate-400 text-[13px]">沒有符合條件的志工</div>';
+        }
+      }
+
+      // 篩選按鈕綁定
+      document
+        .querySelectorAll("#volunteer-filters .filter-pill")
+        .forEach((btn) => {
+          btn.addEventListener("click", function () {
+            document
+              .querySelectorAll("#volunteer-filters .filter-pill")
+              .forEach((b) => b.classList.remove("active"));
+            this.classList.add("active");
+            renderVolunteers(this.dataset.filter);
+          });
+        });
+
+      // 初始渲染
+      renderVolunteers("all");
+
+      // ================================================================
+      // 志工技能地圖 Modal + 雷達圖
+      // ================================================================
+      // 當前開啟的志工索引（對應 volunteerData）
+      let currentVolunteerIndex = 0;
+
+      // 開啟 Modal
+      function openSkillModal(index) {
+        currentVolunteerIndex = index;
+        const v = volunteerData[index];
+
+        // 填入志工資料
+        document.getElementById("modal-name").textContent = v.name;
+        document.getElementById("modal-class").textContent = v.classes;
+        document.getElementById("modal-duration").textContent = v.duration;
+        document.getElementById("modal-avatar-char").textContent =
+          v.name.slice(1);
+        document.getElementById("modal-ai-summary").textContent = v.aiSummary;
+
+        // 顯示 Modal
+        document.getElementById("skill-modal").style.display = "flex";
+        document.body.style.overflow = "hidden"; // 防止背景捲動
+
+        // 延遲繪製雷達圖（等 Modal 動畫結束）
+        setTimeout(() => drawRadar(v.skills), 100);
+      }
+
+      // 關閉 Modal
+      function closeModal() {
+        document.getElementById("skill-modal").style.display = "none";
+        document.body.style.overflow = "";
+      }
+
+      // 點擊遮罩關閉
+      function closeModalOutside(e) {
+        if (e.target === document.getElementById("skill-modal")) {
+          closeModal();
+        }
+      }
+
+      // ================================================================
+      // Canvas 雷達圖繪製（原生 JS，含動畫）
+      // ================================================================
+      function drawRadar(skills) {
+        const canvas = document.getElementById("radar-canvas");
+        const ctx = canvas.getContext("2d");
+        const W = canvas.width;
+        const H = canvas.height;
+        const cx = W / 2;
+        const cy = H / 2;
+        const R = Math.min(W, H) / 2 - 30; // 最大半徑
+        const N = 5; // 技能維度數
+        const labels = [
+          "課堂管理",
+          "個案觀察",
+          "日誌撰寫",
+          "團隊協作",
+          "情緒支持",
+        ];
+
+        // 各維度的角度（從頂部開始，順時針）
+        const angles = labels.map(
+          (_, i) => (Math.PI * 2 * i) / N - Math.PI / 2,
+        );
+
+        // 動畫進度（0 → 1）
+        let progress = 0;
+        const duration = 800; // ms
+        let startTime = null;
+
+        function easeOutCubic(t) {
+          return 1 - Math.pow(1 - t, 3);
+        }
+
+        function frame(timestamp) {
+          if (!startTime) startTime = timestamp;
+          const elapsed = timestamp - startTime;
+          progress = Math.min(elapsed / duration, 1);
+          const eased = easeOutCubic(progress);
+
+          ctx.clearRect(0, 0, W, H);
+
+          // === 畫背景網格（5 層同心多邊形）===
+          const gridLevels = 5;
+          for (let level = 1; level <= gridLevels; level++) {
+            const r = (R / gridLevels) * level;
+            ctx.beginPath();
+            angles.forEach((angle, i) => {
+              const x = cx + r * Math.cos(angle);
+              const y = cy + r * Math.sin(angle);
+              if (i === 0) ctx.moveTo(x, y);
+              else ctx.lineTo(x, y);
+            });
+            ctx.closePath();
+            ctx.strokeStyle = "rgba(99, 102, 241, 0.12)";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // 百分比標籤（只在最外層顯示）
+            if (level === gridLevels) {
+              ctx.fillStyle = "rgba(148, 163, 184, 0.8)";
+              ctx.font = '10px "Noto Sans TC", sans-serif';
+              ctx.textAlign = "center";
+            }
+          }
+
+          // === 畫軸線（從中心到頂點）===
+          angles.forEach((angle) => {
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(cx + R * Math.cos(angle), cy + R * Math.sin(angle));
+            ctx.strokeStyle = "rgba(99, 102, 241, 0.15)";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          });
+
+          // === 畫技能填充區域（動畫展開）===
+          ctx.beginPath();
+          skills.forEach((skill, i) => {
+            const r = (skill / 100) * R * eased; // 動畫縮放
+            const x = cx + r * Math.cos(angles[i]);
+            const y = cy + r * Math.sin(angles[i]);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          });
+          ctx.closePath();
+
+          // 填充（半透明主色）
+          ctx.fillStyle = "rgba(99, 102, 241, 0.18)";
+          ctx.fill();
+
+          // 邊框
+          ctx.strokeStyle = "#6366f1";
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          // === 畫頂點圓點 ===
+          skills.forEach((skill, i) => {
+            const r = (skill / 100) * R * eased;
+            const x = cx + r * Math.cos(angles[i]);
+            const y = cy + r * Math.sin(angles[i]);
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, Math.PI * 2);
+            ctx.fillStyle = "#6366f1";
+            ctx.fill();
+            ctx.strokeStyle = "white";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+          });
+
+          // === 畫標籤（技能名稱 + 數值）===
+          ctx.font = 'bold 11px "Noto Sans TC", sans-serif';
+          angles.forEach((angle, i) => {
+            const labelR = R + 20;
+            const x = cx + labelR * Math.cos(angle);
+            const y = cy + labelR * Math.sin(angle);
+
+            ctx.fillStyle = "#475569";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(labels[i], x, y - 6);
+
+            // 數值（動畫時顯示當前進度值）
+            ctx.fillStyle = "#6366f1";
+            ctx.font = 'bold 12px "Noto Sans TC", sans-serif';
+            ctx.fillText(Math.round(skills[i] * eased), x, y + 8);
+            ctx.font = 'bold 11px "Noto Sans TC", sans-serif';
+          });
+
+          if (progress < 1) {
+            requestAnimationFrame(frame);
+          }
+        }
+
+        requestAnimationFrame(frame);
+      }
     </script>
   </body>
 </html>
