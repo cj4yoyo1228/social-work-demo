@@ -3,473 +3,1392 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>個案服務紀錄 — 社工管理系統</title>
+    <title>個案服務紀錄 — 永齡希望小學</title>
+    <!-- Google Fonts：Noto Sans TC -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="shared.css" />
     <style>
+      /* ===== 全域基礎 ===== */
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Noto Sans TC", sans-serif;
+        background-color: #f8fafc;
+        color: #1f2937;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* ===== 頁面容器 ===== */
       .page-container {
         max-width: 800px;
         margin: 0 auto;
         padding: 24px 16px;
         min-height: 100vh;
       }
+
+      /* ===== 畫面切換動畫 ===== */
+      /* 每個狀態都是獨立的 view，透過 JS 控制 active */
+      .view {
+        display: none;
+        opacity: 0;
+        transition: opacity 0.35s ease;
+      }
+
+      .view.active {
+        display: block;
+        opacity: 1;
+      }
+
+      /* 進場動畫（用 JS 觸發） */
+      @keyframes slideInUp {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .slide-in {
+        animation: slideInUp 0.35s ease forwards;
+      }
+
+      /* 卡片交錯進場（staggered animation） */
+      @keyframes staggerIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ===== 頂部導覽列 ===== */
       .page-header {
         display: flex;
         align-items: center;
         gap: 12px;
         margin-bottom: 20px;
       }
+
       .page-title {
         font-size: 20px;
         font-weight: 700;
         color: #1f2937;
         flex: 1;
       }
-      .student-card-content {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-      }
-      .student-card-name {
-        font-size: 16px;
-        font-weight: 600;
-        color: #1f2937;
-      }
-      .student-card-class {
-        font-size: 13px;
-        color: #6b7280;
-      }
-      .student-card-footer {
-        display: flex;
+
+      /* 返回按鈕 */
+      .nav-back {
+        display: inline-flex;
         align-items: center;
-        justify-content: space-between;
-        margin-top: 4px;
-        flex-wrap: wrap;
-        gap: 6px;
-      }
-      .tags-group {
-        display: flex;
-        flex-wrap: wrap;
         gap: 4px;
-      }
-      .last-record-date {
-        font-size: 12px;
-        color: #9ca3af;
-        white-space: nowrap;
-      }
-      .last-record-date.has-record {
-        color: #6b7280;
-      }
-      .info-row {
-        display: flex;
-        align-items: center;
-        padding: 8px 0;
-        border-bottom: 1px solid #f3f4f6;
-      }
-      .info-row:last-child {
-        border-bottom: none;
-      }
-      .info-label {
-        width: 80px;
-        font-size: 13px;
-        color: #9ca3af;
-        flex-shrink: 0;
-      }
-      .info-value {
+        color: #6366f1;
         font-size: 14px;
-        color: #1f2937;
         font-weight: 500;
-        flex: 1;
+        cursor: pointer;
+        padding: 8px 0;
+        text-decoration: none;
+        flex-shrink: 0;
+        transition: color 0.2s ease;
       }
-      .section-title {
-        font-size: 15px;
-        font-weight: 600;
-        color: #374151;
-        margin-bottom: 12px;
+
+      .nav-back:hover {
+        color: #4f46e5;
       }
-      .record-date {
-        font-size: 12px;
-        color: #9ca3af;
-        margin-bottom: 4px;
-      }
-      .record-note {
-        font-size: 14px;
-        color: #374151;
-        line-height: 1.6;
-        margin-top: 4px;
-      }
-      .empty-hint {
-        text-align: center;
-        color: #9ca3af;
-        font-size: 14px;
-        padding: 24px 0;
-      }
-      .content-with-bottom-btn {
-        padding-bottom: 80px;
-      }
-      .bottom-fixed-btn {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding: 16px;
-        background: linear-gradient(to top, #f8fafc 70%, transparent);
-      }
-      .bottom-fixed-btn-inner {
-        max-width: 800px;
-        margin: 0 auto;
-      }
-      .tag-chips-area {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 4px;
-      }
-      .phase2-buttons {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-      }
-      .record-textarea {
-        width: 100%;
-        padding: 12px;
-        border: 2px solid #e5e7eb;
-        border-radius: 12px;
-        font-size: 14px;
-        font-family: "Noto Sans TC", sans-serif;
-        line-height: 1.6;
-        outline: none;
-        resize: vertical;
-        min-height: 96px;
-        transition: border-color 0.2s ease;
-        color: #1f2937;
-        box-sizing: border-box;
-      }
-      .record-textarea:focus {
-        border-color: #6366f1;
-      }
-      .form-section {
+
+      /* ===== 搜尋框 ===== */
+      .search-wrapper {
         margin-bottom: 16px;
       }
-      .form-label {
-        font-size: 14px;
-        font-weight: 600;
-        color: #374151;
-        margin-bottom: 8px;
-        display: block;
+
+      .search-input {
+        width: 100%;
+        padding: 11px 16px 11px 42px;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        font-size: 15px;
+        outline: none;
+        transition: border-color 0.2s ease;
+        font-family: "Noto Sans TC", sans-serif;
+        background-color: #ffffff;
+        /* 搜尋圖示（SVG inline） */
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239CA3AF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: 12px center;
+        background-size: 20px;
+        color: #1f2937;
       }
+
+      .search-input::placeholder {
+        color: #9ca3af;
+      }
+
+      .search-input:focus {
+        border-color: #6366f1;
+      }
+
+      /* ===== 卡片基礎樣式 ===== */
+      .card {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow:
+          0 1px 3px rgba(0, 0, 0, 0.08),
+          0 1px 2px rgba(0, 0, 0, 0.05);
+        padding: 16px;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      /* 可點擊的卡片 */
+      .card-clickable {
+        cursor: pointer;
+      }
+
+      .card-clickable:hover {
+        transform: translateY(-2px);
+        box-shadow:
+          0 6px 20px rgba(99, 102, 241, 0.12),
+          0 2px 6px rgba(0, 0, 0, 0.08);
+      }
+
+      .card-clickable:active {
+        transform: translateY(0);
+      }
+
+      /* ===== 學生列表卡片 ===== */
       .student-list {
         display: flex;
         flex-direction: column;
         gap: 10px;
       }
-      .search-wrapper {
-        margin-bottom: 16px;
+
+      .student-card-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 3px;
       }
-      .records-section {
+
+      .student-card-class {
+        font-size: 13px;
+        color: #6b7280;
+        margin-bottom: 8px;
+      }
+
+      .student-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .tags-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        align-items: center;
+      }
+
+      .last-record-date {
+        font-size: 12px;
+        color: #9ca3af;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .last-record-date.has-record {
+        color: #6b7280;
+      }
+
+      /* ===== 風險等級標籤 ===== */
+      /* 穩定（綠） */
+      .risk-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .risk-stable {
+        background: #d1fae5;
+        color: #065f46;
+      }
+
+      /* 需關注（黃） */
+      .risk-watch {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      /* 高風險（紅） */
+      .risk-high {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      /* 一般小標籤（紫，觀察紀錄用） */
+      .tag-small {
+        display: inline-block;
+        padding: 3px 9px;
+        border-radius: 10px;
+        font-size: 12px;
+        background: #eef2ff;
+        color: #4f46e5;
+        font-weight: 500;
+      }
+
+      /* ===== 學生個別頁面 — 基本資訊 ===== */
+      .info-row {
+        display: flex;
+        align-items: flex-start;
+        padding: 10px 0;
+        border-bottom: 1px solid #f3f4f6;
+      }
+
+      .info-row:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+
+      .info-row:first-child {
+        padding-top: 0;
+      }
+
+      .info-label {
+        width: 76px;
+        font-size: 13px;
+        color: #9ca3af;
+        flex-shrink: 0;
+        padding-top: 2px;
+      }
+
+      .info-value {
+        font-size: 14px;
+        color: #1f2937;
+        font-weight: 500;
+        flex: 1;
+        line-height: 1.5;
+      }
+
+      /* 備註欄位（灰色引用感） */
+      .info-note {
+        font-size: 13px;
+        color: #6b7280;
+        background: #f9fafb;
+        border-left: 3px solid #d1d5db;
+        padding: 6px 10px;
+        border-radius: 4px;
+        flex: 1;
+        line-height: 1.6;
+      }
+
+      /* ===== Section 標題 ===== */
+      .section-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #374151;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      /* ===== 紀錄時間軸 ===== */
+      /* 左側豎線串連的時間軸設計 */
+      .record-timeline {
+        position: relative;
+        padding-left: 24px;
+      }
+
+      /* 左側豎線 */
+      .record-timeline::before {
+        content: "";
+        position: absolute;
+        left: 7px;
+        top: 6px;
+        bottom: 6px;
+        width: 2px;
+        background: linear-gradient(to bottom, #c7d2fe, #e5e7eb);
+        border-radius: 1px;
+      }
+
+      .record-item {
+        position: relative;
+        padding: 0 0 20px 16px;
+      }
+
+      .record-item:last-child {
+        padding-bottom: 0;
+      }
+
+      /* 時間節點圓點 */
+      .record-item::before {
+        content: "";
+        position: absolute;
+        left: -19px;
+        top: 5px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #6366f1;
+        border: 2.5px solid #ffffff;
+        box-shadow: 0 0 0 2px #c7d2fe;
+        z-index: 1;
+      }
+
+      /* 最新一筆紀錄的節點用玫瑰粉高亮 */
+      .record-item.latest::before {
+        background: #ec4899;
+        box-shadow: 0 0 0 2px #fce7f3;
+      }
+
+      .record-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 5px;
+      }
+
+      .record-date-label {
+        font-size: 12px;
+        color: #9ca3af;
+        font-weight: 500;
+      }
+
+      .record-note-text {
+        font-size: 14px;
+        color: #374151;
+        line-height: 1.65;
+      }
+
+      /* 新增後的高亮動畫 */
+      @keyframes newRecordHighlight {
+        0% {
+          background-color: #fce7f3;
+        }
+        100% {
+          background-color: transparent;
+        }
+      }
+
+      .record-item.new-highlight {
+        border-radius: 8px;
+        animation: newRecordHighlight 2s ease forwards;
+      }
+
+      /* ===== 底部固定按鈕 ===== */
+      .content-with-bottom-btn {
+        padding-bottom: 88px;
+      }
+
+      .bottom-fixed-area {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 14px 16px 20px;
+        background: linear-gradient(to top, #f8fafc 75%, transparent);
+        pointer-events: none;
+      }
+
+      .bottom-fixed-inner {
+        max-width: 800px;
+        margin: 0 auto;
+        pointer-events: all;
+      }
+
+      /* ===== 按鈕樣式 ===== */
+      /* 主按鈕（紫） */
+      .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+        padding: 14px 24px;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: #ffffff;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: "Noto Sans TC", sans-serif;
+        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+      }
+
+      .btn-primary:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+      }
+
+      /* Phase 2 預留按鈕（灰色不可點擊） */
+      .btn-phase2 {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 9px 16px;
+        background: #f3f4f6;
+        color: #9ca3af;
+        border: 1.5px dashed #d1d5db;
+        border-radius: 10px;
+        font-size: 14px;
+        cursor: not-allowed;
+        position: relative;
+        font-family: "Noto Sans TC", sans-serif;
+        transition: all 0.2s ease;
+        user-select: none;
+      }
+
+      /* Tooltip「即將推出」，hover 顯示 */
+      .btn-phase2::after {
+        content: "🔜 即將推出";
+        position: absolute;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1f2937;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+        z-index: 100;
+        font-family: "Noto Sans TC", sans-serif;
+      }
+
+      /* Tooltip 小箭頭 */
+      .btn-phase2::before {
+        content: "";
+        position: absolute;
+        bottom: calc(100% + 2px);
+        left: 50%;
+        transform: translateX(-50%);
+        border: 5px solid transparent;
+        border-top-color: #1f2937;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+        z-index: 100;
+      }
+
+      .btn-phase2:hover::after,
+      .btn-phase2:hover::before {
+        opacity: 1;
+      }
+
+      /* ===== 表單樣式（狀態 3：新增紀錄） ===== */
+      .form-section {
+        margin-bottom: 12px;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 14px;
+        font-weight: 700;
+        color: #374151;
+        margin-bottom: 10px;
+      }
+
+      /* 觀察面向標籤（可多選） */
+      .tag-chips-area {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      /* 未選中狀態 */
+      .tag-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 7px 14px;
+        border-radius: 20px;
+        font-size: 14px;
+        cursor: pointer;
+        border: 2px solid #e5e7eb;
+        background: #ffffff;
+        color: #6b7280;
+        transition: all 0.18s ease;
+        user-select: none;
+        font-family: "Noto Sans TC", sans-serif;
+      }
+
+      .tag-chip:hover {
+        border-color: #a5b4fc;
+        color: #6366f1;
+        background: #f5f3ff;
+      }
+
+      /* 選中狀態（紫色填充） */
+      .tag-chip.selected {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        border-color: #6366f1;
+        color: #ffffff;
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        transform: scale(1.03);
+      }
+
+      /* 文字輸入框（大、好輸入） */
+      .record-textarea {
+        width: 100%;
+        padding: 14px;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        font-size: 15px;
+        font-family: "Noto Sans TC", sans-serif;
+        line-height: 1.7;
+        outline: none;
+        resize: vertical;
+        min-height: 120px;
+        transition: border-color 0.2s ease;
+        color: #1f2937;
+        background: #fefefe;
+      }
+
+      .record-textarea::placeholder {
+        color: #9ca3af;
+      }
+
+      .record-textarea:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+
+      /* Phase 2 按鈕群組 */
+      .phase2-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      /* ===== 成功動畫覆蓋層 ===== */
+      #success-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.92);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+
+      #success-overlay.show {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      @keyframes checkPop {
+        0% {
+          transform: scale(0) rotate(-10deg);
+          opacity: 0;
+        }
+        60% {
+          transform: scale(1.2) rotate(3deg);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1) rotate(0deg);
+          opacity: 1;
+        }
+      }
+
+      .success-icon {
+        font-size: 72px;
+        animation: checkPop 0.5s ease forwards;
+      }
+
+      .success-text {
         margin-top: 16px;
+        font-size: 20px;
+        font-weight: 700;
+        color: #065f46;
+        animation: checkPop 0.5s ease 0.1s both;
+      }
+
+      /* ===== 空狀態提示 ===== */
+      .empty-hint {
+        text-align: center;
+        color: #9ca3af;
+        font-size: 14px;
+        padding: 28px 0;
+      }
+
+      /* ===== Toast 提示 ===== */
+      .toast {
+        position: fixed;
+        bottom: 28px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1f2937;
+        color: white;
+        padding: 11px 22px;
+        border-radius: 8px;
+        font-size: 14px;
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+        white-space: nowrap;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+        font-family: "Noto Sans TC", sans-serif;
+      }
+
+      .toast.show {
+        opacity: 1;
+      }
+
+      /* ===== 捲軸美化 ===== */
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 3px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #9ca3af;
+      }
+
+      /* ===== 響應式調整 ===== */
+      @media (max-width: 480px) {
+        .page-container {
+          padding: 16px 12px;
+        }
+
+        .page-title {
+          font-size: 18px;
+        }
+
+        .tag-chip {
+          font-size: 13px;
+          padding: 6px 12px;
+        }
       }
     </style>
   </head>
   <body>
-    <!-- 狀態 1：學生列表 -->
-    <div id="view-list" class="view active">
+    <!-- ========================================
+         狀態 1：學生列表
+         ======================================== -->
+    <div id="view-list" class="view">
       <div class="page-container">
+        <!-- 頂部標題列 -->
         <div class="page-header">
-          <a href="index.html" class="nav-back">← 回到首頁</a>
+          <a href="index.html" class="nav-back">← 首頁</a>
           <h1 class="page-title">個案服務紀錄</h1>
         </div>
+
+        <!-- 搜尋框 -->
         <div class="search-wrapper">
           <input
             type="text"
             id="search-input"
             class="search-input"
-            placeholder="搜尋學生姓名..."
+            placeholder="🔍 搜尋學生姓名..."
             oninput="handleSearch(this.value)"
+            autocomplete="off"
           />
         </div>
-        <div id="student-list" class="student-list fade-in"></div>
+
+        <!-- 學生卡片列表 -->
+        <div id="student-list" class="student-list"></div>
+
+        <!-- 無搜尋結果 -->
         <div id="no-results" class="empty-hint" style="display: none">
           找不到符合「<span id="search-keyword"></span>」的學生
         </div>
       </div>
     </div>
 
-    <!-- 狀態 2：學生個別頁面 -->
+    <!-- ========================================
+         狀態 2：學生個別頁面
+         ======================================== -->
     <div id="view-profile" class="view">
       <div class="page-container content-with-bottom-btn">
+        <!-- 頂部導覽 -->
         <div class="page-header">
-          <span
-            class="nav-back"
-            onclick="showView('list')"
-            style="cursor: pointer"
-            >← 返回列表</span
-          >
+          <span class="nav-back" onclick="showView('list')">← 返回列表</span>
           <h1 class="page-title" id="profile-name">學生名字</h1>
         </div>
-        <div class="card" style="margin-bottom: 16px">
+
+        <!-- 基本資訊卡片 -->
+        <div class="card" style="margin-bottom: 14px">
+          <!-- 姓名 + 風險等級 -->
+          <div class="info-row">
+            <span class="info-label">姓名</span>
+            <div
+              class="info-value"
+              style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                flex-wrap: wrap;
+              "
+            >
+              <span id="profile-name-inline">—</span>
+              <span id="profile-risk-tag" class="risk-tag">—</span>
+            </div>
+          </div>
+          <!-- 班級 -->
           <div class="info-row">
             <span class="info-label">班級</span>
             <span class="info-value" id="profile-class">—</span>
           </div>
+          <!-- 負責社工 -->
           <div class="info-row">
-            <span class="info-label">年級</span>
-            <span class="info-value" id="profile-grade">—</span>
+            <span class="info-label">負責社工</span>
+            <span class="info-value" id="profile-worker">—</span>
           </div>
-          <div
-            class="info-row"
-            style="align-items: flex-start; padding-top: 10px"
-          >
-            <span class="info-label" style="padding-top: 2px">關注標籤</span>
-            <div id="profile-tags" class="tags-group">—</div>
+          <!-- 特殊備註 -->
+          <div class="info-row">
+            <span class="info-label">特殊備註</span>
+            <div id="profile-note" class="info-note">無</div>
           </div>
         </div>
-        <div class="records-section">
-          <h2 class="section-title">近期紀錄</h2>
-          <div class="card">
+
+        <!-- 近期紀錄時間軸 -->
+        <div style="margin-bottom: 8px">
+          <h2 class="section-title">📋 近期服務紀錄</h2>
+          <div class="card" id="profile-records-card">
             <div id="profile-records"></div>
           </div>
         </div>
       </div>
-      <div class="bottom-fixed-btn">
-        <div class="bottom-fixed-btn-inner">
-          <button
-            class="btn-primary"
-            style="width: 100%"
-            onclick="goToNewRecord()"
-          >
+
+      <!-- 底部固定「新增紀錄」按鈕 -->
+      <div class="bottom-fixed-area">
+        <div class="bottom-fixed-inner">
+          <button class="btn-primary" onclick="goToNewRecord()">
             ＋ 新增紀錄
           </button>
         </div>
       </div>
     </div>
 
-    <!-- 狀態 3：新增紀錄 -->
+    <!-- ========================================
+         狀態 3：新增觀察紀錄
+         ======================================== -->
     <div id="view-new-record" class="view">
       <div class="page-container content-with-bottom-btn">
+        <!-- 頂部導覽 -->
         <div class="page-header">
-          <span
-            class="nav-back"
-            onclick="showView('profile')"
-            style="cursor: pointer"
-            >← 返回</span
-          >
-          <h1 class="page-title">
-            新增紀錄 — <span id="new-record-name">學生名字</span>
-          </h1>
+          <span class="nav-back" onclick="showView('profile')">← 返回</span>
+          <h1 class="page-title">新增觀察紀錄</h1>
         </div>
+
+        <!-- 被記錄的學生名 -->
+        <div
+          style="
+            margin-bottom: 14px;
+            padding: 10px 14px;
+            background: #eef2ff;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #4f46e5;
+            font-weight: 600;
+          "
+        >
+          📝 正在為
+          <span id="new-record-name" style="font-weight: 700"></span> 新增紀錄
+        </div>
+
+        <!-- 觀察面向標籤（可多選） -->
         <div class="form-section card">
           <label class="form-label">觀察面向（可多選）</label>
           <div id="tag-chips-area" class="tag-chips-area"></div>
         </div>
+
+        <!-- 簡短描述文字框 -->
         <div class="form-section card">
-          <label class="form-label" for="record-note">觀察紀錄</label>
+          <label class="form-label" for="record-note">觀察描述</label>
           <textarea
             id="record-note"
             class="record-textarea"
-            rows="4"
-            placeholder="請輸入觀察紀錄..."
+            placeholder="請描述你觀察到的情況..."
           ></textarea>
         </div>
+
+        <!-- Phase 2 預留功能（灰色不可點擊） -->
         <div class="form-section card">
-          <label class="form-label" style="color: #9ca3af"
-            >Phase 2 功能預告</label
+          <label
+            class="form-label"
+            style="color: #9ca3af; font-weight: 600; font-size: 13px"
           >
+            Phase 2 功能預告
+          </label>
           <div class="phase2-buttons">
             <button class="btn-phase2">🎤 語音輸入</button>
             <button class="btn-phase2">🤖 AI 輔助整理</button>
           </div>
         </div>
       </div>
-      <div class="bottom-fixed-btn">
-        <div class="bottom-fixed-btn-inner">
-          <button
-            class="btn-primary"
-            style="width: 100%"
-            onclick="saveRecord()"
-          >
+
+      <!-- 底部固定「儲存紀錄」按鈕 -->
+      <div class="bottom-fixed-area">
+        <div class="bottom-fixed-inner">
+          <button class="btn-primary" onclick="saveRecord()">
             ✅ 儲存紀錄
           </button>
         </div>
       </div>
     </div>
 
-    <script src="shared.js"></script>
+    <!-- ========================================
+         儲存成功動畫覆蓋層
+         ======================================== -->
+    <div id="success-overlay">
+      <div class="success-icon">✅</div>
+      <div class="success-text">紀錄已儲存！</div>
+    </div>
+
+    <!-- Toast 提示元件 -->
+    <div id="toast" class="toast"></div>
+
+    <!-- ========================================
+         JavaScript：自帶假資料 + 互動邏輯
+         ======================================== -->
     <script>
-      /* 目前選中的學生 */
+      /* ============================================================
+         假資料區：學生資料（8 位）
+         ============================================================ */
+      const STUDENTS = [
+        {
+          id: "s1",
+          name: "王小明",
+          className: "光明國小 A班",
+          risk: "high", // 高風險
+          riskLabel: "🔴 高風險",
+          worker: "林佳穎 社工師",
+          note: "家庭狀況需關注，單親家庭，媽媽工作繁忙，放學後常無人照料。",
+          lastRecord: "2026/02/20",
+        },
+        {
+          id: "s2",
+          name: "陳美麗",
+          className: "光明國小 A班",
+          risk: "stable", // 穩定
+          riskLabel: "🟢 穩定",
+          worker: "林佳穎 社工師",
+          note: "情緒管理進步中，近期在課堂上的參與度明顯提升。",
+          lastRecord: "2026/02/21",
+        },
+        {
+          id: "s3",
+          name: "李大華",
+          className: "希望國小 B班",
+          risk: "watch", // 需關注
+          riskLabel: "🟡 需關注",
+          worker: "張志明 社工師",
+          note: "學習落後，建議安排課後輔導，閱讀理解能力需加強。",
+          lastRecord: "2026/02/19",
+        },
+        {
+          id: "s4",
+          name: "張志豪",
+          className: "希望國小 B班",
+          risk: "stable",
+          riskLabel: "🟢 穩定",
+          worker: "張志明 社工師",
+          note: "人際關係良好，是班上的小領袖，喜歡照顧同學。",
+          lastRecord: "2026/02/22",
+        },
+        {
+          id: "s5",
+          name: "林小芬",
+          className: "陽光國小 C班",
+          risk: "watch",
+          riskLabel: "🟡 需關注",
+          worker: "陳雅琪 社工師",
+          note: "情緒起伏較大，最近家裡有變故，需密切關注情緒狀態。",
+          lastRecord: "2026/02/18",
+        },
+        {
+          id: "s6",
+          name: "黃文傑",
+          className: "陽光國小 C班",
+          risk: "stable",
+          riskLabel: "🟢 穩定",
+          worker: "陳雅琪 社工師",
+          note: "表現穩定，學習態度積極，本學期進步顯著。",
+          lastRecord: "2026/02/21",
+        },
+        {
+          id: "s7",
+          name: "吳佳穎",
+          className: "光明國小 A班",
+          risk: "stable",
+          riskLabel: "🟢 穩定",
+          worker: "林佳穎 社工師",
+          note: "個性開朗，課堂互動活躍，能主動幫助同學。",
+          lastRecord: "2026/02/22",
+        },
+        {
+          id: "s8",
+          name: "周子瑜",
+          className: "希望國小 B班",
+          risk: "high",
+          riskLabel: "🔴 高風險",
+          worker: "張志明 社工師",
+          note: "長期缺課，家庭經濟困難，已通報社會局協助，需持續追蹤。",
+          lastRecord: "2026/02/17",
+        },
+      ];
+
+      /* ============================================================
+         假資料區：個案紀錄（每位學生至少 3 筆）
+         ============================================================ */
+      const CASE_RECORDS = {
+        s1: [
+          {
+            date: "2026-02-20",
+            tags: ["💭 情緒狀態", "🏠 家庭狀況"],
+            note: "今天情緒明顯低落，幾乎不參與討論，下課後留下來聊了一下，說媽媽最近很少回家，獨自一人在家感到害怕。",
+          },
+          {
+            date: "2026-02-14",
+            tags: ["👥 人際互動"],
+            note: "與同學發生口角，說對方說了很難聽的話。經調解後和好，但仍有些悶悶不樂，需要持續觀察。",
+          },
+          {
+            date: "2026-02-07",
+            tags: ["📚 課堂參與", "📖 學習表現"],
+            note: "上課發言次數明顯增加，主動舉手回答問題兩次。老師反映最近學習態度有改善。",
+          },
+        ],
+        s2: [
+          {
+            date: "2026-02-21",
+            tags: ["📚 課堂參與"],
+            note: "今天非常積極，主動舉手發言，回答問題也都很準確，同學給了熱烈掌聲。",
+          },
+          {
+            date: "2026-02-15",
+            tags: ["💭 情緒狀態"],
+            note: "整天心情不錯，下課時開心地跟同學分享週末出遊的故事，情緒穩定。",
+          },
+          {
+            date: "2026-02-08",
+            tags: ["👥 人際互動"],
+            note: "主動邀請轉學生一起吃午餐，展現很好的同理心，是班上的模範。",
+          },
+        ],
+        s3: [
+          {
+            date: "2026-02-19",
+            tags: ["📖 學習表現"],
+            note: "國語考試進步了 12 分！給予大力鼓勵。但數學仍有困難，建議加強。",
+          },
+          {
+            date: "2026-02-12",
+            tags: ["📚 課堂參與", "💭 情緒狀態"],
+            note: "課堂參與意願不高，詢問後說不太聽得懂老師在說什麼，建議安排補救教學。",
+          },
+          {
+            date: "2026-02-05",
+            tags: ["🏠 家庭狀況"],
+            note: "與家長電話聯繫，了解到作業常沒人可以輔導，已建議學校安排課後輔導資源。",
+          },
+        ],
+        s4: [
+          {
+            date: "2026-02-22",
+            tags: ["👥 人際互動"],
+            note: "今天擔任小組長帶領討論，表現非常稱職，被老師當作全班榜樣。",
+          },
+          {
+            date: "2026-02-15",
+            tags: ["📚 課堂參與"],
+            note: "主動幫助還沒寫完作業的同學補功課，師長都讚美他是班上的小老師。",
+          },
+          {
+            date: "2026-02-08",
+            tags: ["💭 情緒狀態", "📖 學習表現"],
+            note: "段考成績表現優異，心情開朗，對學習充滿動力，繼續保持。",
+          },
+        ],
+        s5: [
+          {
+            date: "2026-02-18",
+            tags: ["💭 情緒狀態", "🏠 家庭狀況"],
+            note: "上課時突然哭泣，帶到輔導室陪伴聊了 30 分鐘。說父母最近吵架很兇，睡不好覺。",
+          },
+          {
+            date: "2026-02-11",
+            tags: ["👥 人際互動"],
+            note: "午休時間一個人坐在角落，不願意加入同學的遊戲。嘗試引導她分享感受，說怕被排擠。",
+          },
+          {
+            date: "2026-02-04",
+            tags: ["📚 課堂參與"],
+            note: "參與度比上週好很多，有主動舉手一次，給予口頭鼓勵，希望持續維持。",
+          },
+        ],
+        s6: [
+          {
+            date: "2026-02-21",
+            tags: ["📖 學習表現"],
+            note: "數學段考 95 分，本學期最好的成績！開心地跟社工炫耀，給他大力鼓勵。",
+          },
+          {
+            date: "2026-02-14",
+            tags: ["📚 課堂參與"],
+            note: "美勞課表現非常突出，作品獲選展示，老師特別稱讚他的創意。",
+          },
+          {
+            date: "2026-02-07",
+            tags: ["👥 人際互動", "💭 情緒狀態"],
+            note: "和同學相處融洽，課間一起打籃球，心情愉快，情緒狀態穩定。",
+          },
+        ],
+        s7: [
+          {
+            date: "2026-02-22",
+            tags: ["👥 人際互動"],
+            note: "今天積極組織同學一起練習話劇，展現良好的領導力，同學們都很開心。",
+          },
+          {
+            date: "2026-02-17",
+            tags: ["💭 情緒狀態"],
+            note: "心情非常好，考試考得不錯，跟社工分享說是第一次考這麼高分，笑得很開心。",
+          },
+          {
+            date: "2026-02-10",
+            tags: ["📚 課堂參與", "📖 學習表現"],
+            note: "課堂表現積極，主動回答問題，作業都有按時完成，學習態度值得肯定。",
+          },
+        ],
+        s8: [
+          {
+            date: "2026-02-17",
+            tags: ["🏠 家庭狀況", "💭 情緒狀態"],
+            note: "今天總算來了，精神不太好，說家裡最近發生了很多事，詳細了解後已通報社會局協助。",
+          },
+          {
+            date: "2026-02-10",
+            tags: ["📚 課堂參與"],
+            note: "缺席一週後回到學校，課堂上幾乎沒有參與，需要特別關注重新融入班級的情況。",
+          },
+          {
+            date: "2026-02-03",
+            tags: ["🏠 家庭狀況"],
+            note: "家訪時了解到家庭經濟困難，已協助申請急難救助金，後續追蹤申請進度。",
+          },
+        ],
+      };
+
+      /* ============================================================
+         觀察面向標籤選項
+         ============================================================ */
+      const OBSERVATION_TAGS = [
+        "📚 課堂參與",
+        "👥 人際互動",
+        "💭 情緒狀態",
+        "📖 學習表現",
+        "🏠 家庭狀況",
+      ];
+
+      /* ============================================================
+         狀態管理
+         ============================================================ */
+      // 目前選中的學生
       let currentStudent = null;
 
-      /* 切換畫面狀態 */
+      /* ============================================================
+         工具函式：顯示 Toast 提示
+         ============================================================ */
+      function showToast(msg, duration) {
+        duration = duration || 2200;
+        var toast = document.getElementById("toast");
+        toast.textContent = msg;
+        toast.classList.add("show");
+        setTimeout(function () {
+          toast.classList.remove("show");
+        }, duration);
+      }
+
+      /* ============================================================
+         工具函式：日期格式化
+         2026-02-20 → 2/20
+         ============================================================ */
+      function formatDate(dateStr) {
+        // 移除年份和前置零
+        return dateStr.replace(/^\d{4}-0?(\d+)-0?(\d+)$/, "$1/$2");
+      }
+
+      /* ============================================================
+         畫面切換：帶動畫效果
+         ============================================================ */
       function showView(viewName) {
-        document.querySelectorAll(".view").forEach(function (v) {
-          v.classList.remove("active");
-        });
-        var targetView = document.getElementById("view-" + viewName);
-        if (targetView) {
-          targetView.classList.add("active");
-          window.scrollTo(0, 0);
+        // 隱藏所有 view
+        var views = document.querySelectorAll(".view");
+        for (var i = 0; i < views.length; i++) {
+          views[i].classList.remove("active");
+        }
+
+        // 顯示目標 view
+        var target = document.getElementById("view-" + viewName);
+        if (target) {
+          target.classList.add("active");
+          // 套用進場動畫
+          target.classList.remove("slide-in");
+          void target.offsetWidth; // 強制 reflow 讓動畫重新觸發
+          target.classList.add("slide-in");
+          // 回到頂部
+          window.scrollTo({ top: 0, behavior: "smooth" });
         }
       }
 
-      /* 渲染學生列表，支援搜尋過濾 */
+      /* ============================================================
+         狀態 1：渲染學生列表
+         支援即時搜尋篩選
+         ============================================================ */
       function renderStudentList(filterText) {
-        filterText = filterText || "";
-        var allStudents = getAllStudents();
-        var listContainer = document.getElementById("student-list");
-        var noResults = document.getElementById("no-results");
-        var searchKeyword = document.getElementById("search-keyword");
+        filterText = (filterText || "").trim();
 
+        var listEl = document.getElementById("student-list");
+        var noResultsEl = document.getElementById("no-results");
+        var keywordEl = document.getElementById("search-keyword");
+
+        // 篩選邏輯：比對學生姓名
         var filtered = filterText
-          ? allStudents.filter(function (s) {
-              return s.name.indexOf(filterText.trim()) !== -1;
+          ? STUDENTS.filter(function (s) {
+              return s.name.indexOf(filterText) !== -1;
             })
-          : allStudents;
+          : STUDENTS;
 
+        // 無結果
         if (filtered.length === 0) {
-          listContainer.innerHTML = "";
-          noResults.style.display = "block";
-          searchKeyword.textContent = filterText;
+          listEl.innerHTML = "";
+          noResultsEl.style.display = "block";
+          keywordEl.textContent = filterText;
           return;
         }
-        noResults.style.display = "none";
 
+        noResultsEl.style.display = "none";
+
+        // 渲染卡片
         var html = "";
         for (var i = 0; i < filtered.length; i++) {
-          var student = filtered[i];
-          var records = getStudentRecords(student.id);
+          var s = filtered[i];
+
+          // 計算風險標籤樣式
+          var riskClass =
+            s.risk === "high"
+              ? "risk-high"
+              : s.risk === "watch"
+                ? "risk-watch"
+                : "risk-stable";
+
+          // 取最近紀錄日期
+          var records = CASE_RECORDS[s.id] || [];
           var latestDate = null;
           if (records.length > 0) {
+            // 依日期排序取最新
             var sorted = records.slice().sort(function (a, b) {
               return b.date.localeCompare(a.date);
             });
             latestDate = sorted[0].date;
           }
           var dateDisplay = latestDate
-            ? latestDate.replace(/^\d{4}-0?(\d+)-0?(\d+)$/, "$1/$2")
-            : null;
+            ? "最近：" + formatDate(latestDate)
+            : "尚無紀錄";
 
-          var tagsHtml = "";
-          if (student.tags && student.tags.length > 0) {
-            for (var t = 0; t < student.tags.length; t++) {
-              tagsHtml +=
-                '<span class="tag-small">' + student.tags[t] + "</span>";
-            }
-          }
-
+          // 卡片 HTML（交錯動畫靠 CSS 延遲）
           html +=
-            '<div class="card card-clickable" onclick="goToProfile(\'' +
-            student.id +
+            '<div class="card card-clickable" ' +
+            'style="animation: staggerIn 0.4s ease ' +
+            i * 0.07 +
+            's both;" ' +
+            "onclick=\"goToProfile('" +
+            s.id +
             "')\">";
+
+          html += '<div class="student-card-name">' + s.name + "</div>";
           html +=
-            '<div class="student-card-content"><div class="student-card-name">' +
-            student.name +
-            "</div>";
+            '<div class="student-card-class">🏫 ' + s.className + "</div>";
+
+          html += '<div class="student-card-footer">';
           html +=
-            '<div class="student-card-class">' + student.className + "</div>";
-          html +=
-            '<div class="student-card-footer"><div class="tags-group">' +
-            tagsHtml +
-            "</div>";
+            '<span class="risk-tag ' +
+            riskClass +
+            '">' +
+            s.riskLabel +
+            "</span>";
           html +=
             '<span class="last-record-date' +
             (latestDate ? " has-record" : "") +
             '">' +
-            (latestDate ? "最近：" + dateDisplay : "尚無紀錄") +
+            dateDisplay +
             "</span>";
-          html += "</div></div></div>";
+          html += "</div>";
+
+          html += "</div>";
         }
-        listContainer.innerHTML = html;
+
+        listEl.innerHTML = html;
       }
 
-      /* 搜尋處理 */
+      /* ============================================================
+         搜尋框 oninput 處理
+         ============================================================ */
       function handleSearch(value) {
         renderStudentList(value);
       }
 
-      /* 進入學生個別頁面 */
+      /* ============================================================
+         狀態 2：進入學生個別頁面
+         ============================================================ */
       function goToProfile(studentId) {
-        var allStudents = getAllStudents();
+        // 找到學生資料
         currentStudent = null;
-        for (var i = 0; i < allStudents.length; i++) {
-          if (allStudents[i].id === studentId) {
-            currentStudent = allStudents[i];
+        for (var i = 0; i < STUDENTS.length; i++) {
+          if (STUDENTS[i].id === studentId) {
+            currentStudent = STUDENTS[i];
             break;
           }
         }
         if (!currentStudent) return;
 
+        // 填入基本資訊
         document.getElementById("profile-name").textContent =
+          currentStudent.name;
+        document.getElementById("profile-name-inline").textContent =
           currentStudent.name;
         document.getElementById("profile-class").textContent =
           currentStudent.className;
-        document.getElementById("profile-grade").textContent =
-          currentStudent.grade;
+        document.getElementById("profile-worker").textContent =
+          currentStudent.worker;
 
-        var tagsContainer = document.getElementById("profile-tags");
-        if (currentStudent.tags && currentStudent.tags.length > 0) {
-          var tagsHtml = "";
-          for (var t = 0; t < currentStudent.tags.length; t++) {
-            tagsHtml +=
-              '<span class="tag-small">' + currentStudent.tags[t] + "</span>";
-          }
-          tagsContainer.innerHTML = tagsHtml;
-        } else {
-          tagsContainer.innerHTML =
-            '<span style="color: #9ca3af; font-size: 14px;">無特殊標記</span>';
-        }
+        // 風險等級標籤
+        var riskTag = document.getElementById("profile-risk-tag");
+        riskTag.textContent = currentStudent.riskLabel;
+        riskTag.className =
+          "risk-tag " +
+          (currentStudent.risk === "high"
+            ? "risk-high"
+            : currentStudent.risk === "watch"
+              ? "risk-watch"
+              : "risk-stable");
 
-        renderProfileRecords(studentId);
+        // 特殊備註
+        document.getElementById("profile-note").textContent =
+          currentStudent.note || "無特殊備註";
+
+        // 渲染紀錄時間軸
+        renderProfileRecords(studentId, false);
+
+        // 切換到個別頁面
         showView("profile");
       }
 
-      /* 渲染學生的歷史紀錄（時間軸格式） */
-      function renderProfileRecords(studentId) {
-        var records = getStudentRecords(studentId);
-        var recordsContainer = document.getElementById("profile-records");
+      /* ============================================================
+         渲染學生的服務紀錄時間軸
+         highlightFirst：是否高亮最新一筆（新增後使用）
+         ============================================================ */
+      function renderProfileRecords(studentId, highlightFirst) {
+        var records = CASE_RECORDS[studentId] || [];
+        var container = document.getElementById("profile-records");
 
         if (records.length === 0) {
-          recordsContainer.innerHTML =
-            '<div class="empty-hint">尚無服務紀錄</div>';
+          container.innerHTML =
+            '<div class="empty-hint">📭 尚無服務紀錄<br><span style="font-size:12px;margin-top:6px;display:block;">點擊下方「新增紀錄」開始記錄</span></div>';
           return;
         }
 
+        // 依日期降序排列（最新的在上方）
         var sorted = records.slice().sort(function (a, b) {
           return b.date.localeCompare(a.date);
         });
 
         var html = '<div class="record-timeline">';
         for (var i = 0; i < sorted.length; i++) {
-          var record = sorted[i];
-          html += '<div class="record-item">';
+          var r = sorted[i];
+          var isLatest = i === 0;
+          var highlightClass =
+            highlightFirst && isLatest ? " new-highlight" : "";
+          var latestClass = isLatest ? " latest" : "";
+
           html +=
-            '<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">';
+            '<div class="record-item' + latestClass + highlightClass + '">';
+
+          // 日期 + 標籤
+          html += '<div class="record-meta">';
           html +=
-            '<span class="record-date">' + formatDate(record.date) + "</span>";
-          html += '<span class="tag-small">' + record.category + "</span>";
-          html += '</div><p class="record-note">' + record.note + "</p></div>";
+            '<span class="record-date-label">📅 ' +
+            formatDate(r.date) +
+            "</span>";
+          // 觀察面向標籤（可能多個）
+          var tags = r.tags || [];
+          for (var t = 0; t < tags.length; t++) {
+            html += '<span class="tag-small">' + tags[t] + "</span>";
+          }
+          html += "</div>";
+
+          // 描述內容
+          html += '<p class="record-note-text">' + r.note + "</p>";
+
+          html += "</div>";
         }
         html += "</div>";
-        recordsContainer.innerHTML = html;
+
+        container.innerHTML = html;
       }
 
-      /* 日期格式化：2026-02-22 → 2/22 */
-      function formatDate(dateStr) {
-        return dateStr.replace(/^\d{4}-0?(\d+)-0?(\d+)$/, "$1/$2");
-      }
-
-      /* 進入新增紀錄畫面 */
+      /* ============================================================
+         進入狀態 3：新增紀錄
+         ============================================================ */
       function goToNewRecord() {
         if (!currentStudent) return;
+
+        // 顯示被記錄的學生名
         document.getElementById("new-record-name").textContent =
           currentStudent.name;
+
+        // 清空文字框
         document.getElementById("record-note").value = "";
 
+        // 渲染觀察面向標籤（全部初始為未選中）
         var tagArea = document.getElementById("tag-chips-area");
         var tagHtml = "";
         for (var i = 0; i < OBSERVATION_TAGS.length; i++) {
@@ -479,16 +1398,22 @@
             "</span>";
         }
         tagArea.innerHTML = tagHtml;
+
         showView("new-record");
       }
 
-      /* 切換觀察面向標籤選取狀態 */
-      function toggleTag(element) {
-        element.classList.toggle("selected");
+      /* ============================================================
+         觀察面向標籤：點擊切換選取狀態
+         ============================================================ */
+      function toggleTag(el) {
+        el.classList.toggle("selected");
       }
 
-      /* 儲存新紀錄（存在記憶體中） */
+      /* ============================================================
+         儲存新紀錄
+         ============================================================ */
       function saveRecord() {
+        // 收集已選取的標籤
         var selectedEls = document.querySelectorAll(
           "#tag-chips-area .tag-chip.selected",
         );
@@ -496,38 +1421,69 @@
         for (var i = 0; i < selectedEls.length; i++) {
           selectedTags.push(selectedEls[i].textContent.trim());
         }
+
+        // 取得描述內容
         var note = document.getElementById("record-note").value.trim();
 
+        // 驗證：至少選一個面向
         if (selectedTags.length === 0) {
-          showToast("請至少選擇一個觀察面向");
-          return;
-        }
-        if (!note) {
-          showToast("請輸入觀察紀錄內容");
+          showToast("⚠️ 請至少選擇一個觀察面向");
           return;
         }
 
+        // 驗證：描述不能空白
+        if (!note) {
+          showToast("⚠️ 請描述你觀察到的情況");
+          return;
+        }
+
+        // 取得今天日期（格式：YYYY-MM-DD）
         var today = new Date().toISOString().split("T")[0];
+
+        // 建立新紀錄物件
         var newRecord = {
           date: today,
-          category: selectedTags.join("、"),
+          tags: selectedTags,
           note: note,
         };
 
-        var studentId = currentStudent.id;
-        if (!CASE_RECORDS[studentId]) {
-          CASE_RECORDS[studentId] = [];
+        // 存入記憶體（prepend 到陣列最前面，顯示在時間軸頂部）
+        var sid = currentStudent.id;
+        if (!CASE_RECORDS[sid]) {
+          CASE_RECORDS[sid] = [];
         }
-        CASE_RECORDS[studentId].unshift(newRecord);
+        CASE_RECORDS[sid].unshift(newRecord);
 
-        showToast("紀錄已儲存");
-        renderProfileRecords(studentId);
-        showView("profile");
+        // 顯示成功動畫
+        showSuccessAnimation(function () {
+          // 動畫結束後返回個別頁面，並高亮最新紀錄
+          renderProfileRecords(sid, true);
+          showView("profile");
+        });
       }
 
-      /* 頁面載入時渲染學生列表 */
+      /* ============================================================
+         成功動畫：顯示打勾 + 綠色閃現
+         callback：動畫結束後執行
+         ============================================================ */
+      function showSuccessAnimation(callback) {
+        var overlay = document.getElementById("success-overlay");
+        overlay.classList.add("show");
+
+        // 1.2 秒後隱藏
+        setTimeout(function () {
+          overlay.classList.remove("show");
+          if (callback) callback();
+        }, 1200);
+      }
+
+      /* ============================================================
+         頁面初始化
+         ============================================================ */
       document.addEventListener("DOMContentLoaded", function () {
+        // 渲染學生列表並顯示狀態 1
         renderStudentList();
+        showView("list");
       });
     </script>
   </body>
