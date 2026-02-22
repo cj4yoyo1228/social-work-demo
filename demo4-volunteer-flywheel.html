@@ -335,6 +335,40 @@
       };
 
       /* ------------------------------------------
+       * 雷達圖資料常數（五項能力值 + 行為證跡）
+       * ------------------------------------------ */
+      const RADAR_SKILLS = ["溝通力", "問題解決", "韌性", "同理心", "領導力"];
+      const RADAR_VALUES = [85, 92, 88, 78, 72]; // 0-100 分
+
+      const RADAR_EVIDENCE = {
+        溝通力: {
+          week: 5,
+          title: "引導學童表達情緒",
+          desc: "成功引導小明用語言描述自己的感受，避免肢體衝突。",
+        },
+        問題解決: {
+          week: 10,
+          title: "突發狀況處理",
+          desc: "課堂投影機故障時，即時改用分組討論活動填補空白。",
+        },
+        韌性: {
+          week: 8,
+          title: "衝突處理回覆",
+          desc: "面對兩位學童激烈衝突，耐心引導雙方冷靜並達成和解。",
+        },
+        同理心: {
+          week: 12,
+          title: "察覺學童情緒變化",
+          desc: "注意到小華連續兩天沉默，主動關心後發現家庭問題。",
+        },
+        領導力: {
+          week: 15,
+          title: "帶領小組完成任務",
+          desc: "指導四人小組完成環保主題海報，每位組員都有貢獻。",
+        },
+      };
+
+      /* ------------------------------------------
        * TopNav 元件：頂部導覽列
        * - 固定在頁面最上方
        * - 包含返回首頁連結、進度指示器、標題
@@ -945,6 +979,400 @@
       }
 
       /* ------------------------------------------
+       * RadarChart 元件：SVG 雷達圖
+       * - 五軸能力雷達圖，從中心綻放動畫
+       * - 可點擊頂點查看行為證跡
+       * Props:
+       *   values: 5 個數值（0-100）
+       *   labels: 5 個能力名稱
+       *   onVertexClick: 點擊頂點回調
+       *   selectedVertex: 當前選中的頂點名稱
+       *   size: SVG 尺寸（預設 300）
+       * ------------------------------------------ */
+      function RadarChart({
+        values,
+        labels,
+        onVertexClick,
+        selectedVertex,
+        size = 300,
+      }) {
+        // 動畫進度（0 → 1），控制雷達圖從中心綻放
+        const [animationProgress, setAnimationProgress] = useState(0);
+        // 滑鼠懸停的頂點索引
+        const [hoveredIndex, setHoveredIndex] = useState(null);
+
+        // 雷達圖中心點與最大半徑
+        const cx = 150;
+        const cy = 150;
+        const maxRadius = 120;
+        const total = 5; // 五軸
+
+        /**
+         * getPoint：計算正五邊形上某個頂點的座標
+         * 從正上方（-PI/2）開始順時針排列
+         */
+        const getPoint = useCallback(
+          (centerX, centerY, radius, index, count) => {
+            const angle = (index / count) * 2 * Math.PI - Math.PI / 2;
+            return {
+              x: centerX + radius * Math.cos(angle),
+              y: centerY + radius * Math.sin(angle),
+            };
+          },
+          [],
+        );
+
+        /**
+         * 生成正五邊形的 polygon points 字串
+         * 用於背景同心五邊形和資料多邊形
+         */
+        const buildPolygonPoints = useCallback(
+          (centerX, centerY, radius, count) => {
+            const points = [];
+            for (let i = 0; i < count; i++) {
+              const p = getPoint(centerX, centerY, radius, i, count);
+              points.push(`${p.x},${p.y}`);
+            }
+            return points.join(" ");
+          },
+          [getPoint],
+        );
+
+        // === 綻放動畫：使用 requestAnimationFrame 從 0 漸進到 1 ===
+        useEffect(() => {
+          const duration = 1200; // 1.2 秒
+          let startTime = null;
+          let frameId = null;
+
+          // easeOutCubic 緩動函數：快速展開，尾端減速
+          const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+          const animate = (timestamp) => {
+            if (startTime === null) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+            const rawProgress = Math.min(elapsed / duration, 1);
+            const easedProgress = easeOutCubic(rawProgress);
+
+            setAnimationProgress(easedProgress);
+
+            if (rawProgress < 1) {
+              frameId = requestAnimationFrame(animate);
+            }
+          };
+
+          frameId = requestAnimationFrame(animate);
+
+          // 清理：元件卸載時取消動畫
+          return () => {
+            if (frameId) cancelAnimationFrame(frameId);
+          };
+        }, []);
+
+        // === 計算資料多邊形的頂點座標 ===
+        const dataPoints = values.map((val, i) => {
+          const radius = (val / 100) * maxRadius * animationProgress;
+          return getPoint(cx, cy, radius, i, total);
+        });
+        const dataPolygonPoints = dataPoints
+          .map((p) => `${p.x},${p.y}`)
+          .join(" ");
+
+        // === 背景同心五邊形（25%、50%、75%、100%） ===
+        const bgLevels = [0.25, 0.5, 0.75, 1.0];
+
+        return (
+          <svg
+            viewBox="0 0 300 300"
+            style={{ width: "100%", maxWidth: `${size}px`, height: "auto" }}
+          >
+            {/* 背景：四層同心五邊形 */}
+            {bgLevels.map((level, idx) => (
+              <polygon
+                key={`bg-${idx}`}
+                points={buildPolygonPoints(cx, cy, maxRadius * level, total)}
+                fill="none"
+                stroke="#E2E8F0"
+                strokeWidth="1"
+                strokeDasharray={level < 1 ? "4 4" : "none"}
+              />
+            ))}
+
+            {/* 背景：五條軸線（從中心到各頂點） */}
+            {Array.from({ length: total }).map((_, i) => {
+              const endPoint = getPoint(cx, cy, maxRadius, i, total);
+              return (
+                <line
+                  key={`axis-${i}`}
+                  x1={cx}
+                  y1={cy}
+                  x2={endPoint.x}
+                  y2={endPoint.y}
+                  stroke="#E2E8F0"
+                  strokeWidth="1"
+                />
+              );
+            })}
+
+            {/* 資料多邊形：帶有品牌藍填色和描邊 */}
+            <polygon
+              points={dataPolygonPoints}
+              fill="rgba(59, 130, 246, 0.15)"
+              stroke="#3B82F6"
+              strokeWidth="2"
+              strokeLinejoin="round"
+            />
+
+            {/* 各頂點的互動圓點 */}
+            {dataPoints.map((point, i) => {
+              const isSelected = selectedVertex === labels[i];
+              const isHovered = hoveredIndex === i;
+              const circleRadius = isSelected ? 8 : isHovered ? 7 : 6;
+
+              return (
+                <g key={`vertex-${i}`}>
+                  {/* 選中時的光暈效果 */}
+                  {isSelected && (
+                    <circle
+                      cx={point.x}
+                      cy={point.y}
+                      r="14"
+                      fill="rgba(249, 115, 22, 0.2)"
+                      stroke="none"
+                    />
+                  )}
+                  {/* 可點擊的頂點圓點 */}
+                  <circle
+                    cx={point.x}
+                    cy={point.y}
+                    r={circleRadius}
+                    fill={isSelected ? "#F97316" : "#3B82F6"}
+                    stroke="white"
+                    strokeWidth="2"
+                    style={{
+                      cursor: "pointer",
+                      transition: "r 0.2s ease, fill 0.2s ease",
+                    }}
+                    onClick={() => onVertexClick && onVertexClick(labels[i])}
+                    onMouseEnter={() => setHoveredIndex(i)}
+                    onMouseLeave={() => setHoveredIndex(null)}
+                  />
+                </g>
+              );
+            })}
+
+            {/* 各頂點的文字標籤（位於雷達圖外圈） */}
+            {Array.from({ length: total }).map((_, i) => {
+              // 標籤位置：最大半徑再往外推 25px
+              const labelPoint = getPoint(cx, cy, maxRadius + 25, i, total);
+              const isSelected = selectedVertex === labels[i];
+
+              return (
+                <text
+                  key={`label-${i}`}
+                  x={labelPoint.x}
+                  y={labelPoint.y}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  fontSize="12"
+                  fontWeight={isSelected ? "600" : "400"}
+                  fill={isSelected ? "#F97316" : "#475569"}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => onVertexClick && onVertexClick(labels[i])}
+                >
+                  {labels[i]} ({values[i]})
+                </text>
+              );
+            })}
+          </svg>
+        );
+      }
+
+      /* ------------------------------------------
+       * Stage3 元件：第三站 — SVG 雷達圖 + 數位履歷
+       * - 左側：五軸雷達能力圖
+       * - 右側：行為證跡卡片 + 成就摘要 + 數據亮點
+       * - 底部：下載數位履歷按鈕
+       * ------------------------------------------ */
+      function Stage3({ onDownload }) {
+        // 當前選中的雷達圖頂點（null 表示沒選）
+        const [selectedVertex, setSelectedVertex] = useState(null);
+
+        // 取得選中頂點對應的行為證跡
+        const evidence = selectedVertex ? RADAR_EVIDENCE[selectedVertex] : null;
+
+        return (
+          <div className="max-w-6xl mx-auto px-4 py-8 stage-enter">
+            {/* 雙欄布局：左側雷達圖、右側數位履歷 */}
+            <div className="flex flex-col lg:flex-row gap-8">
+              {/* ====== 左側：雷達能力圖 ====== */}
+              <div className="lg:w-3/5">
+                <h2
+                  className="text-2xl font-bold mb-4"
+                  style={{ color: COLORS.titleDark }}
+                >
+                  📊 阿明的 18 週能力成長
+                </h2>
+
+                {/* 雷達圖元件 */}
+                <div className="flex justify-center">
+                  <RadarChart
+                    values={RADAR_VALUES}
+                    labels={RADAR_SKILLS}
+                    onVertexClick={setSelectedVertex}
+                    selectedVertex={selectedVertex}
+                    size={360}
+                  />
+                </div>
+
+                {/* 提示文字：尚未選擇頂點時顯示 */}
+                {!selectedVertex && (
+                  <p
+                    className="text-center text-sm mt-2 animate-fade-in"
+                    style={{ color: "#94A3B8" }}
+                  >
+                    👆 點擊雷達圖上的能力頂點，查看行為證跡
+                  </p>
+                )}
+              </div>
+
+              {/* ====== 右側：數位履歷預覽 ====== */}
+              <div className="lg:w-2/5 flex flex-col gap-4">
+                <h2
+                  className="text-2xl font-bold"
+                  style={{ color: COLORS.titleDark }}
+                >
+                  📄 數位履歷預覽
+                </h2>
+
+                {/* 行為證跡卡片（選中頂點後淡入顯示） */}
+                {evidence && (
+                  <div
+                    className="rounded-xl p-4 animate-fade-in"
+                    style={{
+                      backgroundColor: "#FFF7ED",
+                      borderLeft: "4px solid #FB923C",
+                    }}
+                  >
+                    <p
+                      className="text-sm font-semibold mb-2"
+                      style={{ color: "#C2410C" }}
+                    >
+                      🔍 行為證跡
+                    </p>
+                    <p
+                      className="text-sm font-bold mb-1"
+                      style={{ color: COLORS.titleDark }}
+                    >
+                      第 {evidence.week} 週 — {evidence.title}
+                    </p>
+                    <p
+                      className="text-sm leading-relaxed"
+                      style={{ color: "#64748B" }}
+                    >
+                      {evidence.desc}
+                    </p>
+                  </div>
+                )}
+
+                {/* 成就摘要卡片 */}
+                <div
+                  className="rounded-xl p-5 shadow-sm"
+                  style={{ backgroundColor: COLORS.card }}
+                >
+                  <p
+                    className="text-sm font-semibold mb-2"
+                    style={{ color: COLORS.titleDark }}
+                  >
+                    🏆 成就摘要
+                  </p>
+                  <p
+                    className="text-sm leading-relaxed"
+                    style={{ color: "#64748B" }}
+                  >
+                    服務期間展現卓越韌性，處理超過 10 次以上突發情緒危機。在 18
+                    週的服務歷程中，阿明展現了顯著的個人成長軌跡。
+                  </p>
+                </div>
+
+                {/* 數據亮點：三張迷你卡片 */}
+                <div className="grid grid-cols-3 gap-3">
+                  {/* 卡片 1：問題解決 */}
+                  <div
+                    className="rounded-xl p-3 text-center shadow-sm"
+                    style={{ backgroundColor: COLORS.card }}
+                  >
+                    <p className="text-xs mb-1" style={{ color: "#94A3B8" }}>
+                      問題解決
+                    </p>
+                    <p
+                      className="text-lg font-bold"
+                      style={{ color: COLORS.brandBright }}
+                    >
+                      PR 92
+                    </p>
+                  </div>
+
+                  {/* 卡片 2：韌性指標 */}
+                  <div
+                    className="rounded-xl p-3 text-center shadow-sm"
+                    style={{ backgroundColor: COLORS.card }}
+                  >
+                    <p className="text-xs mb-1" style={{ color: "#94A3B8" }}>
+                      韌性指標
+                    </p>
+                    <p
+                      className="text-lg font-bold"
+                      style={{ color: COLORS.warmBright }}
+                    >
+                      Top 15%
+                    </p>
+                  </div>
+
+                  {/* 卡片 3：同理心 */}
+                  <div
+                    className="rounded-xl p-3 text-center shadow-sm"
+                    style={{ backgroundColor: COLORS.card }}
+                  >
+                    <p className="text-xs mb-1" style={{ color: "#94A3B8" }}>
+                      同理心
+                    </p>
+                    <p
+                      className="text-lg font-bold"
+                      style={{ color: COLORS.success }}
+                    >
+                      ↑ 32%
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 底部 CTA：下載數位履歷按鈕 */}
+            <div className="flex justify-center mt-10">
+              <button
+                onClick={onDownload}
+                className="w-full max-w-xl px-8 py-4 rounded-xl text-white font-semibold text-lg
+                           hover:shadow-lg transition-all duration-300 cursor-pointer"
+                style={{
+                  background: `linear-gradient(135deg, #EA580C, #F97316)`,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.filter = "brightness(0.95)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.filter = "brightness(1)";
+                }}
+              >
+                📥 下載永續背書之職場數位履歷
+              </button>
+            </div>
+          </div>
+        );
+      }
+
+      /* ------------------------------------------
        * App 元件：主應用程式
        * - 管理當前站點 (currentStage)
        * - 管理轉場動畫 (stageTransition)
@@ -963,8 +1391,8 @@
           (targetStage) => {
             // 如果目標就是當前站，不做任何事
             if (targetStage === currentStage) return;
-            // 限制範圍在 1~3
-            if (targetStage < 1 || targetStage > 3) return;
+            // 限制範圍在 1~4（第 4 站為證書頁，下個任務實作）
+            if (targetStage < 1 || targetStage > 4) return;
 
             // 步驟 1：觸發淡出
             setStageTransition(true);
@@ -1003,9 +1431,8 @@
               {currentStage === 1 && <Stage1 onNext={() => goToStage(2)} />}
               {/* 第二站：行為轉譯 & AI 追問（正式元件） */}
               {currentStage === 2 && <Stage2 onNext={() => goToStage(3)} />}
-              {currentStage === 3 && (
-                <StagePlaceholder stageId={3} label="第三站" />
-              )}
+              {/* 第三站：SVG 雷達圖 + 數位履歷（正式元件） */}
+              {currentStage === 3 && <Stage3 onDownload={() => goToStage(4)} />}
             </main>
           </div>
         );
