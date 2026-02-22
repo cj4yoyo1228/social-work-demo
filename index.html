@@ -100,7 +100,7 @@
 
       @media (min-width: 768px) {
         .demo-grid {
-          grid-template-columns: repeat(3, 1fr);
+          grid-template-columns: repeat(2, 1fr);
           gap: 24px;
         }
         .main-content {
@@ -138,6 +138,9 @@
       }
       .demo-card:nth-child(3) {
         animation-delay: 0.25s;
+      }
+      .demo-card:nth-child(4) {
+        animation-delay: 0.35s;
       }
 
       .demo-card:hover {
@@ -240,7 +243,7 @@
       <p class="hero-subtitle">互動原型展示</p>
     </header>
 
-    <!-- 三張 Demo 卡片 -->
+    <!-- 四張 Demo 卡片 -->
     <main class="main-content">
       <div class="demo-grid">
         <!-- 班級管理中心 -->
@@ -276,6 +279,23 @@
             異常自動浮現，一鍵提醒不漏接。讓主管一眼掌握全局，不需要逐一追問才能發現問題。
           </p>
           <a href="demo3-dashboard.html" class="card-link">
+            進入 Demo <span class="arrow">→</span>
+          </a>
+        </article>
+
+        <!-- 永續志工數據飛輪 -->
+        <article class="demo-card">
+          <div class="card-icon" style="background: #fff7ed">🚀</div>
+          <h2 class="card-title">永續志工數據飛輪</h2>
+          <p class="card-desc">
+            跟著阿明走一趟 18 週的成長旅程，看 AI
+            如何把服務日誌轉化為可量化的職場資產。
+          </p>
+          <a
+            href="demo4-volunteer-flywheel.html"
+            class="card-link"
+            style="background: linear-gradient(135deg, #1e40af, #3b82f6)"
+          >
             進入 Demo <span class="arrow">→</span>
           </a>
         </article>

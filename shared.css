@@ -115,13 +115,13 @@ body {
 }
 
 .tag-chip:hover {
-  border-color: #6366f1;
-  color: #6366f1;
+  border-color: #00897b;
+  color: #00897b;
 }
 
 .tag-chip.selected {
-  background: #6366f1;
-  border-color: #6366f1;
+  background: #00897b;
+  border-color: #00897b;
   color: #ffffff;
 }
 
@@ -132,7 +132,7 @@ body {
   border-radius: 10px;
   font-size: 12px;
   background: #eef2ff;
-  color: #6366f1;
+  color: #00897b;
 }
 
 .tag-small.warning {
@@ -151,7 +151,7 @@ body {
   align-items: center;
   justify-content: center;
   padding: 12px 24px;
-  background: #6366f1;
+  background: #00897b;
   color: #ffffff;
   border: none;
   border-radius: 12px;
@@ -184,8 +184,8 @@ body {
   justify-content: center;
   padding: 10px 20px;
   background: #ffffff;
-  color: #6366f1;
-  border: 2px solid #6366f1;
+  color: #00897b;
+  border: 2px solid #00897b;
   border-radius: 12px;
   font-size: 14px;
   font-weight: 600;
@@ -397,7 +397,7 @@ body {
 }
 
 .data-table th.sortable:hover {
-  color: #6366f1;
+  color: #00897b;
 }
 
 .data-table td {
@@ -456,7 +456,7 @@ body {
 }
 
 .search-input:focus {
-  border-color: #6366f1;
+  border-color: #00897b;
 }
 
 /* 紀錄時間軸（Demo 2 用）*/
@@ -488,7 +488,7 @@ body {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #6366f1;
+  background: #00897b;
   border: 2px solid #ffffff;
 }
 
@@ -497,7 +497,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  color: #6366f1;
+  color: #00897b;
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
