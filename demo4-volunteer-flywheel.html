@@ -1582,15 +1582,15 @@
       }
 
       /* ------------------------------------------
-       * Stage3 元件：第三站 — SVG 雷達圖 + 數位履歷
+       * Stage3 元件：第三站 — SVG 雷達圖 + 數位能力報告
        * - 左側：五軸雷達能力圖
        * - 右側：行為證跡卡片 + 成就摘要 + 數據亮點
-       * - 底部：下載數位履歷按鈕
+       * - 底部：下載數位能力報告按鈕
        * ------------------------------------------ */
       function Stage3({ onDownload, showToast }) {
         // 當前選中的雷達圖頂點（null 表示沒選）
         const [selectedVertex, setSelectedVertex] = useState(null);
-        // 是否正在生成數位履歷（顯示 overlay）
+        // 是否正在生成數位能力報告（顯示 overlay）
         const [generating, setGenerating] = useState(false);
         // 進度文字索引（0, 1, 2）
         const [progressTextIndex, setProgressTextIndex] = useState(0);
@@ -1655,7 +1655,7 @@
                     className="text-xl font-bold mb-6"
                     style={{ color: COLORS.titleDark }}
                   >
-                    🔄 正在生成您的數位履歷...
+                    🔄 正在生成您的數位能力報告...
                   </h3>
 
                   {/* 進度條軌道 */}
@@ -1683,7 +1683,7 @@
               </div>
             )}
 
-            {/* 雙欄布局：左側雷達圖、右側數位履歷 */}
+            {/* 雙欄布局：左側雷達圖、右側數位能力報告 */}
             <div className="flex flex-col lg:flex-row gap-8">
               {/* ====== 左側：雷達能力圖 ====== */}
               <div className="lg:w-3/5">
@@ -1789,13 +1789,13 @@
                 </div>
               </div>
 
-              {/* ====== 右側：數位履歷預覽 ====== */}
+              {/* ====== 右側：數位能力報告預覽 ====== */}
               <div className="lg:w-2/5 flex flex-col gap-4">
                 <h2
                   className="text-2xl font-bold"
                   style={{ color: COLORS.titleDark }}
                 >
-                  📄 數位履歷預覽
+                  📄 數位能力報告預覽
                 </h2>
 
                 {/* 行為證跡卡片（選中頂點後淡入顯示） */}
@@ -1906,7 +1906,7 @@
               </div>
             </div>
 
-            {/* 底部 CTA：下載數位履歷按鈕（點擊後先顯示生成 overlay） */}
+            {/* 底部 CTA：下載數位能力報告按鈕（點擊後先顯示生成 overlay） */}
             <div className="flex justify-center mt-10">
               <button
                 onClick={handleDownloadClick}
@@ -1924,7 +1924,7 @@
                   e.currentTarget.style.filter = "brightness(1)";
                 }}
               >
-                📥 下載永續背書之職場數位履歷
+                📥 下載永續背書之職場數位能力報告
               </button>
             </div>
           </div>
@@ -2312,7 +2312,7 @@
               {currentStage === 1 && <Stage1 onNext={() => goToStage(2)} />}
               {/* 第二站：行為轉譯 & AI 追問 */}
               {currentStage === 2 && <Stage2 onNext={() => goToStage(3)} />}
-              {/* 第三站：SVG 雷達圖 + 數位履歷（含生成 overlay） */}
+              {/* 第三站：SVG 雷達圖 + 數位能力報告（含生成 overlay） */}
               {currentStage === 3 && (
                 <Stage3 onDownload={() => goToStage(4)} showToast={showToast} />
               )}
