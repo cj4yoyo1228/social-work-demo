@@ -1187,7 +1187,7 @@
                         className="text-sm font-semibold"
                         style={{ color: "#C2410C" }}
                       >
-                        📈 韌性指標 ↑ 15%
+                        📈 韌性階段提升：嘗試期 → 應用期
                       </p>
                     </div>
                     <div
@@ -1352,8 +1352,8 @@
         const [hoveredIndex, setHoveredIndex] = useState(null);
 
         // 雷達圖中心點與最大半徑
-        const cx = 150;
-        const cy = 150;
+        const cx = 200;
+        const cy = 200;
         const maxRadius = 120;
         const total = 5; // 五軸
 
@@ -1433,7 +1433,7 @@
 
         return (
           <svg
-            viewBox="0 0 300 300"
+            viewBox="0 0 400 400"
             style={{ width: "100%", maxWidth: `${size}px`, height: "auto" }}
           >
             {/* SVG 濾鏡定義：圓點微發光效果 */}
@@ -1544,10 +1544,10 @@
               );
             })}
 
-            {/* 各頂點的文字標籤（位於雷達圖外圈） */}
+            {/* 各頂點的文字標籤（位於雷達圖外圈，拆雙行避免截斷） */}
             {Array.from({ length: total }).map((_, i) => {
-              // 標籤位置：最大半徑再往外推 25px
-              const labelPoint = getPoint(cx, cy, maxRadius + 25, i, total);
+              // 標籤位置：最大半徑再往外推 35px
+              const labelPoint = getPoint(cx, cy, maxRadius + 35, i, total);
               const isSelected = selectedVertex === labels[i];
 
               return (
@@ -1563,7 +1563,17 @@
                   style={{ cursor: "pointer" }}
                   onClick={() => onVertexClick && onVertexClick(labels[i])}
                 >
-                  {labels[i]}({STAGE_LABELS[values[i] - 1]})
+                  <tspan x={labelPoint.x} dy="-0.4em">
+                    {labels[i]}
+                  </tspan>
+                  <tspan
+                    x={labelPoint.x}
+                    dy="1.2em"
+                    fontSize="10"
+                    fill={isSelected ? "#F97316" : "#94A3B8"}
+                  >
+                    {STAGE_LABELS[values[i] - 1]}
+                  </tspan>
                 </text>
               );
             })}
@@ -1704,6 +1714,79 @@
                     👆 點擊雷達圖上的能力頂點，查看行為證跡
                   </p>
                 )}
+
+                {/* 階段定義圖例 */}
+                <div
+                  className="mt-6 rounded-xl p-4"
+                  style={{
+                    backgroundColor: "#F8FAFC",
+                    border: "1px solid #E2E8F0",
+                  }}
+                >
+                  <p
+                    className="text-xs font-bold mb-3"
+                    style={{ color: COLORS.titleDark }}
+                  >
+                    📋 成長階段定義
+                  </p>
+                  <div className="space-y-2">
+                    {[
+                      {
+                        stage: "認證級",
+                        color: COLORS.brandBright,
+                        desc: "能力經外部評估達業界標準，可獨立承擔專業任務",
+                        basis: "依據：通過機構認證評核或業界專家評定",
+                      },
+                      {
+                        stage: "穩定期",
+                        color: "#26A69A",
+                        desc: "在多次真實情境中展現一致表現，已內化為習慣",
+                        basis: "依據：3 次以上不同情境中觀察到相同行為模式",
+                      },
+                      {
+                        stage: "應用期",
+                        color: COLORS.warmBright,
+                        desc: "能在真實場景中主動運用，有具體案例佐證",
+                        basis: "依據：至少 1 次獨立應用的行為紀錄",
+                      },
+                      {
+                        stage: "嘗試期",
+                        color: "#94A3B8",
+                        desc: "開始在引導下練習，嘗試應用於簡單情境",
+                        basis: "依據：有教練觀察到的練習行為紀錄",
+                      },
+                      {
+                        stage: "覺察期",
+                        color: "#CBD5E1",
+                        desc: "認識到這項能力的存在，開始自我覺察",
+                        basis: "依據：自評問卷或對話中表達出相關意識",
+                      },
+                    ].map((item) => (
+                      <div key={item.stage} className="flex items-start gap-2">
+                        <span
+                          className="text-xs font-bold px-2 py-0.5 rounded-full shrink-0 mt-0.5"
+                          style={{
+                            color: "#fff",
+                            backgroundColor: item.color,
+                          }}
+                        >
+                          {item.stage}
+                        </span>
+                        <div>
+                          <p
+                            className="text-xs leading-relaxed"
+                            style={{ color: "#475569" }}
+                          >
+                            {item.desc}
+                          </p>
+                          <p className="text-xs" style={{ color: "#94A3B8" }}>
+                            {item.basis}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               {/* ====== 右側：數位履歷預覽 ====== */}
