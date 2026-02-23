@@ -421,33 +421,49 @@
        * 雷達圖資料常數（五項能力值 + 行為證跡）
        * ------------------------------------------ */
       const RADAR_SKILLS = ["溝通力", "問題解決", "韌性", "同理心", "領導力"];
-      const RADAR_VALUES = [85, 92, 88, 78, 72]; // 0-100 分
 
+      // 五個成長階段（取代分數制）
+      const STAGE_LABELS = ["覺察期", "嘗試期", "應用期", "穩定期", "認證級"];
+
+      // 每項能力目前所處的階段（1-5）
+      const RADAR_VALUES = [4, 5, 4, 3, 3];
+
+      // 行為證跡：每項能力對應的具體事件 + 所處階段說明
       const RADAR_EVIDENCE = {
         溝通力: {
           week: 5,
+          stage: 4,
           title: "引導學童表達情緒",
           desc: "成功引導小明用語言描述自己的感受，避免肢體衝突。",
+          stageNote: "已能在真實衝突中穩定運用溝通技巧，多次展現一致表現。",
         },
         問題解決: {
           week: 10,
+          stage: 5,
           title: "突發狀況處理",
           desc: "課堂投影機故障時，即時改用分組討論活動填補空白。",
+          stageNote: "面對突發狀況能即時應變，展現業界認可的問題解決水準。",
         },
         韌性: {
           week: 8,
+          stage: 4,
           title: "衝突處理回覆",
           desc: "面對兩位學童激烈衝突，耐心引導雙方冷靜並達成和解。",
+          stageNote: "多次在高壓情境下維持穩定，已成為可預期的行為模式。",
         },
         同理心: {
           week: 12,
+          stage: 3,
           title: "察覺學童情緒變化",
           desc: "注意到小華連續兩天沉默，主動關心後發現家庭問題。",
+          stageNote: "能在真實情境中主動觀察並回應他人情緒，有具體案例佐證。",
         },
         領導力: {
           week: 15,
+          stage: 3,
           title: "帶領小組完成任務",
           desc: "指導四人小組完成環保主題海報，每位組員都有貢獻。",
+          stageNote: "開始在小組情境中展現領導行為，能分配任務並鼓勵參與。",
         },
       };
 
@@ -1402,17 +1418,18 @@
           };
         }, []);
 
-        // === 計算資料多邊形的頂點座標 ===
+        // === 計算資料多邊形的頂點座標（階段 1-5 → 比例 0.2-1.0） ===
+        const maxStage = 5;
         const dataPoints = values.map((val, i) => {
-          const radius = (val / 100) * maxRadius * animationProgress;
+          const radius = (val / maxStage) * maxRadius * animationProgress;
           return getPoint(cx, cy, radius, i, total);
         });
         const dataPolygonPoints = dataPoints
           .map((p) => `${p.x},${p.y}`)
           .join(" ");
 
-        // === 背景同心五邊形（25%、50%、75%、100%） ===
-        const bgLevels = [0.25, 0.5, 0.75, 1.0];
+        // === 背景同心五邊形（對應 5 個成長階段） ===
+        const bgLevels = [0.2, 0.4, 0.6, 0.8, 1.0];
 
         return (
           <svg
@@ -1546,7 +1563,7 @@
                   style={{ cursor: "pointer" }}
                   onClick={() => onVertexClick && onVertexClick(labels[i])}
                 >
-                  {labels[i]} ({values[i]})
+                  {labels[i]}({STAGE_LABELS[values[i] - 1]})
                 </text>
               );
             })}
@@ -1720,10 +1737,20 @@
                       第 {evidence.week} 週 — {evidence.title}
                     </p>
                     <p
-                      className="text-sm leading-relaxed"
+                      className="text-sm leading-relaxed mb-2"
                       style={{ color: "#64748B" }}
                     >
                       {evidence.desc}
+                    </p>
+                    <p
+                      className="text-xs px-2.5 py-1 rounded-full inline-block font-medium"
+                      style={{
+                        backgroundColor: "#E0F2F1",
+                        color: COLORS.brandDeep,
+                      }}
+                    >
+                      📍 目前階段：{STAGE_LABELS[evidence.stage - 1]} —{" "}
+                      {evidence.stageNote}
                     </p>
                   </div>
                 )}
@@ -1748,9 +1775,8 @@
                   </p>
                 </div>
 
-                {/* 數據亮點：三張迷你卡片 */}
+                {/* 能力階段總覽：三張迷你卡片 */}
                 <div className="grid grid-cols-3 gap-3">
-                  {/* 卡片 1：問題解決 */}
                   <div
                     className="rounded-xl p-3 text-center shadow-sm"
                     style={{ backgroundColor: COLORS.card }}
@@ -1759,36 +1785,26 @@
                       問題解決
                     </p>
                     <p
-                      className="text-lg font-bold"
-                      style={{
-                        color: COLORS.brandBright,
-                        fontFamily: '"Inter", "Noto Sans TC", sans-serif',
-                      }}
+                      className="text-sm font-bold"
+                      style={{ color: COLORS.brandBright }}
                     >
-                      PR 92
+                      ⭐ 認證級
                     </p>
                   </div>
-
-                  {/* 卡片 2：韌性指標 */}
                   <div
                     className="rounded-xl p-3 text-center shadow-sm"
                     style={{ backgroundColor: COLORS.card }}
                   >
                     <p className="text-xs mb-1" style={{ color: "#94A3B8" }}>
-                      韌性指標
+                      韌性
                     </p>
                     <p
-                      className="text-lg font-bold"
-                      style={{
-                        color: COLORS.warmBright,
-                        fontFamily: '"Inter", "Noto Sans TC", sans-serif',
-                      }}
+                      className="text-sm font-bold"
+                      style={{ color: COLORS.warmBright }}
                     >
-                      Top 15%
+                      穩定期
                     </p>
                   </div>
-
-                  {/* 卡片 3：同理心 */}
                   <div
                     className="rounded-xl p-3 text-center shadow-sm"
                     style={{ backgroundColor: COLORS.card }}
@@ -1797,13 +1813,10 @@
                       同理心
                     </p>
                     <p
-                      className="text-lg font-bold"
-                      style={{
-                        color: COLORS.success,
-                        fontFamily: '"Inter", "Noto Sans TC", sans-serif',
-                      }}
+                      className="text-sm font-bold"
+                      style={{ color: COLORS.success }}
                     >
-                      ↑ 32%
+                      應用期
                     </p>
                   </div>
                 </div>
@@ -1894,20 +1907,13 @@
        *   showToast: 顯示 toast 通知的函式
        * ------------------------------------------ */
       function CertificateView({ onRestart, showToast }) {
-        /**
-         * getSkillBarColor：根據分數回傳進度條顏色
-         * 高分 (>=85) = 品牌藍，中等 (70-84) = 暖橘，低分 (<70) = 灰色
-         */
-        const getSkillBarColor = useCallback((score) => {
-          if (score >= 85) return COLORS.brandBright;
-          if (score >= 70) return COLORS.warmBright;
-          return "#9CA3AF";
+        // 根據階段回傳進度條顏色
+        const getStageColor = useCallback((stage) => {
+          if (stage >= 5) return COLORS.brandBright; // 認證級
+          if (stage >= 4) return "#26A69A"; // 穩定期
+          if (stage >= 3) return COLORS.warmBright; // 應用期
+          return "#94A3B8"; // 覺察/嘗試期
         }, []);
-
-        // 計算綜合平均分
-        const avgScore = Math.round(
-          RADAR_VALUES.reduce((sum, v) => sum + v, 0) / RADAR_VALUES.length,
-        );
 
         return (
           <div className="max-w-3xl mx-auto px-4 py-10 stage-enter">
@@ -2003,12 +2009,13 @@
                   {/* 右側：五項技能進度條 */}
                   <div className="flex-1 w-full space-y-3">
                     {RADAR_SKILLS.map((skill, index) => {
-                      const score = RADAR_VALUES[index];
-                      const barColor = getSkillBarColor(score);
+                      const stage = RADAR_VALUES[index];
+                      const barColor = getStageColor(stage);
+                      const stageName = STAGE_LABELS[stage - 1];
 
                       return (
                         <div key={skill}>
-                          {/* 技能名稱和分數 */}
+                          {/* 技能名稱和階段標籤 */}
                           <div className="flex justify-between items-center mb-1">
                             <span
                               className="text-sm font-medium"
@@ -2017,28 +2024,27 @@
                               {skill}
                             </span>
                             <span
-                              className="text-sm font-bold"
+                              className="text-xs font-bold px-2 py-0.5 rounded-full"
                               style={{
-                                color: barColor,
-                                fontFamily:
-                                  '"Inter", "Noto Sans TC", sans-serif',
+                                color: "#fff",
+                                backgroundColor: barColor,
                               }}
                             >
-                              {score}
+                              {stageName}
                             </span>
                           </div>
 
-                          {/* 進度條軌道 */}
+                          {/* 進度條軌道（5 格分段） */}
                           <div
                             className="h-2.5 rounded-full"
                             style={{ backgroundColor: "#E5E7EB" }}
                           >
-                            {/* 進度條填充 */}
+                            {/* 進度條填充：階段 / 5 換算百分比 */}
                             <div
                               className="h-2.5 rounded-full animate-progress-bar"
                               style={{
                                 backgroundColor: barColor,
-                                maxWidth: `${score}%`,
+                                maxWidth: `${(stage / 5) * 100}%`,
                               }}
                             />
                           </div>
@@ -2048,21 +2054,38 @@
                   </div>
                 </div>
 
-                {/* 綜合評比 */}
-                <div
-                  className="text-center mt-6 py-3 rounded-lg"
-                  style={{ backgroundColor: "#E0F2F1" }}
-                >
-                  <p
-                    className="text-sm font-semibold"
-                    style={{
-                      color: COLORS.brandDeep,
-                      fontFamily: '"Inter", "Noto Sans TC", sans-serif',
-                    }}
-                  >
-                    綜合評比：PR {avgScore} ∣ 表現優於 {avgScore}% 的同期志工
-                  </p>
-                </div>
+                {/* 綜合階段摘要 */}
+                {(() => {
+                  // 計算各階段分布
+                  const stageCounts = RADAR_VALUES.reduce((acc, v) => {
+                    const name = STAGE_LABELS[v - 1];
+                    acc[name] = (acc[name] || 0) + 1;
+                    return acc;
+                  }, {});
+                  // 找出最高階段
+                  const maxStage = Math.max(...RADAR_VALUES);
+                  const maxStageName = STAGE_LABELS[maxStage - 1];
+                  // 達到「穩定期」以上的技能數
+                  const stableCount = RADAR_VALUES.filter((v) => v >= 4).length;
+
+                  return (
+                    <div
+                      className="text-center mt-6 py-3 rounded-lg"
+                      style={{ backgroundColor: "#E0F2F1" }}
+                    >
+                      <p
+                        className="text-sm font-semibold"
+                        style={{
+                          color: COLORS.brandDeep,
+                          fontFamily: '"Inter", "Noto Sans TC", sans-serif',
+                        }}
+                      >
+                        最高達成：{maxStageName} ∣ {stableCount}{" "}
+                        項技能已達穩定期以上
+                      </p>
+                    </div>
+                  );
+                })()}
               </div>
 
               {/* === D) 行動按鈕區 === */}
